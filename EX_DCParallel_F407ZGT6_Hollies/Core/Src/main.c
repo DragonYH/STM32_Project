@@ -63,7 +63,7 @@ void SystemClock_Config(void);
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
 #define BATCH_DATA_LEN 12
-float M = 1 / 3;	//电流�???
+float M = 1 / 3;	//电流比例
 
 uint32_t dmaDataBuffer[BATCH_DATA_LEN];
 uint16_t p_count = 0 , p_count1 = 0;
