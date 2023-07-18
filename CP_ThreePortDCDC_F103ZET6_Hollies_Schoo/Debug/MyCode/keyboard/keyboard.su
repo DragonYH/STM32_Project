@@ -1,0 +1,2 @@
+../MyCode/keyboard/keyboard.c:11:6:KEY_ROW_SCAN	16	static
+../MyCode/keyboard/keyboard.c:48:6:KEY_SCAN	16	static

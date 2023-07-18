@@ -1,0 +1,11 @@
+2023-05-10 09:56:15,119 [INFO] Activator:176 - 
+
+
+2023-05-10 09:56:15,139 [INFO] Activator:177 - !SESSION log4j initialized
+2023-05-10 09:56:19,707 [ERROR] LogOutputStream:75 - [STDERR_REDIRECT] Warning: NLS unused message: ?????????????????????? in: org.eclipse.ui.views.markers.internal.messages
+2023-05-10 09:56:24,043 [INFO] LogOutputStream:77 - [STDOUT_REDIRECT] 
+2023-05-10 09:56:47,748 [ERROR] LogOutputStream:75 - [STDERR_REDIRECT] SLF4J: Failed to load class "org.slf4j.impl.StaticLoggerBinder".
+2023-05-10 09:56:47,755 [ERROR] LogOutputStream:75 - [STDERR_REDIRECT] SLF4J: Defaulting to no-operation (NOP) logger implementation
+2023-05-10 09:56:47,755 [ERROR] LogOutputStream:75 - [STDERR_REDIRECT] SLF4J: See http://www.slf4j.org/codes.html#StaticLoggerBinder for further details.
+2023-05-10 10:03:17,402 [ERROR] ConfigurationRetriever:142 - IOException on connection: Read timed out
+2023-05-10 10:03:20,300 [ERROR] AdobePublisher:162 - Exception while opening the connection: java.net.SocketTimeoutException: Read timed out

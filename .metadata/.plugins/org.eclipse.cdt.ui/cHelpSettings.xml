@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<cHelpSettings>
+                
+    
+    
+    <project name="EX_PID2_407">
+                                
+        
+        
+        <provider id="org.eclipse.cdt.ui.provider1"/>
+                            
+    
+    
+    </project>
+            
+    
+    
+    <project name="Class_DCDC">
+                        
+        
+        <provider id="org.eclipse.cdt.ui.provider1"/>
+                    
+    
+    </project>
+        
+    
+    <project name="CP_ThreePortDCDC_F407ZGT6_Hollies_School">
+                
+        <provider id="org.eclipse.cdt.ui.provider1"/>
+            
+    </project>
+    
+    <project name="EX_DCParallel_F407ZGT6_Hollies">
+        <provider id="org.eclipse.cdt.ui.provider1"/>
+    </project>
+</cHelpSettings>

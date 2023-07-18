@@ -1,0 +1,12 @@
+10:31:24 **** Incremental Build of configuration Debug for project EX-BMP280-F103C6T6A-Hollies ****
+make -j8 all 
+arm-none-eabi-gcc "../MyCode/bmp280/bmp280.c" -mcpu=cortex-m3 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F103x6 -c -I../Core/Inc -I../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I../Drivers/STM32F1xx_HAL_Driver/Inc -I../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I../Drivers/CMSIS/Include -I"E:/Document/STM32_Project/EX-BMP280-F103C6T6A-Hollies/MyCode/include" -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"MyCode/bmp280/bmp280.d" -MT"MyCode/bmp280/bmp280.o" --specs=nano.specs -mfloat-abi=soft -mthumb -o "MyCode/bmp280/bmp280.o"
+arm-none-eabi-gcc -o "EX-BMP280-F103C6T6A-Hollies.elf" @"objects.list"   -mcpu=cortex-m3 -T"E:\Document\STM32_Project\EX-BMP280-F103C6T6A-Hollies\STM32F103C6TX_FLASH.ld" --specs=nosys.specs -Wl,-Map="EX-BMP280-F103C6T6A-Hollies.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -u _printf_float -Wl,--start-group -lc -lm -Wl,--end-group
+e:\software\stm32cubeide_1.12.0\stm32cubeide\plugins\com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.10.3-2021.10.win32_1.0.200.202301161003\tools\arm-none-eabi\bin\ld.exe: EX-BMP280-F103C6T6A-Hollies.elf section `.rodata' will not fit in region `FLASH'
+e:\software\stm32cubeide_1.12.0\stm32cubeide\plugins\com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.10.3-2021.10.win32_1.0.200.202301161003\tools\arm-none-eabi\bin\ld.exe: region `FLASH' overflowed by 1420 bytes
+collect2.exe: error: ld returned 1 exit status
+make: *** [makefile:65: EX-BMP280-F103C6T6A-Hollies.elf] Error 1
+"make -j8 all" terminated with exit code 2. Build might be incomplete.
+
+10:31:27 Build Failed. 3 errors, 0 warnings. (took 2s.215ms)
+

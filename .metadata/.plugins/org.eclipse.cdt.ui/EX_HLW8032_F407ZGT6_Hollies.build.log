@@ -1,0 +1,10 @@
+10:59:31 **** Incremental Build of configuration Debug for project EX_HLW8032_F407ZGT6_Hollies ****
+make -j8 all 
+arm-none-eabi-size   EX_HLW8032_F407ZGT6_Hollies.elf 
+   text	   data	    bss	    dec	    hex	filename
+  13144	    184	   1728	  15056	   3ad0	EX_HLW8032_F407ZGT6_Hollies.elf
+Finished building: default.size.stdout
+ 
+
+10:59:31 Build Finished. 0 errors, 0 warnings. (took 190ms)
+

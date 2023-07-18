@@ -1,0 +1,10 @@
+12:08:25 **** Build of configuration Debug for project EX_BMP280_F407ZGT6_Hollies ****
+make -j8 all 
+arm-none-eabi-size   EX_BMP280_F407ZGT6_Hollies.elf 
+   text	   data	    bss	    dec	    hex	filename
+  43076	    552	   1744	  45372	   b13c	EX_BMP280_F407ZGT6_Hollies.elf
+Finished building: default.size.stdout
+ 
+
+12:08:25 Build Finished. 0 errors, 0 warnings. (took 214ms)
+

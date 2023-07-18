@@ -1,0 +1,19 @@
+18:07:11 **** Build of configuration Debug for project EX_DCParallel_F407ZGT6_Hollies ****
+make -j8 all 
+arm-none-eabi-gcc "../Mycode/ina238/ina238.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F407xx -c -I../Core/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I../Drivers/CMSIS/Include -I../Mycode/include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Mycode/ina238/ina238.d" -MT"Mycode/ina238/ina238.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Mycode/ina238/ina238.o"
+arm-none-eabi-gcc "../Core/Src/main.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F407xx -c -I../Core/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I../Drivers/CMSIS/Include -I../Mycode/include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/main.d" -MT"Core/Src/main.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Src/main.o"
+arm-none-eabi-gcc "../Core/Src/tim.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F407xx -c -I../Core/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I../Drivers/CMSIS/Include -I../Mycode/include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/tim.d" -MT"Core/Src/tim.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Src/tim.o"
+arm-none-eabi-gcc -o "EX_DCParallel_F407ZGT6_Hollies.elf" @"objects.list"   -mcpu=cortex-m4 -T"E:\Document\STM32_Project\EX_DCParallel_F407ZGT6_Hollies\STM32F407ZGTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="EX_DCParallel_F407ZGT6_Hollies.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+Finished building target: EX_DCParallel_F407ZGT6_Hollies.elf
+ 
+arm-none-eabi-size   EX_DCParallel_F407ZGT6_Hollies.elf 
+arm-none-eabi-objdump -h -S  EX_DCParallel_F407ZGT6_Hollies.elf  > "EX_DCParallel_F407ZGT6_Hollies.list"
+   text	   data	    bss	    dec	    hex	filename
+  28112	     20	   2276	  30408	   76c8	EX_DCParallel_F407ZGT6_Hollies.elf
+Finished building: default.size.stdout
+ 
+Finished building: EX_DCParallel_F407ZGT6_Hollies.list
+ 
+
+18:07:14 Build Finished. 0 errors, 0 warnings. (took 2s.797ms)
+

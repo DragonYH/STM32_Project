@@ -1,0 +1,10 @@
+15:47:01 **** Incremental Build of configuration Debug for project Buck_1 ****
+make -j8 all 
+arm-none-eabi-size   Buck_1.elf 
+   text	   data	    bss	    dec	    hex	filename
+   8012	     20	   1644	   9676	   25cc	Buck_1.elf
+Finished building: default.size.stdout
+ 
+
+15:47:01 Build Finished. 0 errors, 0 warnings. (took 200ms)
+

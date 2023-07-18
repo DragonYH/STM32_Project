@@ -1,0 +1,5 @@
+ina238.c:3:6:INA238_init	1
+ina238.c:21:8:INA238_getVolt	3
+ina238.c:36:8:INA238_getCurrent	3
+ina238.c:51:8:INA238_getPower	2
+ina238.c:62:8:INA238_getTemperature	3
