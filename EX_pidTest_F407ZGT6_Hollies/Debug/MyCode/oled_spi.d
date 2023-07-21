@@ -1,5 +1,4 @@
-MyCode/oled_spi.o: ../MyCode/oled_spi.c \
- E:/Document/STM32_Project/EX_pidTest_F407ZGT6_Hollies/MyCode/include/oled_spi.h \
+MyCode/oled_spi.o: ../MyCode/oled_spi.c ../MyCode/include/oled_spi.h \
  ../Core/Inc/main.h ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h \
  ../Core/Inc/stm32f4xx_hal_conf.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_rcc.h \
@@ -30,9 +29,9 @@ MyCode/oled_spi.o: ../MyCode/oled_spi.c \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_spi.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim_ex.h \
- ../Core/Inc/gpio.h ../Core/Inc/main.h \
- E:/Document/STM32_Project/EX_pidTest_F407ZGT6_Hollies/MyCode/include/oledfont.h
-E:/Document/STM32_Project/EX_pidTest_F407ZGT6_Hollies/MyCode/include/oled_spi.h:
+ ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_uart.h \
+ ../Core/Inc/gpio.h ../Core/Inc/main.h ../MyCode/include/oledfont.h
+../MyCode/include/oled_spi.h:
 ../Core/Inc/main.h:
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h:
 ../Core/Inc/stm32f4xx_hal_conf.h:
@@ -64,6 +63,7 @@ E:/Document/STM32_Project/EX_pidTest_F407ZGT6_Hollies/MyCode/include/oled_spi.h:
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_spi.h:
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim.h:
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim_ex.h:
+../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_uart.h:
 ../Core/Inc/gpio.h:
 ../Core/Inc/main.h:
-E:/Document/STM32_Project/EX_pidTest_F407ZGT6_Hollies/MyCode/include/oledfont.h:
+../MyCode/include/oledfont.h:

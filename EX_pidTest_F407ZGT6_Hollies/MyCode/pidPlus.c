@@ -4,7 +4,7 @@
 变积分算法
 防止刚开始的时候由于误差较大导致的积分项过大——超调
 */
-static float VariableIntegralCoefficient(float error, float absMax, float absMin)
+float VariableIntegralCoefficient(float error, float absMax, float absMin)
 {
     float factor = 0.0f;
 
@@ -14,7 +14,7 @@ static float VariableIntegralCoefficient(float error, float absMax, float absMin
     }
     else if (fabs(error) > absMax)
     {
-        factor = 0.0f;
+        factor = 0.1f;
     }
     else
     {
@@ -33,11 +33,13 @@ void PID_init(PID* pid, TIM_HandleTypeDef* htim, float kp, float ki, float kd, f
     pid->target = target;
     pid->maximum = 0.9;
     pid->minimum = 0.1;
-    pid->deadBand = 0.01;
+    pid->deadBand = 0.001;
     pid->alpha = 0;
-    pid->timCount = __HAL_TIM_GET_COUNTER(htim);
+    pid->timCount = __HAL_TIM_GET_AUTORELOAD(htim);
     pid->errorAbsMax = 5;       /*偏差绝对值最大值*/
     pid->errorAbsMin = 1;       /*偏差绝对值最小值*/
+    pid->lastError = 0;
+    pid->preError = 0;
 }
 
 // 带死区、抗积分饱和、梯形积分、变积分算法以及不完全微分算法的增量型PID控
@@ -70,7 +72,7 @@ float PID_regulator(PID* pid, float messure)
     pid->result = pid->result + increment;
 
     //防止超过限制
-    if (pid->result >= pid->timCount * pid->maximum)
+    if (pid->result >= (pid->timCount * pid->maximum))
     {
     	//清除误差积分，防止在限制处长时间停留
     	thisError = 0;
@@ -79,13 +81,13 @@ float PID_regulator(PID* pid, float messure)
     	pid->deltaDiff = 0;
         pid->result = pid->timCount * pid->maximum;
     }
-    if (pid->result <= pid->timCount * pid->maximum)
+    if (pid->result <= (pid->timCount * pid->minimum))
     {
     	thisError = 0;
     	pid->lastError = 0;
     	pid->preError = 0;
     	pid->deltaDiff = 0;
-        pid->result = pid->timCount * pid->maximum;
+        pid->result = pid->timCount * pid->minimum;
     }
 
     pid->preError = pid->lastError; // 存放偏差用于下次运算

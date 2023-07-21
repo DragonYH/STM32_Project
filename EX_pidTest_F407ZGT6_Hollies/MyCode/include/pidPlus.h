@@ -16,9 +16,9 @@ typedef struct
     float errorAbsMin;	/*偏差绝对值最小值*/
     float alpha;		/*不完全微分系数, 0-1.0, 0为不生效, 1为无微分项*/
     float deltaDiff;	/*微分增量*/
-    float timCount;		/*控制时钟的计数值*/
+    uint32_t timCount;		/*控制时钟的计数值*/
 } PID;
 
 void PID_init(PID* pid, TIM_HandleTypeDef* htim, float kp, float ki, float kd, float target);
 float PID_regulator(PID* PID, float messure);
-static float VariableIntegralCoefficient(float error, float absMax, float absMin);
+float VariableIntegralCoefficient(float error, float absMax, float absMin);

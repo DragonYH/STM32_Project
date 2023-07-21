@@ -62,7 +62,7 @@ main-build: EX_pidTest_F407ZGT6_Hollies.elf secondary-outputs
 
 # Tool invocations
 EX_pidTest_F407ZGT6_Hollies.elf EX_pidTest_F407ZGT6_Hollies.map: $(OBJS) $(USER_OBJS) E:\Document\STM32_Project\EX_pidTest_F407ZGT6_Hollies\STM32F407ZGTX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-gcc -o "EX_pidTest_F407ZGT6_Hollies.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"E:\Document\STM32_Project\EX_pidTest_F407ZGT6_Hollies\STM32F407ZGTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="EX_pidTest_F407ZGT6_Hollies.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+	arm-none-eabi-gcc -o "EX_pidTest_F407ZGT6_Hollies.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"E:\Document\STM32_Project\EX_pidTest_F407ZGT6_Hollies\STM32F407ZGTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="EX_pidTest_F407ZGT6_Hollies.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -u _printf_float -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 

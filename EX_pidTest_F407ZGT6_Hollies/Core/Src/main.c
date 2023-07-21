@@ -21,6 +21,7 @@
 #include "i2c.h"
 #include "spi.h"
 #include "tim.h"
+#include "usart.h"
 #include "gpio.h"
 
 /* Private includes ----------------------------------------------------------*/
@@ -28,6 +29,7 @@
 #include "ina238.h"
 #include "oled_spi.h"
 #include "pidPlus.h"
+#include "stdio.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -59,7 +61,8 @@ void SystemClock_Config(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-
+PID pid1;
+uint8_t str_buffer[128]={0};
 /* USER CODE END 0 */
 
 /**
@@ -93,8 +96,16 @@ int main(void)
   MX_I2C1_Init();
   MX_SPI1_Init();
   MX_TIM1_Init();
+  MX_USART1_UART_Init();
+  MX_TIM8_Init();
   /* USER CODE BEGIN 2 */
-
+  PID_init(&pid1, &htim8, 400.0, 50, 0, 10.0);
+  INA238_init(&hi2c1, 0);
+  OLED_Init();
+  OLED_Display_On();
+  OLED_Clear();
+  HAL_TIM_PWM_Start(&htim8, TIM_CHANNEL_1);
+  HAL_TIM_Base_Start_IT(&htim1);
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -104,6 +115,8 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
+	  OLED_ShowNum(0, 0, 0, 1, 16);
+    HAL_Delay(10);
   }
   /* USER CODE END 3 */
 }
@@ -154,7 +167,17 @@ void SystemClock_Config(void)
 }
 
 /* USER CODE BEGIN 4 */
-
+void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
+{
+  if(htim->Instance == TIM1)
+  {
+    double i = INA238_getVolt(&hi2c1);
+    float k = PID_regulator(&pid1, i);
+    TIM8->CCR1 = k;
+    sprintf((char* )str_buffer, "succeess!%f, %f, %f\n", i, k, pid1.kp); //
+    HAL_UART_Transmit(&huart1, str_buffer, sizeof(str_buffer), 100);
+  }
+}
 /* USER CODE END 4 */
 
 /**
