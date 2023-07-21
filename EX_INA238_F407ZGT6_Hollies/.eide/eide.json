@@ -1,8 +1,9 @@
 {
-  "name": "EX_DCParallel_F407ZGT6_Hollies",
+  "name": "EX_INA238_F407ZGT6_Hollies",
   "type": "ARM",
   "dependenceList": [],
   "srcDirs": [
+    ".eide/deps",
     "Core",
     "Mycode",
     "Drivers"
@@ -13,10 +14,10 @@
     "folders": []
   },
   "outDir": "build",
-  "deviceName": "STM32F407ZGTx",
-  "packDir": ".pack/Keil/STM32F4xx_DFP.2.14.0",
+  "deviceName": null,
+  "packDir": null,
   "miscInfo": {
-    "uid": "d351f60de0dffa306a04aa876fd086d4"
+    "uid": "dd72e65cea34a102fee048c2cd971ac3"
   },
   "targets": {
     "Debug": {
@@ -33,31 +34,19 @@
         },
         "options": "null"
       },
-      "uploader": "STLink",
+      "uploader": "JLink",
       "uploadConfig": {
         "bin": "",
-        "proType": "SWD",
-        "resetMode": "default",
-        "runAfterProgram": true,
-        "speed": 4000,
-        "address": "0x08000000",
-        "elFile": "None",
-        "optionBytes": ".eide/debug.st.option.bytes.ini",
+        "baseAddr": "",
+        "cpuInfo": {
+          "vendor": "null",
+          "cpuName": "null"
+        },
+        "proType": 1,
+        "speed": 8000,
         "otherCmds": ""
       },
-      "uploadConfigMap": {
-        "JLink": {
-          "bin": "",
-          "baseAddr": "",
-          "cpuInfo": {
-            "vendor": "null",
-            "cpuName": "null"
-          },
-          "proType": 1,
-          "speed": 8000,
-          "otherCmds": ""
-        }
-      },
+      "uploadConfigMap": {},
       "custom_dep": {
         "name": "default",
         "incList": [
@@ -66,7 +55,8 @@
           "Drivers/STM32F4xx_HAL_Driver/Inc/Legacy",
           "Drivers/CMSIS/Device/ST/STM32F4xx/Include",
           "Drivers/CMSIS/Include",
-          "Mycode/include"
+          "EX_INA238_F407ZGT6_Hollies/Mycode/include",
+          ".eide/deps"
         ],
         "libList": [],
         "sourceDirList": [],
@@ -91,31 +81,19 @@
         },
         "options": "null"
       },
-      "uploader": "STLink",
+      "uploader": "JLink",
       "uploadConfig": {
         "bin": "",
-        "proType": "SWD",
-        "resetMode": "default",
-        "runAfterProgram": true,
-        "speed": 4000,
-        "address": "0x08000000",
-        "elFile": "None",
-        "optionBytes": ".eide/debug.st.option.bytes.ini",
+        "baseAddr": "",
+        "cpuInfo": {
+          "vendor": "null",
+          "cpuName": "null"
+        },
+        "proType": 1,
+        "speed": 8000,
         "otherCmds": ""
       },
-      "uploadConfigMap": {
-        "JLink": {
-          "bin": "",
-          "baseAddr": "",
-          "cpuInfo": {
-            "vendor": "null",
-            "cpuName": "null"
-          },
-          "proType": 1,
-          "speed": 8000,
-          "otherCmds": ""
-        }
-      },
+      "uploadConfigMap": {},
       "custom_dep": {
         "name": "default",
         "incList": [
