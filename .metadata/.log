@@ -9519,3 +9519,27 @@ java.lang.Exception: localhost:61234: Connection timed out.
 
 !ENTRY org.eclipse.equinox.p2.repository 2 0 2023-07-17 18:09:05.312
 !MESSAGE Using unsafe http transport to retrieve http://mirrors.ustc.edu.cn/eclipse/technology/babel/update-site/R0.19.2/2021-12/, see CVE-2021-41033. Consider using https instead.
+!SESSION 2023-07-21 11:32:07.671 -----------------------------------------------
+eclipse.buildId=Version 1.12.1
+java.version=11.0.17
+java.vendor=Eclipse Adoptium
+BootLoader constants: OS=win32, ARCH=x86_64, WS=win32, NL=zh_CN
+Command-line arguments:  -os win32 -ws win32 -arch x86_64
+
+!ENTRY com.st.stm32cube.ide.mcu.informationcenter 4 4 2023-07-21 11:32:30.211
+!MESSAGE CubeMX plugin appears to be active, Log4j initialization might be too late.
+
+!ENTRY com.st.stm32cube.ide.mcu.informationcenter 1 1 2023-07-21 11:32:30.221
+!MESSAGE Log4j2 initialized with config file E:\Document\STM32_Project\.metadata\.log4j2.xml
+
+!ENTRY com.st.stm32cube.ide.mcu.ide 1 1 2023-07-21 11:32:42.081
+!MESSAGE Started RMI Server, listening on port 41337
+
+!ENTRY org.eclipse.equinox.p2.repository 2 0 2023-07-21 11:34:26.598
+!MESSAGE Using unsafe http transport to retrieve http://mirrors.ustc.edu.cn/eclipse/technology/babel/update-site/R0.19.2/2021-12/, see CVE-2021-41033. Consider using https instead.
+
+!ENTRY org.eclipse.cdt.core 1 0 2023-07-21 11:35:47.439
+!MESSAGE Indexed 'EX_PidPlus_F407ZGT6_Hollies' (26 sources, 118 headers) in 3.67 sec: 11,711 declarations; 63,844 references; 2 unresolved inclusions; 42 syntax errors; 162 unresolved names (0.21%)
+
+!ENTRY org.eclipse.cdt.core 1 0 2023-07-21 11:57:58.312
+!MESSAGE Indexed 'EX_pidTest_F407ZGT6_Hollies' (19 sources, 81 headers) in 1.62 sec: 4,376 declarations; 17,620 references; 0 unresolved inclusions; 1 syntax errors; 2 unresolved names (0.0091%)

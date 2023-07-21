@@ -105,11 +105,11 @@ void Scan_Key()
 	while (HAL_GPIO_ReadPin(GPIOE, GPIO_PIN_3) == GPIO_PIN_RESET
 			|| HAL_GPIO_ReadPin(GPIOE, GPIO_PIN_4) == GPIO_PIN_RESET)
 	{
-		HAL_Delay(10);	//去抖动
+		HAL_Delay(10);	//去抖�?
 		if (HAL_GPIO_ReadPin(GPIOE, GPIO_PIN_4) == GPIO_PIN_RESET)
 		{
 			while (HAL_GPIO_ReadPin(GPIOE, GPIO_PIN_4) == GPIO_PIN_RESET)
-				;	//这句放在前为松开后执行，放在后为按下时执行
+				;	//这句放在前为松开后执行，放在后为按下时执�?
 			HAL_TIM_Base_Start_IT(&htim1);
 		}
 	}
@@ -126,7 +126,7 @@ uint16_t ADC_Filter(uint8_t Channel)		//中位值平均滤波法（又称防脉�
 	{
 		tempbuf[i] = dmaDataBuffer[i];
 	}
-	for (j = 0; j < ADC_SAMPLE_PNUM; j++)     //冒泡�??
+	for (j = 0; j < ADC_SAMPLE_PNUM; j++)     //冒泡�???
 	{
 		for (i = j; i < ADC_SAMPLE_PNUM; i++)
 		{
