@@ -1,0 +1,14 @@
+{
+    "folders": [
+        {
+            "path": "."
+        }
+    ],
+    "settings": {
+        "files.associations": {
+            "*.dat": "javascript",
+            "video_saved.h": "c"
+        }
+    },
+    "extensions": {}
+}
