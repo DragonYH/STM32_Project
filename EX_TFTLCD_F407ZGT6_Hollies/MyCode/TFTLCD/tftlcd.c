@@ -763,7 +763,7 @@ void Display_ALIENTEK_LOGO(uint16_t x, uint16_t y)
 
     LCD_Address_Set(0, 0, LCD_Width - 1, LCD_Height - 1);
 
-    LCD_Clear(WHITE);
+    LCD_Clear(BLACK);
 
     /*´ò¿ªÏÔÊ¾*/
     HAL_GPIO_WritePin(LCD_PWR_GPIO_Port, LCD_PWR_Pin, GPIO_PIN_SET);

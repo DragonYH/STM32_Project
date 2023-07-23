@@ -106,6 +106,11 @@ int main(void)
     /* USER CODE BEGIN 3 */
     // for(int i = 0; i < 18; i++)
     // LCD_Show_Image(0,60,240, 120,(const uint8_t*)a[i].TDArray);
+    for(int i = 0; i < 200; i++)
+    {
+      LCD_Show_Image(0,0,240, 32,bmp[i]);
+      HAL_Delay(100);
+    } 
   }
   /* USER CODE END 3 */
 }
