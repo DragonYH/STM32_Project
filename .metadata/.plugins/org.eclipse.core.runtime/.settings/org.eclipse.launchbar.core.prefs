@@ -1,7 +1,7 @@
 LaunchTargetManager/org.eclipse.launchbar.core.launchTargetType.local,Local/arch=x86_64
 LaunchTargetManager/org.eclipse.launchbar.core.launchTargetType.local,Local/name=Local
 LaunchTargetManager/org.eclipse.launchbar.core.launchTargetType.local,Local/os=win32
-configDescList=org.eclipse.cdt.dsf.gdb.gdbRemotedescriptorType\:CP_ThreePortDCDC_F103ZET6_Hollies_School Debug,org.eclipse.cdt.dsf.gdb.gdbRemotedescriptorType\:EX_DCParallel_F407ZGT6_Hollies Debug,org.eclipse.cdt.dsf.gdb.gdbRemotedescriptorType\:EX_pidTest_F407ZGT6_Hollies Debug,org.eclipse.cdt.dsf.gdb.gdbRemotedescriptorType\:EX_TFTLCD_F407ZGT6_Hollies Debug
+configDescList=org.eclipse.cdt.dsf.gdb.gdbRemotedescriptorType\:CP_ThreePortDCDC_F103ZET6_Hollies_School Debug,org.eclipse.cdt.dsf.gdb.gdbRemotedescriptorType\:EX_DCParallel_F407ZGT6_Hollies Debug,org.eclipse.cdt.dsf.gdb.gdbRemotedescriptorType\:EX_pidTest_F407ZGT6_Hollies Debug,org.eclipse.cdt.dsf.gdb.gdbRemotedescriptorType\:EX_TFTLCD_F407ZGT6_Hollies Debug,org.eclipse.cdt.dsf.gdb.gdbRemotedescriptorType\:EX_BMP280_F407ZGT6_Hollies Debug
 eclipse.preferences.version=1
 org.eclipse.cdt.dsf.gdb.gdbRemotedescriptorType\:Buck_1\ Debug/activeLaunchMode=run
 org.eclipse.cdt.dsf.gdb.gdbRemotedescriptorType\:Buck_1\ Debug/activeLaunchTarget=null\:---
