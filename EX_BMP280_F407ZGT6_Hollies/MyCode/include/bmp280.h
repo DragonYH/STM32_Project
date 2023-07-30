@@ -1,11 +1,3 @@
-/**
- * Ciastkolog.pl (https://github.com/ciastkolog)
- *
-*/
-/**
- * The MIT License (MIT)
- * Copyright (c) 2016 sheinz (https://github.com/sheinz)
- */
 #ifndef __BMP280_H__
 #define __BMP280_H__
 
@@ -14,65 +6,64 @@
 #include <stdbool.h>
 
 /**
- * BMP280 or BME280 address is 0x77 if SDO pin is high, and is 0x76 if
- * SDO pin is low.
+ * 如果 SDO 引脚为高电平，则 BMP280 或 BME280 地址0x77 0x76，如果
+ * SDO引脚为低电平。
  */
 
-#define BMP280_I2C_ADDRESS_0  0x76
-#define BMP280_I2C_ADDRESS_1  0x77
+#define BMP280_I2C_ADDRESS_0 0x76
+#define BMP280_I2C_ADDRESS_1 0x77
 
-#define BMP280_CHIP_ID  0x58 /* BMP280 has chip-id 0x58 */
-#define BME280_CHIP_ID  0x60 /* BME280 has chip-id 0x60 */
+#define BMP280_CHIP_ID       0x58 /* BMP280 has chip-id 0x58 */
+#define BME280_CHIP_ID       0x60 /* BME280 has chip-id 0x60 */
 
 /**
- * Mode of BMP280 module operation.
- * Forced - Measurement is initiated by user.
- * Normal - Continues measurement.
+ * BMP280 模块操作模式。
+ * Force - 测量由用户启动。
+ * Normal - 继续测量。
  */
 typedef enum {
-    BMP280_MODE_SLEEP = 0,
+    BMP280_MODE_SLEEP  = 0,
     BMP280_MODE_FORCED = 1,
     BMP280_MODE_NORMAL = 3
 } BMP280_Mode;
 
 typedef enum {
     BMP280_FILTER_OFF = 0,
-    BMP280_FILTER_2 = 1,
-    BMP280_FILTER_4 = 2,
-    BMP280_FILTER_8 = 3,
-    BMP280_FILTER_16 = 4
+    BMP280_FILTER_2   = 1,
+    BMP280_FILTER_4   = 2,
+    BMP280_FILTER_8   = 3,
+    BMP280_FILTER_16  = 4
 } BMP280_Filter;
 
 /**
- * Pressure oversampling settings
  * 压力过采样设置
  */
 typedef enum {
-    BMP280_SKIPPED = 0,          /* no measurement  */
-    BMP280_ULTRA_LOW_POWER = 1,  /* oversampling x1 */
-    BMP280_LOW_POWER = 2,        /* oversampling x2 */
-    BMP280_STANDARD = 3,         /* oversampling x4 */
-    BMP280_HIGH_RES = 4,         /* oversampling x8 */
-    BMP280_ULTRA_HIGH_RES = 5    /* oversampling x16 */
+    BMP280_SKIPPED         = 0, /* no measurement  */
+    BMP280_ULTRA_LOW_POWER = 1, /* oversampling x1 */
+    BMP280_LOW_POWER       = 2, /* oversampling x2 */
+    BMP280_STANDARD        = 3, /* oversampling x4 */
+    BMP280_HIGH_RES        = 4, /* oversampling x8 */
+    BMP280_ULTRA_HIGH_RES  = 5  /* oversampling x16 */
 } BMP280_Oversampling;
 
 /**
- * Stand by time between measurements in normal mode
+ * 在正常模式下测量间隔时间待机
  */
 typedef enum {
-    BMP280_STANDBY_05 = 0,      /* stand by time 0.5ms */
-    BMP280_STANDBY_62 = 1,      /* stand by time 62.5ms */
-    BMP280_STANDBY_125 = 2,     /* stand by time 125ms */
-    BMP280_STANDBY_250 = 3,     /* stand by time 250ms */
-    BMP280_STANDBY_500 = 4,     /* stand by time 500ms */
-    BMP280_STANDBY_1000 = 5,    /* stand by time 1s */
-    BMP280_STANDBY_2000 = 6,    /* stand by time 2s BMP280, 10ms BME280 */
-    BMP280_STANDBY_4000 = 7,    /* stand by time 4s BMP280, 20ms BME280 */
+    BMP280_STANDBY_05   = 0, /* stand by time 0.5ms */
+    BMP280_STANDBY_62   = 1, /* stand by time 62.5ms */
+    BMP280_STANDBY_125  = 2, /* stand by time 125ms */
+    BMP280_STANDBY_250  = 3, /* stand by time 250ms */
+    BMP280_STANDBY_500  = 4, /* stand by time 500ms */
+    BMP280_STANDBY_1000 = 5, /* stand by time 1s */
+    BMP280_STANDBY_2000 = 6, /* stand by time 2s BMP280, 10ms BME280 */
+    BMP280_STANDBY_4000 = 7, /* stand by time 4s BMP280, 20ms BME280 */
 } BMP280_StandbyTime;
 
 /**
- * Configuration parameters for BMP280 module.
- * Use function bmp280_init_default_params to use default configuration.
+ * BMP280模块的配置参数。
+ * 使用功能bmp280_init_default_params使用默认配置。
  */
 typedef struct {
     BMP280_Mode mode;
@@ -83,97 +74,95 @@ typedef struct {
     BMP280_StandbyTime standby;
 } bmp280_params_t;
 
-
 typedef struct {
     uint16_t dig_T1;
-    int16_t  dig_T2;
-    int16_t  dig_T3;
+    int16_t dig_T2;
+    int16_t dig_T3;
     uint16_t dig_P1;
-    int16_t  dig_P2;
-    int16_t  dig_P3;
-    int16_t  dig_P4;
-    int16_t  dig_P5;
-    int16_t  dig_P6;
-    int16_t  dig_P7;
-    int16_t  dig_P8;
-    int16_t  dig_P9;
+    int16_t dig_P2;
+    int16_t dig_P3;
+    int16_t dig_P4;
+    int16_t dig_P5;
+    int16_t dig_P6;
+    int16_t dig_P7;
+    int16_t dig_P8;
+    int16_t dig_P9;
 
-    /* Humidity compensation for BME280 */
-    uint8_t  dig_H1;
-    int16_t  dig_H2;
-    uint8_t  dig_H3;
-    int16_t  dig_H4;
-    int16_t  dig_H5;
-    int8_t   dig_H6;
+    /* BME280 的湿度补偿 */
+    uint8_t dig_H1;
+    int16_t dig_H2;
+    uint8_t dig_H3;
+    int16_t dig_H4;
+    int16_t dig_H5;
+    int8_t dig_H6;
 
     uint16_t addr;
 
-    I2C_HandleTypeDef* i2c;
+    I2C_HandleTypeDef *i2c;
 
     bmp280_params_t params;
 
-    uint8_t  id;        /* Chip ID */
+    uint8_t id; /* Chip ID */
 
 } BMP280_HandleTypedef;
 
 /**
- * Initialize default parameters.
- * Default configuration:
- *      mode: NORAML
- *      filter: OFF
- *      oversampling: x4
- *      standby time: 250ms
+ * 初始化默认参数。
+ * 默认配置：
+ * 模式：Normal
+ * 过滤器：OFF
+ * 过采样：x4
+ * 待机时间：250ms
  */
 void bmp280_init_default_params(bmp280_params_t *params);
 
 /**
- * Initialize BMP280 module, probes for the device, soft resets the device,
- * reads the calibration constants, and configures the device using the supplied
- * parameters. Returns true on success otherwise false.
+ * 初始化BMP280模块，探头为设备，软复位设备，
+ * 读取校准常数，并使用提供的
+ * 参数。成功时返回 true，否则返回 false。
  *
- * The I2C address is assumed to have been initialized in the dev, and
- * may be either BMP280_I2C_ADDRESS_0 or BMP280_I2C_ADDRESS_1. If the I2C
- * address is unknown then try initializing each in turn.
+ * 假定 I2C 地址已在开发中初始化，并且
+ * 可以是BMP280_I2C_ADDRESS_0，也可以是BMP280_I2C_ADDRESS_1。如果 I2C
+ * 地址未知，然后依次尝试初始化每个。
  *
- * This may be called again to soft reset the device and initialize it again.
+ * 可能会再次调用此函数以软重置设备并再次初始化。
  */
 bool bmp280_init(BMP280_HandleTypedef *dev, bmp280_params_t *params);
 
 /**
- * Start measurement in forced mode.
- * The module remains in forced mode after this call.
- * Do not call this method in normal mode.
+ * 以强制模式开始测量。
+ * 此调用后，模块仍处于强制模式。
+ * 不要在正常模式下调用此方法。
  */
 bool bmp280_force_measurement(BMP280_HandleTypedef *dev);
 
 /**
- * Check if BMP280 is busy with measuring temperature/pressure.
- * Return true if BMP280 is busy.
+ * 检查 BMP280 是否忙于测量温度/压力。
+ * 如果 BMP280 繁忙，则返回 true。
  */
 bool bmp280_is_measuring(BMP280_HandleTypedef *dev);
 
 /**
- * Read compensated temperature and pressure data:
+ * 读取补偿温度和压力数据：
  *
- *  Temperature in degrees Celsius times 100.
+ * 温度以摄氏度乘以 100。
  *
- *  Pressure in Pascals in fixed point 24 bit integer 8 bit fraction format.
+ * 帕斯卡压力，定点 24 位整数 8 位分数格式。
  *
- *  Humidity is optional and only read for the BME280, in percent relative
- *  humidity as a fixed point 22 bit interger and 10 bit fraction format.
+ * 湿度是可选的，仅针对 BME280 读取，以相对百分比表示
+ * 湿度为定点22位中间和10位分数格式。
  */
 bool bmp280_read_fixed(BMP280_HandleTypedef *dev, int32_t *temperature,
                        uint32_t *pressure, uint32_t *humidity);
 
 /**
- * Read compensated temperature and pressure data:
- *  Temperature in degrees Celsius.
- *  Pressure in Pascals.
- *  Humidity is optional and only read for the BME280, in percent relative
- *  humidity.
+ * 读取补偿温度和压力数据：
+ * 温度以摄氏度为单位。
+ * 帕斯卡压力。
+ * 湿度是可选的，仅针对 BME280 读取，以相对百分比表示
+ * 湿度。
  */
 bool bmp280_read_float(BMP280_HandleTypedef *dev, float *temperature,
                        float *pressure, float *humidity);
 
-
-#endif  // __BMP280_H__
+#endif // __BMP280_H__
