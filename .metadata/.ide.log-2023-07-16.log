@@ -1,9 +1,0 @@
-2023-07-16 17:39:49,355 [INFO] Activator:176 - 
-
-
-2023-07-16 17:39:49,365 [INFO] Activator:177 - !SESSION log4j initialized
-2023-07-16 17:39:53,915 [ERROR] LogOutputStream:75 - [STDERR_REDIRECT] Warning: NLS unused message: ?????????????????????? in: org.eclipse.ui.views.markers.internal.messages
-2023-07-16 17:39:55,135 [INFO] LogOutputStream:77 - [STDOUT_REDIRECT] 
-2023-07-16 17:40:19,089 [ERROR] LogOutputStream:75 - [STDERR_REDIRECT] SLF4J: Failed to load class "org.slf4j.impl.StaticLoggerBinder".
-2023-07-16 17:40:19,089 [ERROR] LogOutputStream:75 - [STDERR_REDIRECT] SLF4J: Defaulting to no-operation (NOP) logger implementation
-2023-07-16 17:40:19,089 [ERROR] LogOutputStream:75 - [STDERR_REDIRECT] SLF4J: See http://www.slf4j.org/codes.html#StaticLoggerBinder for further details.
