@@ -4,6 +4,8 @@
             "path": "."
         }
     ],
-    "settings": {},
+    "settings": {
+        "commentTranslate.hover.enabled": true
+    },
     "extensions": {}
 }
