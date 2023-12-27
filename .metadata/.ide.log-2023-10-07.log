@@ -1,6 +1,0 @@
-2023-10-07 18:10:28,946 [INFO] Activator:176 - 
-
-
-2023-10-07 18:10:28,956 [INFO] Activator:177 - !SESSION log4j initialized
-2023-10-07 18:10:36,607 [ERROR] LogOutputStream:75 - [STDERR_REDIRECT] Warning: NLS unused message: ?????????????????????? in: org.eclipse.ui.views.markers.internal.messages
-2023-10-07 18:10:39,328 [INFO] LogOutputStream:77 - [STDOUT_REDIRECT] 
