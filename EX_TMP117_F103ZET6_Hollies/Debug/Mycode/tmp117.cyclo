@@ -1,0 +1,5 @@
+../Mycode/tmp117.c:26:9:Tm117_Write_2byte	2
+../Mycode/tmp117.c:46:9:Tm117_Read_2byte	3
+../Mycode/tmp117.c:77:9:Tm117_Read_Temp_Reg_Value	3
+../Mycode/tmp117.c:110:6:Tmp117_Init	1
+../Mycode/tmp117.c:118:7:Code_Junction_Temperature_Measurement	1

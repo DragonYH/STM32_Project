@@ -1,0 +1,10 @@
+17:39:31 **** Incremental Build of configuration Debug for project EX_PLL_F407ZGT6_Hollies ****
+make -j8 all 
+arm-none-eabi-size   EX_PLL_F407ZGT6_Hollies.elf 
+   text	   data	    bss	    dec	    hex	filename
+  35076	    492	   1820	  37388	   920c	EX_PLL_F407ZGT6_Hollies.elf
+Finished building: default.size.stdout
+ 
+
+17:39:32 Build Finished. 0 errors, 0 warnings. (took 831ms)
+
