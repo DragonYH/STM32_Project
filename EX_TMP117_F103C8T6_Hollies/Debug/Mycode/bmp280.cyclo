@@ -1,8 +1,0 @@
-../Mycode/bmp280.c:4:19:bmp280_read_calib_	2
-../Mycode/bmp280.c:14:19:bmp280_read_calib	1
-../Mycode/bmp280.c:31:19:bmp280_init	6
-../Mycode/bmp280.c:97:7:bmp280_compensate_T_int32	1
-../Mycode/bmp280.c:107:7:bmp280_compensate_P_int64	2
-../Mycode/bmp280.c:128:7:bmp280_getTemprature	1
-../Mycode/bmp280.c:139:7:bmp280_getPressure	1
-../Mycode/bmp280.c:150:7:bmp280_getAltitude	1
