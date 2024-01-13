@@ -4,14 +4,6 @@
             "path": "."
         }
     ],
-    "settings": {
-        "files.associations": {
-            "i2c.h": "c",
-            "main.h": "c",
-            "stm32f4xx_hal.h": "c",
-            "stm32f4xx_hal_conf.h": "c",
-            "bmp280.h": "c"
-        }
-    },
+    "settings": {},
     "extensions": {}
 }

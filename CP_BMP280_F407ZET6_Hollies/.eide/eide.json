@@ -24,8 +24,8 @@
       "excludeList": [],
       "toolchain": "GCC",
       "compileConfig": {
-        "cpuType": "Cortex-M3",
-        "floatingPointHardware": "none",
+        "cpuType": "Cortex-M4",
+        "floatingPointHardware": "single",
         "scatterFilePath": "",
         "useCustomScatterFile": true,
         "storageLayout": {

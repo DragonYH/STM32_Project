@@ -19,6 +19,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "i2c.h"
+#include "spi.h"
 #include "tim.h"
 #include "usart.h"
 #include "gpio.h"
@@ -27,6 +28,8 @@
 /* USER CODE BEGIN Includes */
 #include "bmp280.h"
 #include "stdio.h"
+#include "oled_spi.h"
+#include "string.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -59,8 +62,47 @@ void SystemClock_Config(void);
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
 BMP280 bmp280;
-
-uint8_t pData[128];
+uint8_t oData[32];
+uint8_t pData[64];
+uint8_t circle = 0;
+uint8_t t_Data[64];
+uint8_t p_Data[64];
+uint8_t h_Data[64];
+uint8_t usart1_Rx_Temp[1];
+uint8_t usart1_Rx_Data[512] = {0};
+uint8_t usart1_Rx_cnt       = 0;
+uint8_t usart1_Rx_flag      = 0;
+uint8_t usart2_Rx_Temp[1];
+uint8_t usart2_Rx_Data[512] = {0};
+uint8_t usart2_Rx_cnt       = 0;
+uint8_t usart2_Rx_flag      = 0;
+uint8_t usart_flag          = 0;
+float T, P, H;
+void AT_init(void)
+{
+    OLED_ShowString(0, 0, (uint8_t *)"Loading...");
+    HAL_Delay(2000);
+    // 初始化
+    HAL_UART_Transmit_IT(&huart6, (uint8_t *)"AT+RST\r\n", sizeof("AT+RST\r\n"));
+    HAL_UART_Transmit_IT(&huart1, (uint8_t *)"初始化中...\r\n", sizeof("初始化中..."));
+    HAL_Delay(5000);
+    // 等待连接wifi
+    HAL_UART_Transmit_IT(&huart1, (uint8_t *)"连接WIFI...\r\n", sizeof("连接WIFI..."));
+    HAL_UART_Transmit_IT(&huart6, (uint8_t *)"AT+CIPV6=1\r\n", sizeof("AT+CIPV6=1\r\n")); // ipv6
+    HAL_Delay(1000);
+    HAL_UART_Transmit_IT(&huart6, (uint8_t *)"AT+CWMODE=3\r\n", sizeof("AT+CWMODE=3\r\n"));
+    HAL_Delay(1000);
+    HAL_UART_Transmit_IT(&huart6, (uint8_t *)"AT+CWJAP=\"abcdefg\",\"asdfghjkl\"\r\n", sizeof("AT+CWJAP=\"abcdefg\",\"asdfghjkl\"\r\n"));
+    HAL_Delay(6000);
+    // 设置Mqtt相关参数
+    HAL_UART_Transmit_IT(&huart6, (uint8_t *)"AT+MQTTUSERCFG=0,1,\"esp32bmp280\",\"esp32bmp280\",\"123456789\",0,0,\"\"\r\n", sizeof("AT+MQTTUSERCFG=0,1,\"esp32bmp280\",\"esp32bmp280\",\"123456789\",0,0,\"\"\r\n"));
+    HAL_Delay(1000);
+    HAL_UART_Transmit_IT(&huart1, (uint8_t *)"域名设置完成\r\n", sizeof("域名设置完成"));
+    // 连接Mqtt
+    HAL_UART_Transmit_IT(&huart6, (uint8_t *)"AT+MQTTCONN=0,\"hollies.top\",25303,1\r\n", sizeof("AT+MQTTCONN=0,\"hollies.top\",25303,1\r\n"));
+    HAL_Delay(5000);
+    HAL_UART_Transmit_IT(&huart1, (uint8_t *)"连接完成\r\n", sizeof("连接完成"));
+}
 /* USER CODE END 0 */
 
 /**
@@ -94,14 +136,25 @@ int main(void)
     MX_TIM8_Init();
     MX_USART1_UART_Init();
     MX_I2C1_Init();
+    MX_SPI1_Init();
+    MX_TIM2_Init();
+    MX_USART6_UART_Init();
     /* USER CODE BEGIN 2 */
+    // BMP280初始化
     if (bmp280_init(&bmp280, &hi2c1) == HAL_OK) {
-        sprintf((char *)pData, "BMP280 initialization OK");
+        sprintf((char *)pData, "BMP280 initialization OK\r\n");
         HAL_UART_Transmit(&huart1, (uint8_t *)pData, sizeof(pData), 100);
     } else {
-        sprintf((char *)pData, "BMP280 initialization FAIL");
+        sprintf((char *)pData, "BMP280 initialization FAIL\r\n");
         HAL_UART_Transmit(&huart1, (uint8_t *)pData, sizeof(pData), 100);
     }
+    OLED_Init();
+    AT_init();
+    HAL_UART_Receive_IT(&huart1, usart1_Rx_Temp, 1);
+    HAL_UART_Receive_IT(&huart6, usart2_Rx_Temp, 1);
+    HAL_TIM_Base_Start_IT(&htim8);
+    // HAL_TIM_Base_Start_IT(&htim8);
+
     /* USER CODE END 2 */
 
     /* Infinite loop */
@@ -110,9 +163,24 @@ int main(void)
         /* USER CODE END WHILE */
 
         /* USER CODE BEGIN 3 */
-        sprintf((char *)pData, "T: %.2f ℃, P= %.2f hPa, H= %.2f m", bmp280_getTemprature(&bmp280, &hi2c1), bmp280_getPressure(&bmp280, &hi2c1), bmp280_getAltitude(&bmp280, &hi2c1));
-        HAL_UART_Transmit(&huart1, (uint8_t *)pData, sizeof(pData), 100);
-        HAL_Delay(100);
+        if (usart1_Rx_flag == 1) {
+            uint8_t i      = usart1_Rx_cnt;
+            usart1_Rx_flag = 0;
+            usart_flag     = 0;
+            usart1_Rx_cnt  = 0;
+            HAL_UART_Transmit_IT(&huart6, usart1_Rx_Data, i);
+            HAL_TIM_Base_Start_IT(&htim8);
+            memset(usart1_Rx_Temp, 0, sizeof(usart1_Rx_Temp));
+        }
+        if (usart2_Rx_flag == 1) {
+            uint8_t i      = usart2_Rx_cnt;
+            usart2_Rx_flag = 0;
+            usart_flag     = 0;
+            usart2_Rx_cnt  = 0;
+            HAL_UART_Transmit_IT(&huart1, usart2_Rx_Data, i);
+            HAL_TIM_Base_Start_IT(&htim8);
+            memset(usart2_Rx_Temp, 0, sizeof(usart2_Rx_Temp));
+        }
     }
     /* USER CODE END 3 */
 }
@@ -160,7 +228,38 @@ void SystemClock_Config(void)
 }
 
 /* USER CODE BEGIN 4 */
-
+// 接收中断
+void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
+{
+    if (huart->Instance == USART1) {
+        // 当串口接收数据超过5ms时，判断接受完成
+        __HAL_TIM_SET_COUNTER(&htim2, 0); // 清除计数
+        if (usart1_Rx_cnt == 0) {
+            __HAL_TIM_CLEAR_FLAG(&htim2, TIM_FLAG_UPDATE);
+            memset(usart1_Rx_Data, 0, sizeof(usart1_Rx_Data));
+            usart_flag = 1;
+            HAL_TIM_Base_Start_IT(&htim2);
+            HAL_TIM_Base_Stop_IT(&htim8);
+        }
+        usart1_Rx_Data[usart1_Rx_cnt] = usart1_Rx_Temp[0];
+        usart1_Rx_cnt++;
+        HAL_UART_Receive_IT(&huart1, usart1_Rx_Temp, 1);
+    }
+    if (huart->Instance == USART6) {
+        // 当串口接收数据超过5ms时，判断接受完成
+        __HAL_TIM_SET_COUNTER(&htim2, 0); // 清除计数
+        if (usart2_Rx_cnt == 0) {
+            __HAL_TIM_CLEAR_FLAG(&htim2, TIM_FLAG_UPDATE);
+            memset(usart2_Rx_Data, 0, sizeof(usart2_Rx_Data));
+            usart_flag = 2;
+            HAL_TIM_Base_Start_IT(&htim2);
+            HAL_TIM_Base_Stop_IT(&htim8);
+        }
+        usart2_Rx_Data[usart2_Rx_cnt] = usart2_Rx_Temp[0];
+        usart2_Rx_cnt++;
+        HAL_UART_Receive_IT(&huart6, usart2_Rx_Temp, 1);
+    }
+}
 /* USER CODE END 4 */
 
 /**
@@ -180,7 +279,50 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
         HAL_IncTick();
     }
     /* USER CODE BEGIN Callback 1 */
-
+    if (htim->Instance == TIM8) {
+        T = bmp280_getTemprature(&bmp280, &hi2c1);
+        P = bmp280_getPressure(&bmp280, &hi2c1);
+        H = bmp280_getAltitude(&bmp280, &hi2c1);
+        // 屏幕显示
+        sprintf((char *)pData, "T: %.2f C, P= %.2f hPa, H= %.2f m\r\n", T, P, H);
+        HAL_UART_Transmit_IT(&huart1, (uint8_t *)pData, sizeof(pData));
+        sprintf((char *)oData, "T: %.2f C", T);
+        OLED_ShowString(0, 0, (uint8_t *)oData);
+        sprintf((char *)oData, "P= %.2f hPa", P);
+        OLED_ShowString(0, 2, (uint8_t *)oData);
+        sprintf((char *)oData, "H= %.2f m", H);
+        OLED_ShowString(0, 4, (uint8_t *)oData);
+        // 循环提交温度，气压，海拔
+        if (circle == 3)
+            circle = 0;
+        if (circle == 0) {
+            circle++;
+            sprintf((char *)t_Data, "AT+MQTTPUB=0,\"bmp280_t\",\"%.2f\",1,0\r\n", T);
+            HAL_UART_Transmit_IT(&huart6, (uint8_t *)t_Data, 64);
+        } else if (circle == 1) {
+            circle++;
+            sprintf((char *)p_Data, "AT+MQTTPUB=0,\"bmp280_p\",\"%.2f\",1,0\r\n", P);
+            HAL_UART_Transmit_IT(&huart6, (uint8_t *)p_Data, 64);
+        } else if (circle == 2) {
+            circle++;
+            sprintf((char *)h_Data, "AT+MQTTPUB=0,\"bmp280_h\",\"%.2f\",1,0\r\n", H);
+            HAL_UART_Transmit_IT(&huart6, (uint8_t *)h_Data, 64);
+        }
+    }
+    // 串口接收标志
+    if (htim->Instance == TIM2) {
+        if (usart_flag == 1) {
+            usart1_Rx_flag = 1;
+            usart_flag     = 0;
+        } else if (usart_flag == 2) {
+            usart2_Rx_flag = 1;
+            usart_flag     = 0;
+        } else {
+            usart1_Rx_flag = 0;
+            usart2_Rx_flag = 0;
+        }
+        HAL_TIM_Base_Stop_IT(&htim2);
+    }
     /* USER CODE END Callback 1 */
 }
 

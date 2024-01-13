@@ -1,0 +1,2 @@
+../Mycode/amoled.c:21:19:amoled_Init	4	static
+../Mycode/amoled.c:26:19:amoled_Cmd	16	static
