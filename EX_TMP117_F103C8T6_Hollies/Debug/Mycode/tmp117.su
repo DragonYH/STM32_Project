@@ -1,0 +1,5 @@
+../Mycode/tmp117.c:26:9:Tm117_Write_2byte	32	static
+../Mycode/tmp117.c:46:9:Tm117_Read_2byte	32	static
+../Mycode/tmp117.c:77:9:Tm117_Read_Temp_Reg_Value	32	static
+../Mycode/tmp117.c:110:6:Tmp117_Init	8	static
+../Mycode/tmp117.c:118:7:Code_Junction_Temperature_Measurement	16	static

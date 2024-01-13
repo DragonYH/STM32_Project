@@ -1,0 +1,5 @@
+../Core/Src/main.c:67:6:oled_display	1
+../Core/Src/main.c:89:6:key_tmp	7
+../Core/Src/main.c:121:5:main	1
+../Core/Src/main.c:171:6:SystemClock_Config	3
+../Core/Src/main.c:214:6:Error_Handler	1

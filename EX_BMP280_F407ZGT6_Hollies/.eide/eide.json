@@ -14,7 +14,7 @@
   },
   "outDir": "build",
   "deviceName": null,
-  "packDir": null,
+  "packDir": ".pack/Keil/STM32F1xx_DFP.2.3.0",
   "miscInfo": {
     "uid": "67066ca6fe9da54c20689047b16b9d89"
   },

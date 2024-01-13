@@ -375,6 +375,7 @@ void MX_GPIO_Init(void)
 
   /* GPIO Ports Clock Enable */
   __HAL_RCC_GPIOC_CLK_ENABLE();
+<<<<<<< HEAD
  80004da:	2300      	movs	r3, #0
  80004dc:	613b      	str	r3, [r7, #16]
  80004de:	4b27      	ldr	r3, [pc, #156]	; (800057c <MX_GPIO_Init+0xb8>)
@@ -413,6 +414,46 @@ void MX_GPIO_Init(void)
  8000526:	f003 0310 	and.w	r3, r3, #16
  800052a:	60bb      	str	r3, [r7, #8]
  800052c:	68bb      	ldr	r3, [r7, #8]
+=======
+ 80004e2:	2300      	movs	r3, #0
+ 80004e4:	613b      	str	r3, [r7, #16]
+ 80004e6:	4b27      	ldr	r3, [pc, #156]	; (8000584 <MX_GPIO_Init+0xb8>)
+ 80004e8:	6b1b      	ldr	r3, [r3, #48]	; 0x30
+ 80004ea:	4a26      	ldr	r2, [pc, #152]	; (8000584 <MX_GPIO_Init+0xb8>)
+ 80004ec:	f043 0304 	orr.w	r3, r3, #4
+ 80004f0:	6313      	str	r3, [r2, #48]	; 0x30
+ 80004f2:	4b24      	ldr	r3, [pc, #144]	; (8000584 <MX_GPIO_Init+0xb8>)
+ 80004f4:	6b1b      	ldr	r3, [r3, #48]	; 0x30
+ 80004f6:	f003 0304 	and.w	r3, r3, #4
+ 80004fa:	613b      	str	r3, [r7, #16]
+ 80004fc:	693b      	ldr	r3, [r7, #16]
+  __HAL_RCC_GPIOF_CLK_ENABLE();
+ 80004fe:	2300      	movs	r3, #0
+ 8000500:	60fb      	str	r3, [r7, #12]
+ 8000502:	4b20      	ldr	r3, [pc, #128]	; (8000584 <MX_GPIO_Init+0xb8>)
+ 8000504:	6b1b      	ldr	r3, [r3, #48]	; 0x30
+ 8000506:	4a1f      	ldr	r2, [pc, #124]	; (8000584 <MX_GPIO_Init+0xb8>)
+ 8000508:	f043 0320 	orr.w	r3, r3, #32
+ 800050c:	6313      	str	r3, [r2, #48]	; 0x30
+ 800050e:	4b1d      	ldr	r3, [pc, #116]	; (8000584 <MX_GPIO_Init+0xb8>)
+ 8000510:	6b1b      	ldr	r3, [r3, #48]	; 0x30
+ 8000512:	f003 0320 	and.w	r3, r3, #32
+ 8000516:	60fb      	str	r3, [r7, #12]
+ 8000518:	68fb      	ldr	r3, [r7, #12]
+  __HAL_RCC_GPIOH_CLK_ENABLE();
+ 800051a:	2300      	movs	r3, #0
+ 800051c:	60bb      	str	r3, [r7, #8]
+ 800051e:	4b19      	ldr	r3, [pc, #100]	; (8000584 <MX_GPIO_Init+0xb8>)
+ 8000520:	6b1b      	ldr	r3, [r3, #48]	; 0x30
+ 8000522:	4a18      	ldr	r2, [pc, #96]	; (8000584 <MX_GPIO_Init+0xb8>)
+ 8000524:	f043 0380 	orr.w	r3, r3, #128	; 0x80
+ 8000528:	6313      	str	r3, [r2, #48]	; 0x30
+ 800052a:	4b16      	ldr	r3, [pc, #88]	; (8000584 <MX_GPIO_Init+0xb8>)
+ 800052c:	6b1b      	ldr	r3, [r3, #48]	; 0x30
+ 800052e:	f003 0380 	and.w	r3, r3, #128	; 0x80
+ 8000532:	60bb      	str	r3, [r7, #8]
+ 8000534:	68bb      	ldr	r3, [r7, #8]
+>>>>>>> f657530a52697faa9852737ea3f404cec24ed99d
   __HAL_RCC_GPIOA_CLK_ENABLE();
  800052e:	2300      	movs	r3, #0
  8000530:	607b      	str	r3, [r7, #4]
@@ -428,13 +469,21 @@ void MX_GPIO_Init(void)
  8000548:	687b      	ldr	r3, [r7, #4]
 
   /*Configure GPIO pin Output Level */
+<<<<<<< HEAD
   HAL_GPIO_WritePin(GPIOE, GPIO_PIN_9, GPIO_PIN_RESET);
  800054a:	2200      	movs	r2, #0
  800054c:	f44f 7100 	mov.w	r1, #512	; 0x200
  8000550:	480b      	ldr	r0, [pc, #44]	; (8000580 <MX_GPIO_Init+0xbc>)
  8000552:	f000 fc41 	bl	8000dd8 <HAL_GPIO_WritePin>
+=======
+  HAL_GPIO_WritePin(GPIOF, GPIO_PIN_9, GPIO_PIN_RESET);
+ 8000552:	2200      	movs	r2, #0
+ 8000554:	f44f 7100 	mov.w	r1, #512	; 0x200
+ 8000558:	480b      	ldr	r0, [pc, #44]	; (8000588 <MX_GPIO_Init+0xbc>)
+ 800055a:	f000 fc41 	bl	8000de0 <HAL_GPIO_WritePin>
+>>>>>>> f657530a52697faa9852737ea3f404cec24ed99d
 
-  /*Configure GPIO pin : PE9 */
+  /*Configure GPIO pin : PF9 */
   GPIO_InitStruct.Pin = GPIO_PIN_9;
  8000556:	f44f 7300 	mov.w	r3, #512	; 0x200
  800055a:	617b      	str	r3, [r7, #20]
@@ -445,6 +494,7 @@ void MX_GPIO_Init(void)
  8000560:	2300      	movs	r3, #0
  8000562:	61fb      	str	r3, [r7, #28]
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+<<<<<<< HEAD
  8000564:	2300      	movs	r3, #0
  8000566:	623b      	str	r3, [r7, #32]
   HAL_GPIO_Init(GPIOE, &GPIO_InitStruct);
@@ -460,6 +510,23 @@ void MX_GPIO_Init(void)
  800057a:	bd80      	pop	{r7, pc}
  800057c:	40023800 	.word	0x40023800
  8000580:	40021000 	.word	0x40021000
+=======
+ 800056c:	2300      	movs	r3, #0
+ 800056e:	623b      	str	r3, [r7, #32]
+  HAL_GPIO_Init(GPIOF, &GPIO_InitStruct);
+ 8000570:	f107 0314 	add.w	r3, r7, #20
+ 8000574:	4619      	mov	r1, r3
+ 8000576:	4804      	ldr	r0, [pc, #16]	; (8000588 <MX_GPIO_Init+0xbc>)
+ 8000578:	f000 fa96 	bl	8000aa8 <HAL_GPIO_Init>
+
+}
+ 800057c:	bf00      	nop
+ 800057e:	3728      	adds	r7, #40	; 0x28
+ 8000580:	46bd      	mov	sp, r7
+ 8000582:	bd80      	pop	{r7, pc}
+ 8000584:	40023800 	.word	0x40023800
+ 8000588:	40021400 	.word	0x40021400
+>>>>>>> f657530a52697faa9852737ea3f404cec24ed99d
 
 08000584 <main>:
 /**
@@ -496,6 +563,7 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
+<<<<<<< HEAD
 	  HAL_GPIO_TogglePin(GPIOE, GPIO_PIN_9);
  8000594:	f44f 7100 	mov.w	r1, #512	; 0x200
  8000598:	4803      	ldr	r0, [pc, #12]	; (80005a8 <main+0x24>)
@@ -506,6 +574,18 @@ int main(void)
 	  HAL_GPIO_TogglePin(GPIOE, GPIO_PIN_9);
  80005a6:	e7f5      	b.n	8000594 <main+0x10>
  80005a8:	40021000 	.word	0x40021000
+=======
+	  HAL_GPIO_TogglePin(GPIOF, GPIO_PIN_9);
+ 800059c:	f44f 7100 	mov.w	r1, #512	; 0x200
+ 80005a0:	4803      	ldr	r0, [pc, #12]	; (80005b0 <main+0x24>)
+ 80005a2:	f000 fc36 	bl	8000e12 <HAL_GPIO_TogglePin>
+	  HAL_Delay(500);
+ 80005a6:	f44f 70fa 	mov.w	r0, #500	; 0x1f4
+ 80005aa:	f000 f973 	bl	8000894 <HAL_Delay>
+	  HAL_GPIO_TogglePin(GPIOF, GPIO_PIN_9);
+ 80005ae:	e7f5      	b.n	800059c <main+0x10>
+ 80005b0:	40021400 	.word	0x40021400
+>>>>>>> f657530a52697faa9852737ea3f404cec24ed99d
 
 080005ac <SystemClock_Config>:
 /**
