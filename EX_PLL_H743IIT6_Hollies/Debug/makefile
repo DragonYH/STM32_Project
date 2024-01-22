@@ -9,7 +9,11 @@ RM := rm -rf
 
 # All of the sources participating in the build are defined here
 -include sources.mk
+-include USB_DEVICE/Target/subdir.mk
+-include USB_DEVICE/App/subdir.mk
 -include Mycode/subdir.mk
+-include Middlewares/ST/STM32_USB_Device_Library/Core/Src/subdir.mk
+-include Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Src/subdir.mk
 -include Drivers/STM32H7xx_HAL_Driver/Src/subdir.mk
 -include Core/Startup/subdir.mk
 -include Core/Src/subdir.mk
@@ -62,7 +66,7 @@ main-build: EX_PLL_H743IIT6_Hollies.elf secondary-outputs
 
 # Tool invocations
 EX_PLL_H743IIT6_Hollies.elf EX_PLL_H743IIT6_Hollies.map: $(OBJS) $(USER_OBJS) D:\User\Document\STM32_Project\EX_PLL_H743IIT6_Hollies\STM32H743IITX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-gcc -o "EX_PLL_H743IIT6_Hollies.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m7 -T"D:\User\Document\STM32_Project\EX_PLL_H743IIT6_Hollies\STM32H743IITX_FLASH.ld" --specs=nosys.specs -Wl,-Map="EX_PLL_H743IIT6_Hollies.map" -Wl,--gc-sections -static -L../Drivers/CMSIS/Lib/GCC --specs=nano.specs -mfpu=fpv5-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+	arm-none-eabi-gcc -o "EX_PLL_H743IIT6_Hollies.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m7 -T"D:\User\Document\STM32_Project\EX_PLL_H743IIT6_Hollies\STM32H743IITX_FLASH.ld" --specs=nosys.specs -Wl,-Map="EX_PLL_H743IIT6_Hollies.map" -Wl,--gc-sections -static -L../Drivers/CMSIS/Lib/GCC --specs=nano.specs -mfpu=fpv5-d16 -mfloat-abi=hard -mthumb -u _printf_float -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 

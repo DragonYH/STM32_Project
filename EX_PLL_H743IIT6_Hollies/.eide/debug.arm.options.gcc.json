@@ -4,7 +4,8 @@
     "afterBuildTasks": [],
     "global": {
         "$float-abi-type": "softfp",
-        "output-debug-info": "enable"
+        "output-debug-info": "enable",
+        "misc-control": []
     },
     "c/cpp-compiler": {
         "language-c": "c11",
@@ -12,7 +13,9 @@
         "optimization": "level-debug",
         "warnings": "all-warnings",
         "one-elf-section-per-function": true,
-        "one-elf-section-per-data": true
+        "one-elf-section-per-data": true,
+        "C_FLAGS": "",
+        "CXX_FLAGS": ""
     },
     "asm-compiler": {
         "ASM_FLAGS": "-DDEBUG"
@@ -21,6 +24,6 @@
         "output-format": "elf",
         "remove-unused-input-sections": true,
         "LD_FLAGS": "-TSTM32H743IITX_FLASH.ld",
-        "LIB_FLAGS": "-l arm_cortexM7lfdp_math"
+        "LIB_FLAGS": "-larm_cortexM7lfdp_math"
     }
 }

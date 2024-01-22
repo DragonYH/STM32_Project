@@ -1,3 +1,4 @@
-../Mycode/pll.c:10:6:pll_Control	1
-../Mycode/pll.c:23:6:pll_Init	1
-../Mycode/pll.c:52:6:pll_Clear	1
+../Mycode/pll.c:14:6:pll_Init	1
+../Mycode/pll.c:55:6:pll_Control	1
+../Mycode/pll.c:81:6:pll_Pid	3
+../Mycode/pll.c:99:6:pll_Clear	1
