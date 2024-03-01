@@ -1,0 +1,8 @@
+>>> cc
+
+
+
+>>> ld
+
+E:/Software/STM32CubeIDE_1.12.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.11.3.rel1.win32_1.1.1.202309131626/tools/bin/../lib/gcc/arm-none-eabi/11.3.1/../../../../arm-none-eabi/bin/ld.exe: cannot find -larm_cortexM4lf_math: No such file or directory
+collect2.exe: error: ld returned 1 exit status

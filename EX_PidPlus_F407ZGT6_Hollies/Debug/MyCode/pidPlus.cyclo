@@ -1,3 +1,0 @@
-pidPlus.c:7:14:VariableIntegralCoefficient	3
-pidPlus.c:28:6:PID_init	1
-pidPlus.c:45:7:PID_regulator	4

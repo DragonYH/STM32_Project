@@ -1,3 +1,0 @@
-../MyCode/pidPlus.c:7:14:VariableIntegralCoefficient	40	static
-../MyCode/pidPlus.c:28:6:PID_init	32	static
-../MyCode/pidPlus.c:45:7:PID_regulator	40	static
