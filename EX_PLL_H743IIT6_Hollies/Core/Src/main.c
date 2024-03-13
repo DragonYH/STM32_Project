@@ -56,6 +56,7 @@
 
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
+void PeriphCommonClock_Config(void);
 static void MPU_Config(void);
 /* USER CODE BEGIN PFP */
 
@@ -63,7 +64,7 @@ static void MPU_Config(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-// 新建信号并分配存储空间
+// 定义信号和信号配置变量�?
 pll_Signal *signal_1;
 pll_Config *signal_config_1;
 // 创建ADC数据空间
@@ -102,6 +103,9 @@ int main(void)
   /* Configure the system clock */
   SystemClock_Config();
 
+/* Configure the peripherals common clocks */
+  PeriphCommonClock_Config();
+
   /* USER CODE BEGIN SysInit */
 
   /* USER CODE END SysInit */
@@ -114,47 +118,53 @@ int main(void)
   MX_DAC1_Init();
   MX_TIM1_Init();
   MX_TIM2_Init();
+  MX_ADC3_Init();
   /* USER CODE BEGIN 2 */
-//    float sinVol                = 0;
-    signal_1        = (pll_Signal *)malloc(sizeof(pll_Signal));
-    signal_config_1 = (pll_Config *)malloc(sizeof(pll_Config));
-    uint8_t buf[128] = {0};
-    pll_Init(signal_1, signal_config_1, 50, 20000);
-    HAL_DAC_SetValue(&hdac1, DAC_CHANNEL_1, DAC_ALIGN_12B_R, 2048);
-  	HAL_DAC_Start(&hdac1,DAC_CHANNEL_1);
+  // 给变量分配存储空间�?
+  signal_1 = (pll_Signal *)malloc(sizeof(pll_Signal));
+  signal_config_1 = (pll_Config *)malloc(sizeof(pll_Config));
+  uint16_t temprature = 0;
+  float temp_result = 0;
+  // 串口输出数组
+  uint8_t buf[128] = {0};
+  // 锁相环初始化
+  pll_Init(signal_1, signal_config_1, 50, 20000);
+  // DAC模拟输出初始化�?
+  HAL_DAC_SetValue(&hdac1, DAC_CHANNEL_1, DAC_ALIGN_12B_R, 2048);
+  HAL_DAC_Start(&hdac1, DAC_CHANNEL_1);
+  // ADC校准并开启�?
+  HAL_Delay(200);
+  HAL_ADCEx_Calibration_Start(&hadc1, ADC_CALIB_OFFSET, ADC_SINGLE_ENDED);
+  HAL_ADCEx_Calibration_Start(&hadc1, ADC_CALIB_OFFSET_LINEARITY, ADC_SINGLE_ENDED);
+  HAL_ADC_Start_DMA(&hadc1, (uint32_t *)adcBuf, 1);
 
-//  	HAL_ADCEx_Calibration_Start(&hadc1, ADC_CALIB_OFFSET, ADC_SINGLE_ENDED);
-//  	HAL_ADCEx_Calibration_Start(&hadc1, ADC_CALIB_OFFSET_LINEARITY, ADC_SINGLE_ENDED);
-  	HAL_ADC_Start_DMA(&hadc1, (uint32_t*)adcBuf, 1);
+  HAL_Delay(1000);
 
-    HAL_Delay(2000);
-
-    HAL_TIM_Base_Start_IT(&htim2);
+  HAL_TIM_Base_Start_IT(&htim2);
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-    while (1) {
-        // 模拟生成50Hz正弦波
-//        if (sinVol >= 2 * PI) {
-//            sinVol = 0;
-//            sinVol += 50.0f * signal_config_1->Ts * 2 * PI;
-//        } else
-//            sinVol += 50.0f * signal_config_1->Ts * 2 * PI;
-//        signal_1->u_0 = 6.28 * arm_sin_f32(sinVol);
-//        // 锁相控制
-//        pll_Control(signal_1, signal_config_1, &x);
-//        // 虚拟串口输出日志
-        sprintf((char *)buf, "x1=0,theta= %f,u0= %.3f, sogi_d= %.3f, sogi_q= %.3f, park_q= %.3f, park_d= %.3f, \n", signal_1->theta, signal_1->u_0, signal_1->sogi_d_0, signal_1->sogi_q_0 / 382 * 3, signal_1->park_q, signal_1->park_d); //
-        CDC_Transmit_FS((uint8_t *)buf, sizeof(buf));
-        HAL_GPIO_TogglePin(GPIOI, GPIO_PIN_0);
-//        HAL_Delay(5);
+  while (1)
+  {
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
+    // MPU温度读取
+    HAL_ADC_Start(&hadc3);
+    if (HAL_ADC_PollForConversion(&hadc3, 10) == HAL_OK) // 判断是否转换完成
+    {
+      temprature = HAL_ADC_GetValue(&hadc3); // 读出转换结果
+      temp_result = ((110.0 - 30.0) / (*(unsigned short *)(0x1FF1E840) - *(unsigned short *)(0x1FF1E820))) * (temprature - *(unsigned short *)(0x1FF1E820)) + 30;
     }
-    // 释放内存
-    pll_Clear(signal_1, signal_config_1);
+    // 虚拟串口输出日志
+    sprintf((char *)buf, "x1=0,theta= %f,u0= %.3f, sogi_d= %.3f, sogi_q= %.3f, park_q= %.3f, park_d= %.3f, temprature= %.3f, \n", signal_1->theta, signal_1->u_0, signal_1->sogi_d_0, signal_1->sogi_q_0 / 382 * 3, signal_1->park_q, signal_1->park_d, temp_result);
+    CDC_Transmit_FS((uint8_t *)buf, sizeof(buf));
+    HAL_GPIO_TogglePin(GPIOI, GPIO_PIN_0);
+    HAL_Delay(100);
+  }
+  // 释放内存
+  pll_Clear(signal_1, signal_config_1);
   /* USER CODE END 3 */
 }
 
@@ -216,6 +226,32 @@ void SystemClock_Config(void)
   RCC_ClkInitStruct.APB4CLKDivider = RCC_APB4_DIV2;
 
   if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_4) != HAL_OK)
+  {
+    Error_Handler();
+  }
+}
+
+/**
+  * @brief Peripherals Common Clock Configuration
+  * @retval None
+  */
+void PeriphCommonClock_Config(void)
+{
+  RCC_PeriphCLKInitTypeDef PeriphClkInitStruct = {0};
+
+  /** Initializes the peripherals clock
+  */
+  PeriphClkInitStruct.PeriphClockSelection = RCC_PERIPHCLK_ADC;
+  PeriphClkInitStruct.PLL2.PLL2M = 25;
+  PeriphClkInitStruct.PLL2.PLL2N = 504;
+  PeriphClkInitStruct.PLL2.PLL2P = 7;
+  PeriphClkInitStruct.PLL2.PLL2Q = 2;
+  PeriphClkInitStruct.PLL2.PLL2R = 2;
+  PeriphClkInitStruct.PLL2.PLL2RGE = RCC_PLL2VCIRANGE_0;
+  PeriphClkInitStruct.PLL2.PLL2VCOSEL = RCC_PLL2VCOWIDE;
+  PeriphClkInitStruct.PLL2.PLL2FRACN = 0;
+  PeriphClkInitStruct.AdcClockSelection = RCC_ADCCLKSOURCE_PLL2;
+  if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInitStruct) != HAL_OK)
   {
     Error_Handler();
   }
@@ -283,12 +319,11 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
   /* USER CODE BEGIN Callback 1 */
   if (htim->Instance == TIM2)
   {
-	SCB_InvalidateDCache_by_Addr((uint32_t*)adcBuf, sizeof(adcBuf));
-	 signal_1->u_0 = adcBuf[0] * 3.3f / 65536.0f - 1.4;
-	// 锁相控制
-	pll_Control(signal_1, signal_config_1);
-	HAL_DAC_SetValue(&hdac1, DAC_CHANNEL_1, DAC_ALIGN_12B_R, 2048*arm_sin_f32(signal_1->theta + PI / 2)+2048);
-
+    SCB_InvalidateDCache_by_Addr((uint32_t *)adcBuf, sizeof(adcBuf));
+    signal_1->u_0 = adcBuf[0] * 3.3f / 65536.0f - 1.65;
+    // 锁相控制
+    pll_Control(signal_1, signal_config_1);
+    HAL_DAC_SetValue(&hdac1, DAC_CHANNEL_1, DAC_ALIGN_12B_R, 2000.f * arm_sin_f32(signal_1->theta + PI / 2.f) + 2048.f);
   }
   /* USER CODE END Callback 1 */
 }
@@ -300,10 +335,11 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 void Error_Handler(void)
 {
   /* USER CODE BEGIN Error_Handler_Debug */
-    /* User can add his own implementation to report the HAL error return state */
-    __disable_irq();
-    while (1) {
-    }
+  /* User can add his own implementation to report the HAL error return state */
+  __disable_irq();
+  while (1)
+  {
+  }
   /* USER CODE END Error_Handler_Debug */
 }
 
@@ -318,8 +354,8 @@ void Error_Handler(void)
 void assert_failed(uint8_t *file, uint32_t line)
 {
   /* USER CODE BEGIN 6 */
-    /* User can add his own implementation to report the file name and line number,
-       ex: printf("Wrong parameters value: file %s on line %d\r\n", file, line) */
+  /* User can add his own implementation to report the file name and line number,
+     ex: printf("Wrong parameters value: file %s on line %d\r\n", file, line) */
   /* USER CODE END 6 */
 }
 #endif /* USE_FULL_ASSERT */

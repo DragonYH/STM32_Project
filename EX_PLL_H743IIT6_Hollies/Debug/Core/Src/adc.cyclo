@@ -1,3 +1,4 @@
-../Core/Src/adc.c:31:6:MX_ADC1_Init	4
-../Core/Src/adc.c:94:6:HAL_ADC_MspInit	4
-../Core/Src/adc.c:159:6:HAL_ADC_MspDeInit	2
+../Core/Src/adc.c:32:6:MX_ADC1_Init	4
+../Core/Src/adc.c:99:6:MX_ADC3_Init	3
+../Core/Src/adc.c:156:6:HAL_ADC_MspInit	4
+../Core/Src/adc.c:213:6:HAL_ADC_MspDeInit	3

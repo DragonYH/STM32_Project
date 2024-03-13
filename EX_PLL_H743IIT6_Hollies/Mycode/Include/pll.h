@@ -6,7 +6,8 @@
 #include "tim.h"
 
 // pll相关配置参数
-typedef struct pll_Config {
+typedef struct pll_Config
+{
     float omiga; // 无阻尼自然频率，2*pi*频率
     float Ts;    // 采样周期
     float k;     // 阻尼比 典型值1.41
@@ -21,7 +22,8 @@ typedef struct pll_Config {
 } pll_Config;
 
 // pll相关信号数据
-typedef struct pll_Signal {
+typedef struct pll_Signal
+{
     // 基本变量
     float u_0, u_1, u_2;                // 输入序列
     float sogi_d_0, sogi_d_1, sogi_d_2; // 输出序列d
