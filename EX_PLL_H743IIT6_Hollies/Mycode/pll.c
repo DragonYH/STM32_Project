@@ -52,7 +52,7 @@ void pll_Init(pll_Signal *signal, pll_Config *config, float f, uint16_t F)
  * @param ccr: PWM控制时钟 示例:htim1->Instance->CCR1
  * @return
  */
-void pll_Control(pll_Signal *signal, pll_Config *config, uint32_t *ccr)
+void pll_Control(pll_Signal *signal, pll_Config *config)
 {
     // 对信号先进行sogi变换，得到两个相位相差90度的信号
     sogi(signal);
@@ -63,14 +63,6 @@ void pll_Control(pll_Signal *signal, pll_Config *config, uint32_t *ccr)
 
     signal->theta += (signal->pid_out + config->omiga) * config->Ts;
     signal->theta = (float)fmod(signal->theta, 2 * PI);
-
-    // if (ccr + out > config->maxCount) {
-    //     *ccr = config->maxCount;
-    // } else if (ccr + out < config->minCount) {
-    //     *ccr = config->minCount;
-    // } else {
-    //     *ccr += out;
-    // }
 }
 /**
  * @brief PI控制器

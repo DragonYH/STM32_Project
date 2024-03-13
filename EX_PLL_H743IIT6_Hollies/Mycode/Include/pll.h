@@ -43,7 +43,7 @@ typedef struct pll_Signal {
 } pll_Signal;
 
 void pll_Init(pll_Signal *signal, pll_Config *config, float f, uint16_t F);
-void pll_Control(pll_Signal *signal, pll_Config *config, uint32_t *ccr);
+void pll_Control(pll_Signal *signal, pll_Config *config);
 void pll_Pid(pll_Signal *signal, pll_Config *config);
 void pll_Clear(pll_Signal *signal, pll_Config *config);
 

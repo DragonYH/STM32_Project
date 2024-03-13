@@ -1,4 +1,4 @@
 ../Mycode/pll.c:14:6:pll_Init	24	static
-../Mycode/pll.c:55:6:pll_Control	72	static
-../Mycode/pll.c:81:6:pll_Pid	16	static
-../Mycode/pll.c:99:6:pll_Clear	16	static
+../Mycode/pll.c:55:6:pll_Control	64	static
+../Mycode/pll.c:73:6:pll_Pid	16	static
+../Mycode/pll.c:91:6:pll_Clear	16	static

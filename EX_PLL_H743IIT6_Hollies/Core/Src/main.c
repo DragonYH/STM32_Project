@@ -63,10 +63,10 @@ static void MPU_Config(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-// 新建信号并分配存储空�?????????
+// 新建信号并分配存储空间
 pll_Signal *signal_1;
 pll_Config *signal_config_1;
-uint32_t x = 1;
+// 创建ADC数据空间
 __attribute__((section("._D3_Area"))) uint16_t adcBuf[1] = {0};
 /* USER CODE END 0 */
 
@@ -135,14 +135,14 @@ int main(void)
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
     while (1) {
-        // 模拟生成50Hz正弦�?????????
+        // 模拟生成50Hz正弦波
 //        if (sinVol >= 2 * PI) {
 //            sinVol = 0;
 //            sinVol += 50.0f * signal_config_1->Ts * 2 * PI;
 //        } else
 //            sinVol += 50.0f * signal_config_1->Ts * 2 * PI;
 //        signal_1->u_0 = 6.28 * arm_sin_f32(sinVol);
-//        // 锁相�?????????
+//        // 锁相控制
 //        pll_Control(signal_1, signal_config_1, &x);
 //        // 虚拟串口输出日志
         sprintf((char *)buf, "x1=0,theta= %f,u0= %.3f, sogi_d= %.3f, sogi_q= %.3f, park_q= %.3f, park_d= %.3f, \n", signal_1->theta, signal_1->u_0, signal_1->sogi_d_0, signal_1->sogi_q_0 / 382 * 3, signal_1->park_q, signal_1->park_d); //
@@ -285,8 +285,8 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
   {
 	SCB_InvalidateDCache_by_Addr((uint32_t*)adcBuf, sizeof(adcBuf));
 	 signal_1->u_0 = adcBuf[0] * 3.3f / 65536.0f - 1.4;
-	// 锁相�?????????
-	pll_Control(signal_1, signal_config_1, &x);
+	// 锁相控制
+	pll_Control(signal_1, signal_config_1);
 	HAL_DAC_SetValue(&hdac1, DAC_CHANNEL_1, DAC_ALIGN_12B_R, 2048*arm_sin_f32(signal_1->theta + PI / 2)+2048);
 
   }
