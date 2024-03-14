@@ -39,8 +39,7 @@ Mycode/sogi.o: ../Mycode/sogi.c ../Mycode/Include/sogi.h \
  ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_ll_usb.h \
  ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_pcd_ex.h \
  ../Drivers/CMSIS/DSP/Include/arm_math.h \
- ../Drivers/CMSIS/Include/cmsis_compiler.h ../Core/Inc/tim.h \
- ../Core/Inc/main.h ../Mycode/Include/pll.h
+ ../Drivers/CMSIS/Include/cmsis_compiler.h ../Mycode/Include/pll.h
 ../Mycode/Include/sogi.h:
 ../Mycode/Include/pll.h:
 ../Core/Inc/main.h:
@@ -84,6 +83,4 @@ Mycode/sogi.o: ../Mycode/sogi.c ../Mycode/Include/sogi.h \
 ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_pcd_ex.h:
 ../Drivers/CMSIS/DSP/Include/arm_math.h:
 ../Drivers/CMSIS/Include/cmsis_compiler.h:
-../Core/Inc/tim.h:
-../Core/Inc/main.h:
 ../Mycode/Include/pll.h:

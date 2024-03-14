@@ -3,7 +3,6 @@
 
 #include "main.h"
 #include "arm_math.h"
-#include "tim.h"
 
 // pll相关配置参数
 typedef struct pll_Config
@@ -48,5 +47,6 @@ void pll_Init(pll_Signal *signal, pll_Config *config, float f, uint16_t F);
 void pll_Control(pll_Signal *signal, pll_Config *config);
 void pll_Pid(pll_Signal *signal, pll_Config *config);
 void pll_Clear(pll_Signal *signal, pll_Config *config);
+void pll_Sogi(pll_Signal *signal);
 
 #endif

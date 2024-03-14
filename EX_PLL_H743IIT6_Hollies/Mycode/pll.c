@@ -1,15 +1,13 @@
 #include "pll.h"
-#include "sogi.h"
 #include "stdlib.h"
-#include "math.h"
 
 /**
  * @brief 信号参数初始化
+ *
  * @param signal: 信号指针
  * @param config: 配置指针
  * @param f: 信号频率(典型值:50)
  * @param F: 采样频率(典型值:20000)
- * @return
  */
 void pll_Init(pll_Signal *signal, pll_Config *config, float f, uint16_t F)
 {
@@ -47,15 +45,14 @@ void pll_Init(pll_Signal *signal, pll_Config *config, float f, uint16_t F)
 }
 /**
  * @brief 锁相控制
+ *
  * @param signal: 信号指针
  * @param config: 配置指针
- * @param ccr: PWM控制时钟 示例:htim1->Instance->CCR1
- * @return
  */
 void pll_Control(pll_Signal *signal, pll_Config *config)
 {
     // 对信号先进行sogi变换，得到两个相位相差90度的信号
-    sogi(signal);
+    pll_Sogi(signal);
     // 再对信号sogi变换后的信号进行park变换
     arm_park_f32(signal->sogi_d_0, signal->sogi_q_0 / 382 * 3, &signal->park_d, &signal->park_q, arm_sin_f32(signal->theta), arm_cos_f32(signal->theta));
     // 将park变换后的q送入PI控制器  输入值为设定值和采样值的误差
@@ -66,9 +63,9 @@ void pll_Control(pll_Signal *signal, pll_Config *config)
 }
 /**
  * @brief PI控制器
+ *
  * @param signal: 信号指针
  * @param config: 配置指针
- * @return
  */
 void pll_Pid(pll_Signal *signal, pll_Config *config)
 {
@@ -84,12 +81,30 @@ void pll_Pid(pll_Signal *signal, pll_Config *config)
 }
 /**
  * @brief 回收空间
+ *
  * @param signal: 信号指针
  * @param config: 配置指针
- * @return
  */
 void pll_Clear(pll_Signal *signal, pll_Config *config)
 {
     free(signal);
     free(config);
+}
+
+/**
+ * @brief Sogi变换
+ *
+ * @param signal: 信号指针
+ */
+void pll_Sogi(pll_Signal *signal)
+{
+    signal->sogi_d_0 = signal->b0 * signal->u_0 - signal->b0 * signal->u_2 + signal->a1 * signal->sogi_d_1 + signal->a2 * signal->sogi_d_2;
+    signal->sogi_q_0 = signal->b0 * signal->u_0 + 2.0f * signal->b0 * signal->u_1 + signal->b0 * signal->u_2 + signal->a1 * signal->sogi_q_1 + signal->a2 * signal->sogi_q_2;
+
+    signal->u_2 = signal->u_1;
+    signal->u_1 = signal->u_0;
+    signal->sogi_d_2 = signal->sogi_d_1;
+    signal->sogi_d_1 = signal->sogi_d_0;
+    signal->sogi_q_2 = signal->sogi_q_1;
+    signal->sogi_q_1 = signal->sogi_q_0;
 }

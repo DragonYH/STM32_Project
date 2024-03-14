@@ -69,6 +69,8 @@ pll_Signal *signal_1;
 pll_Config *signal_config_1;
 // 创建ADC数据空间
 __attribute__((section("._D3_Area"))) uint16_t adcBuf[1] = {0};
+// SPWM波调制比
+float M = 0.9f;
 /* USER CODE END 0 */
 
 /**
@@ -116,9 +118,9 @@ int main(void)
   MX_USB_DEVICE_Init();
   MX_ADC1_Init();
   MX_DAC1_Init();
-  MX_TIM1_Init();
   MX_TIM2_Init();
   MX_ADC3_Init();
+  MX_TIM8_Init();
   /* USER CODE BEGIN 2 */
   // 给变量分配存储空间�?
   signal_1 = (pll_Signal *)malloc(sizeof(pll_Signal));
@@ -139,6 +141,9 @@ int main(void)
   HAL_ADC_Start_DMA(&hadc1, (uint32_t *)adcBuf, 1);
 
   HAL_Delay(1000);
+  // 打开互补SPWM波
+  HAL_TIM_PWM_Start(&htim8, TIM_CHANNEL_1);
+  HAL_TIMEx_PWMN_Start(&htim8, TIM_CHANNEL_1);
 
   HAL_TIM_Base_Start_IT(&htim2);
   /* USER CODE END 2 */
@@ -322,9 +327,12 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
   if (htim->Instance == TIM2)
   {
     SCB_InvalidateDCache_by_Addr((uint32_t *)adcBuf, sizeof(adcBuf));
-    signal_1->u_0 = adcBuf[0] * 3.3f / 65536.0f - 1.65;
+    signal_1->u_0 = adcBuf[0] * 3.3f / 65536.0f - 1.4f;
     // 锁相控制
     pll_Control(signal_1, signal_config_1);
+    // 调节SPWM占空比
+    __HAL_TIM_SET_COMPARE(&htim8, TIM_CHANNEL_1, M * (__HAL_TIM_GET_AUTORELOAD(&htim8) / 2.0f) * arm_sin_f32(signal_1->theta + PI / 2.f) + (__HAL_TIM_GET_AUTORELOAD(&htim8) / 2.0f));
+    // DAC模拟输出，便于调试，不需要时可关闭
     HAL_DAC_SetValue(&hdac1, DAC_CHANNEL_1, DAC_ALIGN_12B_R, 2000.f * arm_sin_f32(signal_1->theta + PI / 2.f) + 2048.f);
   }
   /* USER CODE END Callback 1 */
