@@ -1,4 +1,10 @@
 {
   "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools",
-  "cmake.configureOnOpen": true
+  "cmake.configureOnOpen": true,
+  "files.associations": {
+    "*.nsp": "json",
+    "*.yml": "yaml",
+    "*.toml": "yaml",
+    "pll.h": "c"
+  }
 }
