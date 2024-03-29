@@ -1,20 +1,20 @@
 ################################################################################
 # Automatically-generated file. Do not edit!
-# Toolchain: GNU Tools for STM32 (11.3.rel1)
+# Toolchain: GNU Tools for STM32 (12.3.rel1)
 ################################################################################
 
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS += \
 ../Mycode/pll.c \
-../Mycode/sogi.c 
+../Mycode/user.c 
 
 OBJS += \
 ./Mycode/pll.o \
-./Mycode/sogi.o 
+./Mycode/user.o 
 
 C_DEPS += \
 ./Mycode/pll.d \
-./Mycode/sogi.d 
+./Mycode/user.d 
 
 
 # Each subdirectory must supply rules for building sources it contributes
@@ -24,7 +24,7 @@ Mycode/%.o Mycode/%.su Mycode/%.cyclo: ../Mycode/%.c Mycode/subdir.mk
 clean: clean-Mycode
 
 clean-Mycode:
-	-$(RM) ./Mycode/pll.cyclo ./Mycode/pll.d ./Mycode/pll.o ./Mycode/pll.su ./Mycode/sogi.cyclo ./Mycode/sogi.d ./Mycode/sogi.o ./Mycode/sogi.su
+	-$(RM) ./Mycode/pll.cyclo ./Mycode/pll.d ./Mycode/pll.o ./Mycode/pll.su ./Mycode/user.cyclo ./Mycode/user.d ./Mycode/user.o ./Mycode/user.su
 
 .PHONY: clean-Mycode
 

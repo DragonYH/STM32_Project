@@ -161,12 +161,14 @@ SECTIONS
     . = . + _Min_Stack_Size;
     . = ALIGN(8);
   } >RAM_D1
+
   /* Add RAM_D3 */
   ._D3_Area :
   {
   	. = ALIGN(4);
   	. = ALIGN(4);
   } >RAM_D3
+
   /* Remove information from the standard libraries */
   /DISCARD/ :
   {

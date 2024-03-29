@@ -41,7 +41,7 @@
 "./Middlewares/ST/STM32_USB_Device_Library/Core/Src/usbd_ctlreq.o"
 "./Middlewares/ST/STM32_USB_Device_Library/Core/Src/usbd_ioreq.o"
 "./Mycode/pll.o"
-"./Mycode/sogi.o"
+"./Mycode/user.o"
 "./USB_DEVICE/App/usb_device.o"
 "./USB_DEVICE/App/usbd_cdc_if.o"
 "./USB_DEVICE/App/usbd_desc.o"

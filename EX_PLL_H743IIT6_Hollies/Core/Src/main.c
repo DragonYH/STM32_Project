@@ -139,12 +139,11 @@ int main(void)
   HAL_ADCEx_Calibration_Start(&hadc1, ADC_CALIB_OFFSET, ADC_SINGLE_ENDED);
   HAL_ADCEx_Calibration_Start(&hadc1, ADC_CALIB_OFFSET_LINEARITY, ADC_SINGLE_ENDED);
   HAL_ADC_Start_DMA(&hadc1, (uint32_t *)adcBuf, 1);
-
   HAL_Delay(1000);
   // 打开互补SPWM波
   HAL_TIM_PWM_Start(&htim8, TIM_CHANNEL_1);
   HAL_TIMEx_PWMN_Start(&htim8, TIM_CHANNEL_1);
-
+  // 开启中断
   HAL_TIM_Base_Start_IT(&htim2);
   /* USER CODE END 2 */
 
@@ -326,6 +325,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
   /* USER CODE BEGIN Callback 1 */
   if (htim->Instance == TIM2)
   {
+    // 缓存adcBuf
     SCB_InvalidateDCache_by_Addr((uint32_t *)adcBuf, sizeof(adcBuf));
     signal_1->u_0 = adcBuf[0] * 3.3f / 65536.0f - 1.4f;
     // 锁相控制
