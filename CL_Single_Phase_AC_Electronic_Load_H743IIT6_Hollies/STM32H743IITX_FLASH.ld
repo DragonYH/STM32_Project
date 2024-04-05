@@ -172,6 +172,13 @@ SECTIONS
   	. = ALIGN(4);
   	. = ALIGN(4);
   } >RAM_D3
+  
+  /* Add DTCM */
+  ._DTCM_Area :
+  {
+  	. = ALIGN(4);
+  	. = ALIGN(4);
+  } >DTCMRAM
 
   /* Remove information from the standard libraries */
   /DISCARD/ :

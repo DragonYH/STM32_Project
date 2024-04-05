@@ -66,11 +66,12 @@ static void MPU_Config(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-// 定义交流电压和电流信号和信号配置变量�????
-pll_Signal *signal_V;
-pll_Config *signal_config_V;
-pll_Signal *signal_I;
-pll_Config *signal_config_I;
+// 定义交流电压和电流信号和信号配置变量
+// 将控制变量放到DTCM中，防止数据传输拖慢运行速度
+__attribute__((section("._DTCM_Area"))) pll_Signal *signal_V;
+__attribute__((section("._DTCM_Area"))) pll_Config *signal_config_V;
+__attribute__((section("._DTCM_Area"))) pll_Signal *signal_I;
+__attribute__((section("._DTCM_Area"))) pll_Config *signal_config_I;
 // 创建ADC数据空间
 __attribute__((section("._D3_Area"))) uint16_t adcBuf[2] = {0};
 // SPWM波调制比
@@ -125,7 +126,7 @@ int main(void)
   MX_DAC1_Init();
   MX_SPI1_Init();
   /* USER CODE BEGIN 2 */
-  // 给变量分配存储空间�?
+  // 给变量分配存储空间
   signal_V = (pll_Signal *)malloc(sizeof(pll_Signal));
   signal_config_V = (pll_Config *)malloc(sizeof(pll_Config));
   signal_I = (pll_Signal *)malloc(sizeof(pll_Signal));
@@ -134,25 +135,25 @@ int main(void)
   // uint16_t temprature = 0;
   // float temp_result = 0;
   // 串口输出数组
-  uint8_t buf[128] = {0};
+  uint8_t textBuf[128] = {0};
   // 锁相环初始化
-  pll_Init(signal_V, signal_config_V, 50, 20000); // 电压�???
-  pll_Init(signal_I, signal_config_I, 50, 20000); // 电流�???
-  // DAC模拟输出初始化�?
+  pll_Init(signal_V, signal_config_V, 50, 20000); // 电压环
+  pll_Init(signal_I, signal_config_I, 50, 20000); // 电流环
+  // DAC模拟输出初始化
   HAL_DAC_SetValue(&hdac1, DAC_CHANNEL_1, DAC_ALIGN_12B_R, 2048);
   HAL_DAC_Start(&hdac1, DAC_CHANNEL_1);
-  // ADC校准并开启�?
+  // ADC校准并开启
   HAL_Delay(200);
   HAL_ADCEx_Calibration_Start(&hadc1, ADC_CALIB_OFFSET, ADC_SINGLE_ENDED);
-  HAL_ADCEx_Calibration_Start(&hadc1, ADC_CALIB_OFFSET_LINEARITY, ADC_SINGLE_ENDED); // 线�?�度校准
+  HAL_ADCEx_Calibration_Start(&hadc1, ADC_CALIB_OFFSET_LINEARITY, ADC_SINGLE_ENDED); // 线性度校准
   HAL_ADC_Start_DMA(&hadc1, (uint32_t *)adcBuf, 1);
   HAL_Delay(1000);
-  // 打开互补SPWM波�?
+  // 打开互补SPWM波
   HAL_TIM_PWM_Start(&htim8, TIM_CHANNEL_1);
   HAL_TIMEx_PWMN_Start(&htim8, TIM_CHANNEL_1);
-  // OLED初始�?
+  // OLED初始化
   OLED_Init();
-  // �?启中断�?
+  // 开启中断
   HAL_TIM_Base_Start_IT(&htim2);
   /* USER CODE END 2 */
 
@@ -161,9 +162,11 @@ int main(void)
   while (1)
   {
     // 虚拟串口输出日志
-    sprintf((char *)buf, "test");
-    CDC_Transmit_FS((uint8_t *)buf, sizeof(buf));
-    OLED_ShowString(0, 0, buf);
+    sprintf((char *)textBuf, "test");
+    CDC_Transmit_FS((uint8_t *)textBuf, sizeof(textBuf));
+    OLED_ShowString(0, 0, textBuf);
+    HAL_GPIO_TogglePin(GPIOI, GPIO_PIN_0);
+    HAL_Delay(200);
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -277,6 +280,14 @@ void MPU_Config(void)
   MPU_InitStruct.IsBufferable = MPU_ACCESS_NOT_BUFFERABLE;
 
   HAL_MPU_ConfigRegion(&MPU_InitStruct);
+
+  /** Initializes and configures the Region and the memory to be protected
+   */
+  MPU_InitStruct.Number = MPU_REGION_NUMBER2;
+  MPU_InitStruct.BaseAddress = 0x20000000;
+  MPU_InitStruct.Size = MPU_REGION_SIZE_128KB;
+
+  HAL_MPU_ConfigRegion(&MPU_InitStruct);
   /* Enables the MPU */
   HAL_MPU_Enable(MPU_PRIVILEGED_DEFAULT);
 }
@@ -306,10 +317,12 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
     signal_V->u_0 = adcBuf[0] * 3.3f / 65536.0f - 1.4f;
     signal_I->u_0 = adcBuf[1] * 3.3f / 65536.0f - 1.4f;
     // 锁相控制
-    pll_Control(signal_V, signal_config_V);
-    // 调节SPWM占空比�?
-    // __HAL_TIM_SET_COMPARE(&htim8, TIM_CHANNEL_1, M * (__HAL_TIM_GET_AUTORELOAD(&htim8) / 2.0f) * arm_sin_f32(signal_1->theta + PI / 2.f) + (__HAL_TIM_GET_AUTORELOAD(&htim8) / 2.0f));
-    // DAC模拟输出，便于调试，不需要时可关闭�?
+    pll_Control_V(signal_V, signal_config_V);
+    pll_Control_I(signal_I, signal_config_I, signal_V);
+    // 调节SPWM占空比
+    // 要想实现PFC，需要让电流相位与电压相位相同，而电压相位由电网控制，所以需要闭环控制的是电流相位
+    __HAL_TIM_SET_COMPARE(&htim8, TIM_CHANNEL_1, M * (__HAL_TIM_GET_AUTORELOAD(&htim8) / 2.0f) * arm_sin_f32(signal_I->theta + PI / 2.f) + (__HAL_TIM_GET_AUTORELOAD(&htim8) / 2.0f));
+    // DAC模拟输出，便于调试，不需要时可关闭
     // HAL_DAC_SetValue(&hdac1, DAC_CHANNEL_1, DAC_ALIGN_12B_R, 2000.f * arm_sin_f32(signal_1->theta + PI / 2.f) + 2048.f);
   }
   /* USER CODE END Callback 1 */
