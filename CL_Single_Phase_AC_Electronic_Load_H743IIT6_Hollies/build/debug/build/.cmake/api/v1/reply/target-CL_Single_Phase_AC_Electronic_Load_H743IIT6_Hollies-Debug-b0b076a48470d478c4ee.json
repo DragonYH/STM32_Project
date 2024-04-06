@@ -229,7 +229,8 @@
 				47,
 				48,
 				49,
-				50
+				50,
+				51
 			]
 		},
 		{
@@ -382,7 +383,8 @@
 				47,
 				48,
 				49,
-				50
+				50,
+				51
 			]
 		},
 		{
@@ -501,6 +503,12 @@
 			"backtrace" : 9,
 			"compileGroupIndex" : 0,
 			"path" : "Middlewares/ST/STM32_USB_Device_Library/Core/Src/usbd_ioreq.c",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 9,
+			"compileGroupIndex" : 0,
+			"path" : "Mycode/ina238.c",
 			"sourceGroupIndex" : 0
 		},
 		{

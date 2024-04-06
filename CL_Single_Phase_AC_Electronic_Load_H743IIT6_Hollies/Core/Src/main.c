@@ -34,6 +34,7 @@
 #include "stdlib.h"
 #include "usbd_cdc_if.h"
 #include "stdio.h"
+#include "ina238.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -322,6 +323,8 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
     // 调节SPWM占空比
     // 要想实现PFC，需要让电流相位与电压相位相同，而电压相位由电网控制，所以需要闭环控制的是电流相位
     __HAL_TIM_SET_COMPARE(&htim8, TIM_CHANNEL_1, M * (__HAL_TIM_GET_AUTORELOAD(&htim8) / 2.0f) * arm_sin_f32(signal_I->theta + PI / 2.f) + (__HAL_TIM_GET_AUTORELOAD(&htim8) / 2.0f));
+    // todo: 控制中间直流电压
+
     // DAC模拟输出，便于调试，不需要时可关闭
     // HAL_DAC_SetValue(&hdac1, DAC_CHANNEL_1, DAC_ALIGN_12B_R, 2000.f * arm_sin_f32(signal_1->theta + PI / 2.f) + 2048.f);
   }

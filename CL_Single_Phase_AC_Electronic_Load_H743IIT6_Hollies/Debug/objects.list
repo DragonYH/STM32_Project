@@ -43,6 +43,7 @@
 "./Middlewares/ST/STM32_USB_Device_Library/Core/Src/usbd_core.o"
 "./Middlewares/ST/STM32_USB_Device_Library/Core/Src/usbd_ctlreq.o"
 "./Middlewares/ST/STM32_USB_Device_Library/Core/Src/usbd_ioreq.o"
+"./Mycode/ina238.o"
 "./Mycode/oled_spi.o"
 "./Mycode/pll.o"
 "./USB_DEVICE/App/usb_device.o"
