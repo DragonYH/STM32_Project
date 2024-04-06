@@ -132,7 +132,6 @@ int main(void)
   signal_config_V = (pll_Config *)malloc(sizeof(pll_Config));
   signal_I = (pll_Signal *)malloc(sizeof(pll_Signal));
   signal_config_I = (pll_Config *)malloc(sizeof(pll_Config));
-
   // uint16_t temprature = 0;
   // float temp_result = 0;
   // 串口输出数组
