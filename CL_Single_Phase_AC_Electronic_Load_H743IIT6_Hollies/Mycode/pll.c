@@ -16,11 +16,11 @@ void pll_Init(pll_Signal *signal, pll_Config *config, float f, uint16_t F)
     signal->u_1 = 0.f;
     signal->u_2 = 0.f;
 
-    signal->sogi_d_1 = 0.f;
-    signal->sogi_d_2 = 0.f;
+    signal->sogi_a_1 = 0.f;
+    signal->sogi_a_2 = 0.f;
 
-    signal->sogi_q_1 = 0.f;
-    signal->sogi_q_2 = 0.f;
+    signal->sogi_b_1 = 0.f;
+    signal->sogi_b_2 = 0.f;
 
     signal->theta = 0.f;
 
@@ -44,40 +44,25 @@ void pll_Init(pll_Signal *signal, pll_Config *config, float f, uint16_t F)
     signal->pid_out = 0.f;
 }
 /**
- * @brief 电压锁相控制
+ * @brief 锁相控制
  *
- * @param signal: 信号指针
+ * @param signal_In: 信号指针
  * @param config: 配置指针
+ * @param signal_Target: 目标信号指针
  */
-void pll_Control_V(pll_Signal *signal_V, pll_Config *config)
+void pll_Control(pll_Signal *signal_In, pll_Config *config, pll_Signal *signal_Target)
 {
     // 对信号先进行sogi变换，得到两个相位相差90度的信号
-    pll_Sogi(signal_V);
+    pll_Sogi(signal_In);
     // 再对信号sogi变换后的信号进行park变换
-    arm_park_f32(signal_V->sogi_d_0, signal_V->sogi_q_0 / 382 * 3, &signal_V->park_d, &signal_V->park_q, arm_sin_f32(signal_V->theta), arm_cos_f32(signal_V->theta));
+    arm_park_f32(signal_In->sogi_a_0, signal_In->sogi_b_0 / 382 * 3, &signal_In->park_d, &signal_In->park_q, arm_sin_f32(signal_Target->theta), arm_cos_f32(signal_Target->theta));
     // 将park变换后的q送入PI控制器  输入值为设定值和采样值的误差
-    pll_Pid(signal_V, config);
-
-    signal_V->theta += (signal_V->pid_out + config->omiga) * config->Ts;
-    signal_V->theta = (float)fmod(signal_V->theta, 2 * PI);
-}
-/**
- * @brief 电流锁相控制
- *
- * @param signal: 信号指针
- * @param config: 配置指针
- */
-void pll_Control_I(pll_Signal *signal_I, pll_Config *config, pll_Signal *signal_V)
-{
-    // 对信号先进行sogi变换，得到两个相位相差90度的信号
-    pll_Sogi(signal_I);
-    // 再对信号sogi变换后的信号进行park变换
-    arm_park_f32(signal_I->sogi_d_0, signal_I->sogi_q_0 / 382 * 3, &signal_I->park_d, &signal_I->park_q, arm_sin_f32(signal_V->theta), arm_cos_f32(signal_V->theta));
-    // 将park变换后的q送入PI控制器  输入值为设定值和采样值的误差
-    pll_Pid(signal_I, config);
-
-    signal_I->theta += (signal_I->pid_out + config->omiga) * config->Ts;
-    signal_I->theta = (float)fmod(signal_I->theta, 2 * PI);
+    pll_Pid(signal_In, config);
+    // 更新theta
+    signal_In->theta += (signal_In->pid_out + config->omiga) * config->Ts;
+    signal_In->theta = (float)fmod(signal_In->theta, 2 * PI);
+    // 反park变换
+    arm_inv_park_f32(signal_In->park_d, signal_In->park_q, &signal_In->park_inv_a, &signal_In->park_inv_b, arm_sin_f32(signal_Target->theta), arm_cos_f32(signal_Target->theta));
 }
 /**
  * @brief PI控制器
@@ -116,13 +101,13 @@ void pll_Clear(pll_Signal *signal, pll_Config *config)
  */
 void pll_Sogi(pll_Signal *signal)
 {
-    signal->sogi_d_0 = signal->b0 * signal->u_0 - signal->b0 * signal->u_2 + signal->a1 * signal->sogi_d_1 + signal->a2 * signal->sogi_d_2;
-    signal->sogi_q_0 = signal->b0 * signal->u_0 + 2.0f * signal->b0 * signal->u_1 + signal->b0 * signal->u_2 + signal->a1 * signal->sogi_q_1 + signal->a2 * signal->sogi_q_2;
+    signal->sogi_a_0 = signal->b0 * signal->u_0 - signal->b0 * signal->u_2 + signal->a1 * signal->sogi_a_1 + signal->a2 * signal->sogi_a_2;
+    signal->sogi_b_0 = signal->b0 * signal->u_0 + 2.0f * signal->b0 * signal->u_1 + signal->b0 * signal->u_2 + signal->a1 * signal->sogi_b_1 + signal->a2 * signal->sogi_b_2;
 
     signal->u_2 = signal->u_1;
     signal->u_1 = signal->u_0;
-    signal->sogi_d_2 = signal->sogi_d_1;
-    signal->sogi_d_1 = signal->sogi_d_0;
-    signal->sogi_q_2 = signal->sogi_q_1;
-    signal->sogi_q_1 = signal->sogi_q_0;
+    signal->sogi_a_2 = signal->sogi_a_1;
+    signal->sogi_a_1 = signal->sogi_a_0;
+    signal->sogi_b_2 = signal->sogi_b_1;
+    signal->sogi_b_1 = signal->sogi_b_0;
 }

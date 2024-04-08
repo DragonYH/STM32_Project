@@ -25,13 +25,13 @@ typedef struct pll_Signal
 {
     // 基本变量
     float u_0, u_1, u_2;                // 输入序列
-    float sogi_d_0, sogi_d_1, sogi_d_2; // 输出序列d
-    float sogi_q_0, sogi_q_1, sogi_q_2; // 输出序列q	滞后90度于序列d
+    float sogi_a_0, sogi_a_1, sogi_a_2; // 输出序列alpha
+    float sogi_b_0, sogi_b_1, sogi_b_2; // 输出序列beta	滞后90度于序列alpha
     // park变换相关变量
     float park_d;     // 有功分量
     float park_q;     // 无功分量
-    float park_inv_d; // 逆变换有功分量
-    float park_inv_q; // 逆变换无功分量
+    float park_inv_a; // 逆变换有功分量
+    float park_inv_b; // 逆变换无功分量
     float theta;      // 当前角度
     // PI控制器相关变量
     float pid_out;
@@ -46,8 +46,7 @@ typedef struct pll_Signal
 } pll_Signal;
 
 void pll_Init(pll_Signal *signal, pll_Config *config, float f, uint16_t F);
-void pll_Control_V(pll_Signal *signal_V, pll_Config *config);
-void pll_Control_I(pll_Signal *signal_I, pll_Config *config, pll_Signal *signal_V);
+void pll_Control(pll_Signal *signal_In, pll_Config *config, pll_Signal *signal_Target);
 void pll_Pid(pll_Signal *signal, pll_Config *config);
 void pll_Clear(pll_Signal *signal, pll_Config *config);
 void pll_Sogi(pll_Signal *signal);

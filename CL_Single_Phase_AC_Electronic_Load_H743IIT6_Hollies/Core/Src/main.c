@@ -317,8 +317,8 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
     signal_V->u_0 = adcBuf[0] * 3.3f / 65536.0f - 1.4f;
     signal_I->u_0 = adcBuf[1] * 3.3f / 65536.0f - 1.4f;
     // 锁相控制
-    pll_Control_V(signal_V, signal_config_V);
-    pll_Control_I(signal_I, signal_config_I, signal_V);
+    pll_Control(signal_V, signal_config_V, signal_V); // 电压环
+    pll_Control(signal_I, signal_config_I, signal_V); // 电流环
     // 调节SPWM占空比
     // 要想实现PFC，需要让电流相位与电压相位相同，而电压相位由电网控制，所以需要闭环控制的是电流相位
     __HAL_TIM_SET_COMPARE(&htim8, TIM_CHANNEL_1, M * (__HAL_TIM_GET_AUTORELOAD(&htim8) / 2.0f) * arm_sin_f32(signal_I->theta + PI / 2.f) + (__HAL_TIM_GET_AUTORELOAD(&htim8) / 2.0f));
