@@ -1,5 +1,5 @@
-../Mycode/ina238.c:3:6:INA238_init	1
-../Mycode/ina238.c:17:8:INA238_getVolt	3
-../Mycode/ina238.c:32:8:INA238_getCurrent	3
-../Mycode/ina238.c:47:8:INA238_getPower	2
-../Mycode/ina238.c:58:8:INA238_getTemperature	3
+../Mycode/ina238.c:8:6:INA238_init	1
+../Mycode/ina238.c:26:8:INA238_getVolt	3
+../Mycode/ina238.c:45:8:INA238_getCurrent	3
+../Mycode/ina238.c:64:8:INA238_getPower	2
+../Mycode/ina238.c:79:8:INA238_getTemperature	3
