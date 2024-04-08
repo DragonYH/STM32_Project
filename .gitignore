@@ -1,4 +1,4 @@
 /.metadata
 /.vscode
 /.git
-*/build/debug/build/*.bin
+*/build
