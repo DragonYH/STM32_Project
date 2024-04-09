@@ -5,7 +5,7 @@
  * @param  hi2c: I2C句柄
  * @param  error: 误差纠正
  */
-void INA238_init(I2C_HandleTypeDef *hi2c, int8_t error)
+void ina238_Init(I2C_HandleTypeDef *hi2c, int8_t error)
 {
 	uint8_t pData[2];
 	pData[0] = 0x00;
@@ -23,10 +23,10 @@ void INA238_init(I2C_HandleTypeDef *hi2c, int8_t error)
  * @param  hi2c: I2C句柄
  * @retval 电压值
  */
-double INA238_getVolt(I2C_HandleTypeDef *hi2c)
+float ina238_GetVolt(I2C_HandleTypeDef *hi2c)
 {
 	uint8_t pData[2];
-	double volt;
+	float volt;
 	if (HAL_I2C_Mem_Read(hi2c, ADDR_READ, VBUS, 1, pData, 2, 100) == HAL_OK)
 	{
 		volt = pData[0] * 256 + pData[1];
@@ -42,10 +42,10 @@ double INA238_getVolt(I2C_HandleTypeDef *hi2c)
  * @param  hi2c: I2C句柄
  * @retval 电流值
  */
-double INA238_getCurrent(I2C_HandleTypeDef *hi2c)
+float ina238_GetCurrent(I2C_HandleTypeDef *hi2c)
 {
 	uint8_t pData[2];
-	double current;
+	float current;
 	if (HAL_I2C_Mem_Read(hi2c, ADDR_READ, CURRENT, 1, pData, 2, 100) == HAL_OK)
 	{
 		current = pData[0] * 256 + pData[1];
@@ -61,10 +61,10 @@ double INA238_getCurrent(I2C_HandleTypeDef *hi2c)
  * @param  hi2c: I2C句柄
  * @retval 功率值
  */
-double INA238_getPower(I2C_HandleTypeDef *hi2c)
+float ina238_GetPower(I2C_HandleTypeDef *hi2c)
 {
 	uint8_t pData[3];
-	double power;
+	float power;
 	if (HAL_I2C_Mem_Read(hi2c, ADDR_READ, POWER, 1, pData, 3, 100) == HAL_OK)
 	{
 		power = 0.2 * (pData[0] * 65536 + pData[1] * 256 + pData[2]) * (8 / 32768.0);
@@ -76,10 +76,10 @@ double INA238_getPower(I2C_HandleTypeDef *hi2c)
  * @param  hi2c: I2C句柄
  * @retval 温度值
  */
-double INA238_getTemperature(I2C_HandleTypeDef *hi2c)
+float ina238_GetTemperature(I2C_HandleTypeDef *hi2c)
 {
 	uint8_t pData[2];
-	double Temperature;
+	float Temperature;
 	if (HAL_I2C_Mem_Read(hi2c, ADDR_READ, DIETEMP, 1, pData, 2, 100) == HAL_OK)
 	{
 		Temperature = (pData[0] >> 4) * 256 + (pData[1] >> 4);

@@ -20,6 +20,7 @@
 #include "main.h"
 #include "adc.h"
 #include "dac.h"
+#include "dma.h"
 #include "i2c.h"
 #include "spi.h"
 #include "tim.h"
@@ -74,15 +75,27 @@ __attribute__((section("._DTCM_Area"))) pll_Config *signal_config_V;
 __attribute__((section("._DTCM_Area"))) pll_Signal *signal_I;
 __attribute__((section("._DTCM_Area"))) pll_Config *signal_config_I;
 // 创建ADC数据空间
-__attribute__((section("._D3_Area"))) uint16_t adcBuf[2] = {0};
+__attribute__((section("._D3_Area"))) uint32_t adcBuf[2] = {0};
 // SPWM波调制比
 float M = 0.9f;
+// 显示函数
+uint8_t textBuf[128] = {0};
+void oled_Show()
+{
+  // IN:
+  sprintf((char *)textBuf, "IN:%4.2fV %4.2fA", signal_V->u_0, signal_I->u_0);
+  OLED_ShowString(0, 0, textBuf);
+  // OUT:
+  // DC:
+  // FAC:
+  // EFF:
+}
 /* USER CODE END 0 */
 
 /**
- * @brief  The application entry point.
- * @retval int
- */
+  * @brief  The application entry point.
+  * @retval int
+  */
 int main(void)
 {
 
@@ -119,12 +132,13 @@ int main(void)
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
-  MX_I2C1_Init();
+  MX_DMA_Init();
   MX_TIM2_Init();
   MX_TIM8_Init();
   MX_ADC1_Init();
   MX_USB_DEVICE_Init();
   MX_DAC1_Init();
+  MX_I2C1_Init();
   MX_SPI1_Init();
   /* USER CODE BEGIN 2 */
   // 给变量分配存储空间
@@ -134,8 +148,6 @@ int main(void)
   signal_config_I = (pll_Config *)malloc(sizeof(pll_Config));
   // uint16_t temprature = 0;
   // float temp_result = 0;
-  // 串口输出数组
-  uint8_t textBuf[128] = {0};
   // 锁相环初始化
   pll_Init(signal_V, signal_config_V, 50, 20000); // 电压环
   pll_Init(signal_I, signal_config_I, 50, 20000); // 电流环
@@ -146,13 +158,15 @@ int main(void)
   HAL_Delay(200);
   HAL_ADCEx_Calibration_Start(&hadc1, ADC_CALIB_OFFSET, ADC_SINGLE_ENDED);
   HAL_ADCEx_Calibration_Start(&hadc1, ADC_CALIB_OFFSET_LINEARITY, ADC_SINGLE_ENDED); // 线性度校准
-  HAL_ADC_Start_DMA(&hadc1, (uint32_t *)adcBuf, 1);
+  HAL_ADC_Start_DMA(&hadc1, adcBuf, 2);
   HAL_Delay(1000);
-  // 打开互补SPWM波
+  // 打开PWM波
   HAL_TIM_PWM_Start(&htim8, TIM_CHANNEL_1);
-  HAL_TIMEx_PWMN_Start(&htim8, TIM_CHANNEL_1);
+  HAL_TIM_PWM_Start(&htim8, TIM_CHANNEL_2);
   // OLED初始化
   OLED_Init();
+  // INA238初始化
+  ina238_Init(&hi2c1, 0);
   // 开启中断
   HAL_TIM_Base_Start_IT(&htim2);
   /* USER CODE END 2 */
@@ -162,9 +176,8 @@ int main(void)
   while (1)
   {
     // 虚拟串口输出日志
-    sprintf((char *)textBuf, "test");
+    oled_Show();
     CDC_Transmit_FS((uint8_t *)textBuf, sizeof(textBuf));
-    OLED_ShowString(0, 0, textBuf);
     HAL_GPIO_TogglePin(GPIOI, GPIO_PIN_0);
     HAL_Delay(200);
     /* USER CODE END WHILE */
@@ -178,36 +191,32 @@ int main(void)
 }
 
 /**
- * @brief System Clock Configuration
- * @retval None
- */
+  * @brief System Clock Configuration
+  * @retval None
+  */
 void SystemClock_Config(void)
 {
   RCC_OscInitTypeDef RCC_OscInitStruct = {0};
   RCC_ClkInitTypeDef RCC_ClkInitStruct = {0};
 
   /** Supply configuration update enable
-   */
+  */
   HAL_PWREx_ConfigSupply(PWR_LDO_SUPPLY);
 
   /** Configure the main internal regulator output voltage
-   */
+  */
   __HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE1);
 
-  while (!__HAL_PWR_GET_FLAG(PWR_FLAG_VOSRDY))
-  {
-  }
+  while(!__HAL_PWR_GET_FLAG(PWR_FLAG_VOSRDY)) {}
 
   __HAL_RCC_SYSCFG_CLK_ENABLE();
   __HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE0);
 
-  while (!__HAL_PWR_GET_FLAG(PWR_FLAG_VOSRDY))
-  {
-  }
+  while(!__HAL_PWR_GET_FLAG(PWR_FLAG_VOSRDY)) {}
 
   /** Initializes the RCC Oscillators according to the specified parameters
-   * in the RCC_OscInitTypeDef structure.
-   */
+  * in the RCC_OscInitTypeDef structure.
+  */
   RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSE;
   RCC_OscInitStruct.HSEState = RCC_HSE_ON;
   RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
@@ -226,8 +235,10 @@ void SystemClock_Config(void)
   }
 
   /** Initializes the CPU, AHB and APB buses clocks
-   */
-  RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK | RCC_CLOCKTYPE_SYSCLK | RCC_CLOCKTYPE_PCLK1 | RCC_CLOCKTYPE_PCLK2 | RCC_CLOCKTYPE_D3PCLK1 | RCC_CLOCKTYPE_D1PCLK1;
+  */
+  RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK|RCC_CLOCKTYPE_SYSCLK
+                              |RCC_CLOCKTYPE_PCLK1|RCC_CLOCKTYPE_PCLK2
+                              |RCC_CLOCKTYPE_D3PCLK1|RCC_CLOCKTYPE_D1PCLK1;
   RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
   RCC_ClkInitStruct.SYSCLKDivider = RCC_SYSCLK_DIV1;
   RCC_ClkInitStruct.AHBCLKDivider = RCC_HCLK_DIV2;
@@ -246,7 +257,7 @@ void SystemClock_Config(void)
 
 /* USER CODE END 4 */
 
-/* MPU Configuration */
+ /* MPU Configuration */
 
 void MPU_Config(void)
 {
@@ -256,7 +267,7 @@ void MPU_Config(void)
   HAL_MPU_Disable();
 
   /** Initializes and configures the Region and the memory to be protected
-   */
+  */
   MPU_InitStruct.Enable = MPU_REGION_ENABLE;
   MPU_InitStruct.Number = MPU_REGION_NUMBER0;
   MPU_InitStruct.BaseAddress = 0x24000000;
@@ -272,7 +283,7 @@ void MPU_Config(void)
   HAL_MPU_ConfigRegion(&MPU_InitStruct);
 
   /** Initializes and configures the Region and the memory to be protected
-   */
+  */
   MPU_InitStruct.Number = MPU_REGION_NUMBER1;
   MPU_InitStruct.BaseAddress = 0x38000000;
   MPU_InitStruct.Size = MPU_REGION_SIZE_64KB;
@@ -282,7 +293,7 @@ void MPU_Config(void)
   HAL_MPU_ConfigRegion(&MPU_InitStruct);
 
   /** Initializes and configures the Region and the memory to be protected
-   */
+  */
   MPU_InitStruct.Number = MPU_REGION_NUMBER2;
   MPU_InitStruct.BaseAddress = 0x20000000;
   MPU_InitStruct.Size = MPU_REGION_SIZE_128KB;
@@ -290,40 +301,43 @@ void MPU_Config(void)
   HAL_MPU_ConfigRegion(&MPU_InitStruct);
   /* Enables the MPU */
   HAL_MPU_Enable(MPU_PRIVILEGED_DEFAULT);
+
 }
 
 /**
- * @brief  Period elapsed callback in non blocking mode
- * @note   This function is called  when TIM6 interrupt took place, inside
- * HAL_TIM_IRQHandler(). It makes a direct call to HAL_IncTick() to increment
- * a global variable "uwTick" used as application time base.
- * @param  htim : TIM handle
- * @retval None
- */
+  * @brief  Period elapsed callback in non blocking mode
+  * @note   This function is called  when TIM6 interrupt took place, inside
+  * HAL_TIM_IRQHandler(). It makes a direct call to HAL_IncTick() to increment
+  * a global variable "uwTick" used as application time base.
+  * @param  htim : TIM handle
+  * @retval None
+  */
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
   /* USER CODE BEGIN Callback 0 */
 
   /* USER CODE END Callback 0 */
-  if (htim->Instance == TIM6)
-  {
+  if (htim->Instance == TIM6) {
     HAL_IncTick();
   }
   /* USER CODE BEGIN Callback 1 */
   if (htim->Instance == TIM2)
   {
     // 缓存adcBuf
-    SCB_InvalidateDCache_by_Addr((uint32_t *)adcBuf, sizeof(adcBuf));
-    signal_V->u_0 = adcBuf[0] * 3.3f / 65536.0f - 1.4f;
-    signal_I->u_0 = adcBuf[1] * 3.3f / 65536.0f - 1.4f;
+    SCB_InvalidateDCache_by_Addr(adcBuf, sizeof(adcBuf));
+    signal_V->u_0 = adcBuf[0] * 3.3f / 65536.0f;
+    signal_I->u_0 = adcBuf[1] * 3.3f / 65536.0f;
     // 锁相控制
     pll_Control(signal_V, signal_config_V, signal_V); // 电压环
     pll_Control(signal_I, signal_config_I, signal_V); // 电流环
     // 调节SPWM占空比
     // 要想实现PFC，需要让电流相位与电压相位相同，而电压相位由电网控制，所以需要闭环控制的是电流相位
     __HAL_TIM_SET_COMPARE(&htim8, TIM_CHANNEL_1, M * (__HAL_TIM_GET_AUTORELOAD(&htim8) / 2.0f) * arm_sin_f32(signal_I->theta + PI / 2.f) + (__HAL_TIM_GET_AUTORELOAD(&htim8) / 2.0f));
+    // 反馈侧
+    __HAL_TIM_SET_COMPARE(&htim8, TIM_CHANNEL_2, M * (__HAL_TIM_GET_AUTORELOAD(&htim8) / 2.0f) * arm_sin_f32(signal_I->theta + PI / 2.f) + (__HAL_TIM_GET_AUTORELOAD(&htim8) / 2.0f));
     // todo: 控制中间直流电压
-
+    // static float dcVolt;
+    // dcVolt = ina238_GetVolt(&hi2c1);
     // DAC模拟输出，便于调试，不需要时可关闭
     // HAL_DAC_SetValue(&hdac1, DAC_CHANNEL_1, DAC_ALIGN_12B_R, 2000.f * arm_sin_f32(signal_1->theta + PI / 2.f) + 2048.f);
   }
@@ -331,9 +345,9 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 }
 
 /**
- * @brief  This function is executed in case of error occurrence.
- * @retval None
- */
+  * @brief  This function is executed in case of error occurrence.
+  * @retval None
+  */
 void Error_Handler(void)
 {
   /* USER CODE BEGIN Error_Handler_Debug */
@@ -345,14 +359,14 @@ void Error_Handler(void)
   /* USER CODE END Error_Handler_Debug */
 }
 
-#ifdef USE_FULL_ASSERT
+#ifdef  USE_FULL_ASSERT
 /**
- * @brief  Reports the name of the source file and the source line number
- *         where the assert_param error has occurred.
- * @param  file: pointer to the source file name
- * @param  line: assert_param error line source number
- * @retval None
- */
+  * @brief  Reports the name of the source file and the source line number
+  *         where the assert_param error has occurred.
+  * @param  file: pointer to the source file name
+  * @param  line: assert_param error line source number
+  * @retval None
+  */
 void assert_failed(uint8_t *file, uint32_t line)
 {
   /* USER CODE BEGIN 6 */

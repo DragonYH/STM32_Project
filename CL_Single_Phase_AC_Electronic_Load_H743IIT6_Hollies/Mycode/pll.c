@@ -18,7 +18,6 @@ void pll_Init(pll_Signal *signal, pll_Config *config, float f, uint16_t F)
 
     signal->sogi_a_1 = 0.f;
     signal->sogi_a_2 = 0.f;
-
     signal->sogi_b_1 = 0.f;
     signal->sogi_b_2 = 0.f;
 

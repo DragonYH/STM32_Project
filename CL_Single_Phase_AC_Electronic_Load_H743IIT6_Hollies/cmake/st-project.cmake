@@ -87,6 +87,7 @@ target_sources(
     ${TARGET_NAME} PRIVATE
     "Core\\Src\\adc.c"
     "Core\\Src\\dac.c"
+    "Core\\Src\\dma.c"
     "Core\\Src\\gpio.c"
     "Core\\Src\\i2c.c"
     "Core\\Src\\main.c"
