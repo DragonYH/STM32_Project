@@ -82,12 +82,23 @@ float M = 0.9f;
 uint8_t textBuf[128] = {0};
 void oled_Show()
 {
+  OLED_Clear();
   // IN:
-  sprintf((char *)textBuf, "IN:%4.2fV %4.2fA", signal_V->u_0, signal_I->u_0);
+  sprintf((char *)textBuf, "IN:%5.2fV %4.2fA", signal_V->u_0, signal_I->u_0);
   OLED_ShowString(0, 0, textBuf);
+  CDC_Transmit_FS((uint8_t *)textBuf, sizeof(textBuf));
   // OUT:
+  sprintf((char *)textBuf, "OT:%5.2fV %4.2fA", signal_V->u_0, signal_I->u_0);
+  OLED_ShowString(0, 2, textBuf);
+  CDC_Transmit_FS((uint8_t *)textBuf, sizeof(textBuf));
   // DC:
+  sprintf((char *)textBuf, "DC:%5.2fV", signal_V->u_0);
+  OLED_ShowString(0, 4, textBuf);
+  CDC_Transmit_FS((uint8_t *)textBuf, sizeof(textBuf));
   // FAC:
+  sprintf((char *)textBuf, "FA:%4.2fEF:%5.2f%%", 0.99, 99.99);
+  OLED_ShowString(0, 6, textBuf);
+  CDC_Transmit_FS((uint8_t *)textBuf, sizeof(textBuf));
   // EFF:
 }
 /* USER CODE END 0 */
@@ -158,7 +169,6 @@ int main(void)
   HAL_Delay(200);
   HAL_ADCEx_Calibration_Start(&hadc1, ADC_CALIB_OFFSET, ADC_SINGLE_ENDED);
   HAL_ADCEx_Calibration_Start(&hadc1, ADC_CALIB_OFFSET_LINEARITY, ADC_SINGLE_ENDED); // 线性度校准
-  HAL_ADC_Start_DMA(&hadc1, adcBuf, 2);
   HAL_Delay(1000);
   // 打开PWM波
   HAL_TIM_PWM_Start(&htim8, TIM_CHANNEL_1);
@@ -177,7 +187,6 @@ int main(void)
   {
     // 虚拟串口输出日志
     oled_Show();
-    CDC_Transmit_FS((uint8_t *)textBuf, sizeof(textBuf));
     HAL_GPIO_TogglePin(GPIOI, GPIO_PIN_0);
     HAL_Delay(200);
     /* USER CODE END WHILE */
@@ -324,8 +333,9 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
   if (htim->Instance == TIM2)
   {
     // 缓存adcBuf
+    HAL_ADC_Start_DMA(&hadc1, adcBuf, 2);
     SCB_InvalidateDCache_by_Addr(adcBuf, sizeof(adcBuf));
-    signal_V->u_0 = adcBuf[0] * 3.3f / 65536.0f;
+    signal_V->u_0 = adcBuf[0] * 33.f / 65536.0f;
     signal_I->u_0 = adcBuf[1] * 3.3f / 65536.0f;
     // 锁相控制
     pll_Control(signal_V, signal_config_V, signal_V); // 电压环
