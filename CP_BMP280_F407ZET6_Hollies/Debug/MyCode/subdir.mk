@@ -1,17 +1,20 @@
 ################################################################################
 # Automatically-generated file. Do not edit!
-# Toolchain: GNU Tools for STM32 (11.3.rel1)
+# Toolchain: GNU Tools for STM32 (12.3.rel1)
 ################################################################################
 
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS += \
-../MyCode/bmp280.c 
+../MyCode/bmp280.c \
+../MyCode/oled_spi.c 
 
 OBJS += \
-./MyCode/bmp280.o 
+./MyCode/bmp280.o \
+./MyCode/oled_spi.o 
 
 C_DEPS += \
-./MyCode/bmp280.d 
+./MyCode/bmp280.d \
+./MyCode/oled_spi.d 
 
 
 # Each subdirectory must supply rules for building sources it contributes
@@ -21,7 +24,7 @@ MyCode/%.o MyCode/%.su MyCode/%.cyclo: ../MyCode/%.c MyCode/subdir.mk
 clean: clean-MyCode
 
 clean-MyCode:
-	-$(RM) ./MyCode/bmp280.cyclo ./MyCode/bmp280.d ./MyCode/bmp280.o ./MyCode/bmp280.su
+	-$(RM) ./MyCode/bmp280.cyclo ./MyCode/bmp280.d ./MyCode/bmp280.o ./MyCode/bmp280.su ./MyCode/oled_spi.cyclo ./MyCode/oled_spi.d ./MyCode/oled_spi.o ./MyCode/oled_spi.su
 
 .PHONY: clean-MyCode
 
