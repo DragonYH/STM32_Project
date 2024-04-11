@@ -87,6 +87,7 @@ target_sources(
     ${TARGET_NAME} PRIVATE
     "Core\\Src\\adc.c"
     "Core\\Src\\dac.c"
+    "Core\\Src\\dma.c"
     "Core\\Src\\gpio.c"
     "Core\\Src\\i2c.c"
     "Core\\Src\\main.c"
@@ -103,6 +104,7 @@ target_sources(
     "Middlewares\\ST\\STM32_USB_Device_Library\\Core\\Src\\usbd_core.c"
     "Middlewares\\ST\\STM32_USB_Device_Library\\Core\\Src\\usbd_ctlreq.c"
     "Middlewares\\ST\\STM32_USB_Device_Library\\Core\\Src\\usbd_ioreq.c"
+    "Mycode\\ina238.c"
     "Mycode\\oled_spi.c"
     "Mycode\\pll.c"
     "Drivers\\STM32H7xx_HAL_Driver\\Src\\stm32h7xx_hal_adc_ex.c"

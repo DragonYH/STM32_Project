@@ -1,0 +1,5 @@
+../Mycode/ina238.c:8:6:ina238_Init	40	static
+../Mycode/ina238.c:26:7:ina238_GetVolt	40	static
+../Mycode/ina238.c:45:7:ina238_GetCurrent	40	static
+../Mycode/ina238.c:64:7:ina238_GetPower	40	static
+../Mycode/ina238.c:79:7:ina238_GetTemperature	40	static
