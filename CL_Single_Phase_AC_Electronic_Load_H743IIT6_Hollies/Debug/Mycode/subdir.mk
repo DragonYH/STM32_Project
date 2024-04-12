@@ -5,16 +5,19 @@
 
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS += \
+../Mycode/ad7606.c \
 ../Mycode/ina238.c \
 ../Mycode/oled_spi.c \
 ../Mycode/pll.c 
 
 OBJS += \
+./Mycode/ad7606.o \
 ./Mycode/ina238.o \
 ./Mycode/oled_spi.o \
 ./Mycode/pll.o 
 
 C_DEPS += \
+./Mycode/ad7606.d \
 ./Mycode/ina238.d \
 ./Mycode/oled_spi.d \
 ./Mycode/pll.d 
@@ -27,7 +30,7 @@ Mycode/%.o Mycode/%.su Mycode/%.cyclo: ../Mycode/%.c Mycode/subdir.mk
 clean: clean-Mycode
 
 clean-Mycode:
-	-$(RM) ./Mycode/ina238.cyclo ./Mycode/ina238.d ./Mycode/ina238.o ./Mycode/ina238.su ./Mycode/oled_spi.cyclo ./Mycode/oled_spi.d ./Mycode/oled_spi.o ./Mycode/oled_spi.su ./Mycode/pll.cyclo ./Mycode/pll.d ./Mycode/pll.o ./Mycode/pll.su
+	-$(RM) ./Mycode/ad7606.cyclo ./Mycode/ad7606.d ./Mycode/ad7606.o ./Mycode/ad7606.su ./Mycode/ina238.cyclo ./Mycode/ina238.d ./Mycode/ina238.o ./Mycode/ina238.su ./Mycode/oled_spi.cyclo ./Mycode/oled_spi.d ./Mycode/oled_spi.o ./Mycode/oled_spi.su ./Mycode/pll.cyclo ./Mycode/pll.d ./Mycode/pll.o ./Mycode/pll.su
 
 .PHONY: clean-Mycode
 
