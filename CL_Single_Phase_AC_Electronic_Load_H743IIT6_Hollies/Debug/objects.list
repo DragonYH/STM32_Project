@@ -46,7 +46,7 @@
 "./Middlewares/ST/STM32_USB_Device_Library/Core/Src/usbd_ioreq.o"
 "./Mycode/ad7606.o"
 "./Mycode/ina238.o"
-"./Mycode/oled_spi.o"
+"./Mycode/oled.o"
 "./Mycode/pll.o"
 "./USB_DEVICE/App/usb_device.o"
 "./USB_DEVICE/App/usbd_cdc_if.o"
