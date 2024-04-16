@@ -1,0 +1,2 @@
+../Mycode/bc26.c:7:6:bc26_Init	4	static
+../Mycode/bc26.c:15:6:bc26_MQTT_Connect	8	static

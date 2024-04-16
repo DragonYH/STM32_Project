@@ -14,5 +14,5 @@ void bc26_Init(void)
  */
 void bc26_MQTT_Connect(void)
 {
-    HAL_UART_Transmit(&huart1, "AT+QMTOPEN=0,\"gifthub.cn\",1883", strlen("AT+QMTOPEN=0,\"gifthub.cn\",1883"), 1000);
+    HAL_UART_Transmit(&huart3, "AT+QMTOPEN=0,\"gifthub.cn\",1883", strlen("AT+QMTOPEN=0,\"gifthub.cn\",1883"), 1000);
 }
