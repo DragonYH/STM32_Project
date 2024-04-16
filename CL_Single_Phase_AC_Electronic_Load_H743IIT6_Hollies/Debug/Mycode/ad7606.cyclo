@@ -1,0 +1,6 @@
+../Mycode/ad7606.c:7:6:ad7606_Init	1
+../Mycode/ad7606.c:21:6:ad7606_Read	1
+../Mycode/ad7606.c:32:6:ad7606_Start	1
+../Mycode/ad7606.c:41:6:ad7606_Stop	1
+../Mycode/ad7606.c:52:6:ad7606_Convert	3
+../Mycode/ad7606.c:66:6:ad7606_GetValue	1

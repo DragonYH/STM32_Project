@@ -76,8 +76,8 @@ void pll_Pid(pll_Signal *signal, pll_Config *config)
     // 限制调参幅度，防止跑飞
     if (signal->pid_out > 50 * PI)
         signal->pid_out = 50 * PI;
-    else if (signal->pid_out < -20 * PI)
-        signal->pid_out = -20 * PI;
+    else if (signal->pid_out < -50 * PI)
+        signal->pid_out = -50 * PI;
 
     signal->pid_err[1] = signal->pid_err[0];
 }

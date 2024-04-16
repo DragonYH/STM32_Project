@@ -1,4 +1,4 @@
-Mycode/oled_spi.o: ../Mycode/oled_spi.c ../Mycode/Include/oled_spi.h \
+Mycode/oled.o: ../Mycode/oled.c ../Mycode/Include/oled.h \
  ../Core/Inc/main.h ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal.h \
  ../Core/Inc/stm32h7xx_hal_conf.h \
  ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_rcc.h \
@@ -39,8 +39,9 @@ Mycode/oled_spi.o: ../Mycode/oled_spi.c ../Mycode/Include/oled_spi.h \
  ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_pcd.h \
  ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_ll_usb.h \
  ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_pcd_ex.h \
- ../Mycode/Include/oledfont.h ../Core/Inc/spi.h ../Core/Inc/main.h
-../Mycode/Include/oled_spi.h:
+ ../Core/Inc/gpio.h ../Core/Inc/main.h ../Mycode/Include/oledfont.h \
+ ../Core/Inc/spi.h
+../Mycode/Include/oled.h:
 ../Core/Inc/main.h:
 ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal.h:
 ../Core/Inc/stm32h7xx_hal_conf.h:
@@ -82,6 +83,7 @@ Mycode/oled_spi.o: ../Mycode/oled_spi.c ../Mycode/Include/oled_spi.h \
 ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_pcd.h:
 ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_ll_usb.h:
 ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_pcd_ex.h:
+../Core/Inc/gpio.h:
+../Core/Inc/main.h:
 ../Mycode/Include/oledfont.h:
 ../Core/Inc/spi.h:
-../Core/Inc/main.h:
