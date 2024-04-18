@@ -3,11 +3,10 @@
 
 /**
  * @brief 信号参数初始化
- *
- * @param signal: 信号指针
- * @param config: 配置指针
- * @param f: 信号频率(典型值:50)
- * @param F: 采样频率(典型值:20000)
+ * @param signal 信号指针
+ * @param config 配置指针
+ * @param f 信号频率(典型值:50)
+ * @param F 采样频率(典型值:20000)
  */
 void pll_Init(pll_Signal *signal, pll_Config *config, float f, uint16_t F)
 {
@@ -44,10 +43,9 @@ void pll_Init(pll_Signal *signal, pll_Config *config, float f, uint16_t F)
 }
 /**
  * @brief 锁相控制
- *
- * @param signal_In: 信号指针
- * @param config: 配置指针
- * @param signal_Target: 目标信号指针
+ * @param signal_In 信号指针
+ * @param config 配置指针
+ * @param signal_Target 目标信号指针
  */
 void pll_Control(pll_Signal *signal_In, pll_Config *config, pll_Signal *signal_Target)
 {
@@ -65,27 +63,24 @@ void pll_Control(pll_Signal *signal_In, pll_Config *config, pll_Signal *signal_T
 }
 /**
  * @brief PI控制器
- *
- * @param signal: 信号指针
- * @param config: 配置指针
+ * @param signal 信号指针
+ * @param config 配置指针
  */
 void pll_Pid(pll_Signal *signal, pll_Config *config)
 {
     signal->pid_err[0] = signal->park_q - config->phase;
-    signal->pid_out = signal->pid_out + config->pid_kp * (signal->pid_err[0] - signal->pid_err[1]) + config->pid_ki * signal->pid_err[0];
+    signal->pid_out += config->pid_kp * (signal->pid_err[0] - signal->pid_err[1]) + config->pid_ki * signal->pid_err[0];
+    signal->pid_err[1] = signal->pid_err[0];
     // 限制调参幅度，防止跑飞
     if (signal->pid_out > 50 * PI)
         signal->pid_out = 50 * PI;
     else if (signal->pid_out < -50 * PI)
         signal->pid_out = -50 * PI;
-
-    signal->pid_err[1] = signal->pid_err[0];
 }
 /**
  * @brief 回收空间
- *
- * @param signal: 信号指针
- * @param config: 配置指针
+ * @param signal 信号指针
+ * @param config 配置指针
  */
 void pll_Clear(pll_Signal *signal, pll_Config *config)
 {
@@ -95,8 +90,7 @@ void pll_Clear(pll_Signal *signal, pll_Config *config)
 
 /**
  * @brief Sogi变换
- *
- * @param signal: 信号指针
+ * @param signal 信号指针
  */
 void pll_Sogi(pll_Signal *signal)
 {

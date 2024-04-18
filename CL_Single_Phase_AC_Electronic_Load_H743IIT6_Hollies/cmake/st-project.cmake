@@ -16,17 +16,15 @@ target_compile_definitions(
 
 target_include_directories(
     ${TARGET_NAME} PRIVATE
-    "$<$<AND:$<CONFIG:Debug>,$<COMPILE_LANGUAGE:C>>:${PROJECT_SOURCE_DIR}/Core\\Inc>"
     "$<$<AND:$<CONFIG:Debug>,$<COMPILE_LANGUAGE:C>>:${PROJECT_SOURCE_DIR}/Drivers\\STM32H7xx_HAL_Driver\\Inc>"
     "$<$<AND:$<CONFIG:Debug>,$<COMPILE_LANGUAGE:C>>:${PROJECT_SOURCE_DIR}/Drivers\\STM32H7xx_HAL_Driver\\Inc\\Legacy>"
     "$<$<AND:$<CONFIG:Debug>,$<COMPILE_LANGUAGE:C>>:${PROJECT_SOURCE_DIR}/Drivers\\CMSIS\\Device\\ST\\STM32H7xx\\Include>"
     "$<$<AND:$<CONFIG:Debug>,$<COMPILE_LANGUAGE:C>>:${PROJECT_SOURCE_DIR}/Drivers\\CMSIS\\Include>"
-    "$<$<AND:$<CONFIG:Debug>,$<COMPILE_LANGUAGE:C>>:${PROJECT_SOURCE_DIR}/USB_DEVICE\\App>"
-    "$<$<AND:$<CONFIG:Debug>,$<COMPILE_LANGUAGE:C>>:${PROJECT_SOURCE_DIR}/USB_DEVICE\\Target>"
     "$<$<AND:$<CONFIG:Debug>,$<COMPILE_LANGUAGE:C>>:${PROJECT_SOURCE_DIR}/Middlewares\\ST\\STM32_USB_Device_Library\\Core\\Inc>"
     "$<$<AND:$<CONFIG:Debug>,$<COMPILE_LANGUAGE:C>>:${PROJECT_SOURCE_DIR}/Middlewares\\ST\\STM32_USB_Device_Library\\Class\\CDC\\Inc>"
     "$<$<AND:$<CONFIG:Debug>,$<COMPILE_LANGUAGE:C>>:${PROJECT_SOURCE_DIR}/Drivers\\CMSIS\\DSP\\Include>"
     "$<$<AND:$<CONFIG:Debug>,$<COMPILE_LANGUAGE:C>>:${PROJECT_SOURCE_DIR}/Mycode\\Include>"
+    "$<$<AND:$<CONFIG:Debug>,$<COMPILE_LANGUAGE:C>>:${PROJECT_SOURCE_DIR}/Inc>"
     "$<$<AND:$<NOT:$<CONFIG:Debug>>,$<COMPILE_LANGUAGE:C>>:${PROJECT_SOURCE_DIR}/Core\\Inc>"
     "$<$<AND:$<NOT:$<CONFIG:Debug>>,$<COMPILE_LANGUAGE:C>>:${PROJECT_SOURCE_DIR}/Drivers\\STM32H7xx_HAL_Driver\\Inc>"
     "$<$<AND:$<NOT:$<CONFIG:Debug>>,$<COMPILE_LANGUAGE:C>>:${PROJECT_SOURCE_DIR}/Drivers\\STM32H7xx_HAL_Driver\\Inc\\Legacy>"
@@ -36,6 +34,7 @@ target_include_directories(
     "$<$<AND:$<NOT:$<CONFIG:Debug>>,$<COMPILE_LANGUAGE:C>>:${PROJECT_SOURCE_DIR}/USB_DEVICE\\Target>"
     "$<$<AND:$<NOT:$<CONFIG:Debug>>,$<COMPILE_LANGUAGE:C>>:${PROJECT_SOURCE_DIR}/Middlewares\\ST\\STM32_USB_Device_Library\\Core\\Inc>"
     "$<$<AND:$<NOT:$<CONFIG:Debug>>,$<COMPILE_LANGUAGE:C>>:${PROJECT_SOURCE_DIR}/Middlewares\\ST\\STM32_USB_Device_Library\\Class\\CDC\\Inc>"
+    "$<$<AND:$<NOT:$<CONFIG:Debug>>,$<COMPILE_LANGUAGE:C>>:${PROJECT_SOURCE_DIR}/Inc>"
 )
 
 target_compile_options(
@@ -85,21 +84,23 @@ target_link_options(
 
 target_sources(
     ${TARGET_NAME} PRIVATE
-    "Core\\Src\\adc.c"
-    "Core\\Src\\dac.c"
-    "Core\\Src\\dma.c"
-    "Core\\Src\\gpio.c"
-    "Core\\Src\\i2c.c"
-    "Core\\Src\\main.c"
-    "Core\\Src\\spi.c"
-    "Core\\Src\\stm32h7xx_hal_msp.c"
-    "Core\\Src\\stm32h7xx_hal_timebase_tim.c"
-    "Core\\Src\\stm32h7xx_it.c"
-    "Core\\Src\\syscalls.c"
-    "Core\\Src\\sysmem.c"
-    "Core\\Src\\system_stm32h7xx.c"
-    "Core\\Src\\tim.c"
     "Core\\Startup\\startup_stm32h743iitx.s"
+    "Src\\adc.c"
+    "Src\\dac.c"
+    "Src\\dma.c"
+    "Src\\gpio.c"
+    "Src\\i2c.c"
+    "Src\\main.c"
+    "Src\\spi.c"
+    "Src\\stm32h7xx_hal_msp.c"
+    "Src\\stm32h7xx_hal_timebase_tim.c"
+    "Src\\stm32h7xx_it.c"
+    "Src\\system_stm32h7xx.c"
+    "Src\\tim.c"
+    "Src\\usb_device.c"
+    "Src\\usbd_cdc_if.c"
+    "Src\\usbd_conf.c"
+    "Src\\usbd_desc.c"
     "Middlewares\\ST\\STM32_USB_Device_Library\\Class\\CDC\\Src\\usbd_cdc.c"
     "Middlewares\\ST\\STM32_USB_Device_Library\\Core\\Src\\usbd_core.c"
     "Middlewares\\ST\\STM32_USB_Device_Library\\Core\\Src\\usbd_ctlreq.c"
@@ -107,6 +108,7 @@ target_sources(
     "Mycode\\ad7606.c"
     "Mycode\\ina238.c"
     "Mycode\\oled.c"
+    "Mycode\\pid.c"
     "Mycode\\pll.c"
     "Drivers\\STM32H7xx_HAL_Driver\\Src\\stm32h7xx_hal_adc_ex.c"
     "Drivers\\STM32H7xx_HAL_Driver\\Src\\stm32h7xx_hal_adc.c"
@@ -135,10 +137,6 @@ target_sources(
     "Drivers\\STM32H7xx_HAL_Driver\\Src\\stm32h7xx_hal_tim.c"
     "Drivers\\STM32H7xx_HAL_Driver\\Src\\stm32h7xx_hal.c"
     "Drivers\\STM32H7xx_HAL_Driver\\Src\\stm32h7xx_ll_usb.c"
-    "USB_DEVICE\\App\\usb_device.c"
-    "USB_DEVICE\\App\\usbd_cdc_if.c"
-    "USB_DEVICE\\App\\usbd_desc.c"
-    "USB_DEVICE\\Target\\usbd_conf.c"
 )
 
 add_custom_command(

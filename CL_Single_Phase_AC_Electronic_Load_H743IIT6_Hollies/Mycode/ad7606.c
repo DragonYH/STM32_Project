@@ -1,8 +1,7 @@
 #include "ad7606.h"
 
 /**
- * @brief  AD7606初始化
- *
+ * @brief AD7606初始化
  */
 void ad7606_Init(void)
 {
@@ -36,7 +35,7 @@ void ad7606_Start(TIM_HandleTypeDef *htim, uint32_t channel)
 /**
  * @brief 停止AD7606
  * @param htim PWM产生的时钟
- *  @param channel PWM产生的通道
+ * @param channel PWM产生的通道
  */
 void ad7606_Stop(TIM_HandleTypeDef *htim, uint32_t channel)
 {

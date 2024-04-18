@@ -2,8 +2,8 @@
 
 /**
  * @brief  INA238初始化
- * @param  hi2c: I2C句柄
- * @param  error: 误差纠正
+ * @param  hi2c I2C句柄
+ * @param  error 误差纠正
  */
 void ina238_Init(I2C_HandleTypeDef *hi2c, int8_t error)
 {
@@ -20,7 +20,7 @@ void ina238_Init(I2C_HandleTypeDef *hi2c, int8_t error)
 }
 /**
  * @brief  INA238读取电压
- * @param  hi2c: I2C句柄
+ * @param  hi2c I2C句柄
  * @retval 电压值
  */
 float ina238_GetVolt(I2C_HandleTypeDef *hi2c)
@@ -39,7 +39,7 @@ float ina238_GetVolt(I2C_HandleTypeDef *hi2c)
 }
 /**
  * @brief  INA238读取电流
- * @param  hi2c: I2C句柄
+ * @param  hi2c I2C句柄
  * @retval 电流值
  */
 float ina238_GetCurrent(I2C_HandleTypeDef *hi2c)
@@ -58,7 +58,7 @@ float ina238_GetCurrent(I2C_HandleTypeDef *hi2c)
 }
 /**
  * @brief  INA238读取功率
- * @param  hi2c: I2C句柄
+ * @param  hi2c I2C句柄
  * @retval 功率值
  */
 float ina238_GetPower(I2C_HandleTypeDef *hi2c)
@@ -73,7 +73,7 @@ float ina238_GetPower(I2C_HandleTypeDef *hi2c)
 }
 /**
  * @brief  INA238读取温度
- * @param  hi2c: I2C句柄
+ * @param  hi2c I2C句柄
  * @retval 温度值
  */
 float ina238_GetTemperature(I2C_HandleTypeDef *hi2c)
