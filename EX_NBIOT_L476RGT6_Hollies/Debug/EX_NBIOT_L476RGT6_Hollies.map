@@ -3236,18 +3236,98 @@ Discarded input sections
  .debug_macro   0x00000000       0x44 ./Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_uart_ex.o
  .debug_macro   0x00000000      0x330 ./Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_uart_ex.o
  .group         0x00000000        0xc ./Mycode/bc26.o
+ .group         0x00000000        0xc ./Mycode/bc26.o
+ .group         0x00000000        0xc ./Mycode/bc26.o
+ .group         0x00000000        0xc ./Mycode/bc26.o
+ .group         0x00000000        0xc ./Mycode/bc26.o
+ .group         0x00000000        0xc ./Mycode/bc26.o
+ .group         0x00000000        0xc ./Mycode/bc26.o
+ .group         0x00000000        0xc ./Mycode/bc26.o
+ .group         0x00000000        0xc ./Mycode/bc26.o
+ .group         0x00000000        0xc ./Mycode/bc26.o
+ .group         0x00000000        0xc ./Mycode/bc26.o
+ .group         0x00000000        0xc ./Mycode/bc26.o
+ .group         0x00000000        0xc ./Mycode/bc26.o
+ .group         0x00000000        0xc ./Mycode/bc26.o
+ .group         0x00000000        0xc ./Mycode/bc26.o
+ .group         0x00000000        0xc ./Mycode/bc26.o
+ .group         0x00000000        0xc ./Mycode/bc26.o
+ .group         0x00000000        0xc ./Mycode/bc26.o
+ .group         0x00000000        0xc ./Mycode/bc26.o
+ .group         0x00000000        0xc ./Mycode/bc26.o
+ .group         0x00000000        0xc ./Mycode/bc26.o
+ .group         0x00000000        0xc ./Mycode/bc26.o
+ .group         0x00000000        0xc ./Mycode/bc26.o
+ .group         0x00000000        0xc ./Mycode/bc26.o
+ .group         0x00000000        0xc ./Mycode/bc26.o
+ .group         0x00000000        0xc ./Mycode/bc26.o
+ .group         0x00000000        0xc ./Mycode/bc26.o
+ .group         0x00000000        0xc ./Mycode/bc26.o
+ .group         0x00000000        0xc ./Mycode/bc26.o
+ .group         0x00000000        0xc ./Mycode/bc26.o
+ .group         0x00000000        0xc ./Mycode/bc26.o
+ .group         0x00000000        0xc ./Mycode/bc26.o
+ .group         0x00000000        0xc ./Mycode/bc26.o
+ .group         0x00000000        0xc ./Mycode/bc26.o
+ .group         0x00000000        0xc ./Mycode/bc26.o
+ .group         0x00000000        0xc ./Mycode/bc26.o
+ .group         0x00000000        0xc ./Mycode/bc26.o
  .text          0x00000000        0x0 ./Mycode/bc26.o
  .data          0x00000000        0x0 ./Mycode/bc26.o
  .bss           0x00000000        0x0 ./Mycode/bc26.o
- .debug_info    0x00000000       0x22 ./Mycode/bc26.o
- .debug_abbrev  0x00000000       0x12 ./Mycode/bc26.o
+ .text.bc26_Init
+                0x00000000        0xe ./Mycode/bc26.o
+ .rodata        0x00000000       0x1f ./Mycode/bc26.o
+ .text.bc26_MQTT_Connect
+                0x00000000       0x20 ./Mycode/bc26.o
+ .debug_info    0x00000000      0x712 ./Mycode/bc26.o
+ .debug_abbrev  0x00000000      0x172 ./Mycode/bc26.o
  .debug_aranges
-                0x00000000       0x18 ./Mycode/bc26.o
- .debug_macro   0x00000000       0x11 ./Mycode/bc26.o
+                0x00000000       0x28 ./Mycode/bc26.o
+ .debug_rnglists
+                0x00000000       0x19 ./Mycode/bc26.o
+ .debug_macro   0x00000000      0x1dd ./Mycode/bc26.o
  .debug_macro   0x00000000      0xab4 ./Mycode/bc26.o
- .debug_line    0x00000000       0x31 ./Mycode/bc26.o
- .debug_str     0x00000000     0x2df2 ./Mycode/bc26.o
+ .debug_macro   0x00000000       0x28 ./Mycode/bc26.o
+ .debug_macro   0x00000000      0x1a7 ./Mycode/bc26.o
+ .debug_macro   0x00000000       0x2e ./Mycode/bc26.o
+ .debug_macro   0x00000000       0x28 ./Mycode/bc26.o
+ .debug_macro   0x00000000       0x22 ./Mycode/bc26.o
+ .debug_macro   0x00000000       0x8e ./Mycode/bc26.o
+ .debug_macro   0x00000000       0x51 ./Mycode/bc26.o
+ .debug_macro   0x00000000      0x103 ./Mycode/bc26.o
+ .debug_macro   0x00000000       0x6a ./Mycode/bc26.o
+ .debug_macro   0x00000000      0x1df ./Mycode/bc26.o
+ .debug_macro   0x00000000       0x1c ./Mycode/bc26.o
+ .debug_macro   0x00000000       0x22 ./Mycode/bc26.o
+ .debug_macro   0x00000000       0xfb ./Mycode/bc26.o
+ .debug_macro   0x00000000     0x1011 ./Mycode/bc26.o
+ .debug_macro   0x00000000      0x11f ./Mycode/bc26.o
+ .debug_macro   0x00000000    0x1a17a ./Mycode/bc26.o
+ .debug_macro   0x00000000       0x6d ./Mycode/bc26.o
+ .debug_macro   0x00000000     0x38e6 ./Mycode/bc26.o
+ .debug_macro   0x00000000      0x189 ./Mycode/bc26.o
+ .debug_macro   0x00000000       0x5c ./Mycode/bc26.o
+ .debug_macro   0x00000000     0x159e ./Mycode/bc26.o
+ .debug_macro   0x00000000      0x5a5 ./Mycode/bc26.o
+ .debug_macro   0x00000000      0x1b9 ./Mycode/bc26.o
+ .debug_macro   0x00000000      0x18b ./Mycode/bc26.o
+ .debug_macro   0x00000000      0x26b ./Mycode/bc26.o
+ .debug_macro   0x00000000      0x23d ./Mycode/bc26.o
+ .debug_macro   0x00000000      0x241 ./Mycode/bc26.o
+ .debug_macro   0x00000000      0x37c ./Mycode/bc26.o
+ .debug_macro   0x00000000       0xd6 ./Mycode/bc26.o
+ .debug_macro   0x00000000      0x122 ./Mycode/bc26.o
+ .debug_macro   0x00000000      0x3ef ./Mycode/bc26.o
+ .debug_macro   0x00000000      0xa98 ./Mycode/bc26.o
+ .debug_macro   0x00000000      0x1e6 ./Mycode/bc26.o
+ .debug_macro   0x00000000      0x5cf ./Mycode/bc26.o
+ .debug_macro   0x00000000       0x44 ./Mycode/bc26.o
+ .debug_macro   0x00000000      0x330 ./Mycode/bc26.o
+ .debug_line    0x00000000      0x784 ./Mycode/bc26.o
+ .debug_str     0x00000000    0xea52d ./Mycode/bc26.o
  .comment       0x00000000       0x44 ./Mycode/bc26.o
+ .debug_frame   0x00000000       0x4c ./Mycode/bc26.o
  .ARM.attributes
                 0x00000000       0x34 ./Mycode/bc26.o
  .text          0x00000000        0x0 C:/ST/STM32CubeIDE_1.14.1/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.12.3.rel1.win32_1.0.100.202403111256/tools/bin/../lib/gcc/arm-none-eabi/12.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libc_nano.a(libc_a-exit.o)
@@ -3623,9 +3703,9 @@ LOAD C:/ST/STM32CubeIDE_1.14.1/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.ext
  .text.SysTick_Handler
                 0x080008ce        0xe ./Core/Src/stm32l4xx_it.o
                 0x080008ce                SysTick_Handler
- .text.DMA1_Channel5_IRQHandler
+ .text.DMA1_Channel3_IRQHandler
                 0x080008dc       0x14 ./Core/Src/stm32l4xx_it.o
-                0x080008dc                DMA1_Channel5_IRQHandler
+                0x080008dc                DMA1_Channel3_IRQHandler
  .text.DMA1_Channel6_IRQHandler
                 0x080008f0       0x14 ./Core/Src/stm32l4xx_it.o
                 0x080008f0                DMA1_Channel6_IRQHandler
@@ -3635,12 +3715,12 @@ LOAD C:/ST/STM32CubeIDE_1.14.1/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.ext
  .text.TIM2_IRQHandler
                 0x08000918       0x14 ./Core/Src/stm32l4xx_it.o
                 0x08000918                TIM2_IRQHandler
- .text.USART1_IRQHandler
-                0x0800092c       0x14 ./Core/Src/stm32l4xx_it.o
-                0x0800092c                USART1_IRQHandler
  .text.USART2_IRQHandler
+                0x0800092c       0x14 ./Core/Src/stm32l4xx_it.o
+                0x0800092c                USART2_IRQHandler
+ .text.USART3_IRQHandler
                 0x08000940       0x14 ./Core/Src/stm32l4xx_it.o
-                0x08000940                USART2_IRQHandler
+                0x08000940                USART3_IRQHandler
  .text.TIM6_DAC_IRQHandler
                 0x08000954       0x14 ./Core/Src/stm32l4xx_it.o
                 0x08000954                TIM6_DAC_IRQHandler
@@ -3656,12 +3736,12 @@ LOAD C:/ST/STM32CubeIDE_1.14.1/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.ext
  .text.HAL_TIM_Base_MspInit
                 0x08000ad0       0x80 ./Core/Src/tim.o
                 0x08000ad0                HAL_TIM_Base_MspInit
- .text.MX_USART1_UART_Init
-                0x08000b50       0x60 ./Core/Src/usart.o
-                0x08000b50                MX_USART1_UART_Init
  .text.MX_USART2_UART_Init
+                0x08000b50       0x60 ./Core/Src/usart.o
+                0x08000b50                MX_USART2_UART_Init
+ .text.MX_USART3_UART_Init
                 0x08000bb0       0x60 ./Core/Src/usart.o
-                0x08000bb0                MX_USART2_UART_Init
+                0x08000bb0                MX_USART3_UART_Init
  .text.HAL_UART_MspInit
                 0x08000c10      0x218 ./Core/Src/usart.o
                 0x08000c10                HAL_UART_MspInit
@@ -3693,7 +3773,6 @@ LOAD C:/ST/STM32CubeIDE_1.14.1/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.ext
                 0x08000e78                DMA1_Channel4_IRQHandler
                 0x08000e78                SAI2_IRQHandler
                 0x08000e78                DFSDM1_FLT3_IRQHandler
-                0x08000e78                USART3_IRQHandler
                 0x08000e78                DMA1_Channel7_IRQHandler
                 0x08000e78                CAN1_RX1_IRQHandler
                 0x08000e78                LCD_IRQHandler
@@ -3721,10 +3800,10 @@ LOAD C:/ST/STM32CubeIDE_1.14.1/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.ext
                 0x08000e78                SPI2_IRQHandler
                 0x08000e78                CAN1_TX_IRQHandler
                 0x08000e78                DMA2_Channel5_IRQHandler
+                0x08000e78                DMA1_Channel5_IRQHandler
                 0x08000e78                EXTI4_IRQHandler
                 0x08000e78                RNG_IRQHandler
                 0x08000e78                TIM1_TRG_COM_TIM17_IRQHandler
-                0x08000e78                DMA1_Channel3_IRQHandler
                 0x08000e78                COMP_IRQHandler
                 0x08000e78                WWDG_IRQHandler
                 0x08000e78                LPUART1_IRQHandler
@@ -3736,6 +3815,7 @@ LOAD C:/ST/STM32CubeIDE_1.14.1/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.ext
                 0x08000e78                TIM8_BRK_IRQHandler
                 0x08000e78                CAN1_SCE_IRQHandler
                 0x08000e78                FLASH_IRQHandler
+                0x08000e78                USART1_IRQHandler
                 0x08000e78                OTG_FS_IRQHandler
                 0x08000e78                SPI3_IRQHandler
                 0x08000e78                I2C1_ER_IRQHandler
@@ -4069,16 +4149,16 @@ LOAD C:/ST/STM32CubeIDE_1.14.1/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.ext
                 0x20000474                htim1
  .bss.htim2     0x200004c0       0x4c ./Core/Src/tim.o
                 0x200004c0                htim2
- .bss.huart1    0x2000050c       0x88 ./Core/Src/usart.o
-                0x2000050c                huart1
- .bss.huart2    0x20000594       0x88 ./Core/Src/usart.o
-                0x20000594                huart2
- .bss.hdma_usart1_rx
-                0x2000061c       0x48 ./Core/Src/usart.o
-                0x2000061c                hdma_usart1_rx
+ .bss.huart2    0x2000050c       0x88 ./Core/Src/usart.o
+                0x2000050c                huart2
+ .bss.huart3    0x20000594       0x88 ./Core/Src/usart.o
+                0x20000594                huart3
  .bss.hdma_usart2_rx
+                0x2000061c       0x48 ./Core/Src/usart.o
+                0x2000061c                hdma_usart2_rx
+ .bss.hdma_usart3_rx
                 0x20000664       0x48 ./Core/Src/usart.o
-                0x20000664                hdma_usart2_rx
+                0x20000664                hdma_usart3_rx
  .bss.uwTick    0x200006ac        0x4 ./Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal.o
                 0x200006ac                uwTick
  *(COMMON)
