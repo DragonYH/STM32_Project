@@ -9,10 +9,10 @@
 #define AD7606_RST_RESET() HAL_GPIO_WritePin(AD7606_RST_GPIO_Port, AD7606_RST_Pin, GPIO_PIN_RESET)
 
 void ad7606_Init(void);
-void ad7606_Read(SPI_HandleTypeDef *hspi, uint16_t *data, uint16_t channel);
+void ad7606_Read(SPI_HandleTypeDef *hspi, int16_t *data, uint16_t channel);
 void ad7606_Start(TIM_HandleTypeDef *htim, uint32_t channel);
 void ad7606_Stop(TIM_HandleTypeDef *htim, uint32_t channel);
-void ad7606_Convert(uint16_t *data, uint16_t channel, float *adcValue);
+void ad7606_Convert(int16_t *data, uint16_t channel, float *adcValue);
 void ad7606_GetValue(SPI_HandleTypeDef *hspi, uint16_t channel, float *adcValue);
 
 #endif

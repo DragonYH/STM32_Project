@@ -59,7 +59,7 @@ void pll_Control(pll_Signal *signal_In, pll_Config *config, pll_Signal *signal_T
     signal_In->theta += (signal_In->pid_out + config->omiga) * config->Ts;
     signal_In->theta = (float)fmod(signal_In->theta, 2 * PI);
     // 反park变换
-    arm_inv_park_f32(signal_In->park_d, signal_In->park_q, &signal_In->park_inv_a, &signal_In->park_inv_b, arm_sin_f32(signal_Target->theta), arm_cos_f32(signal_Target->theta));
+    // arm_inv_park_f32(signal_In->park_d, signal_In->park_q, &signal_In->park_inv_a, &signal_In->park_inv_b, arm_sin_f32(signal_Target->theta), arm_cos_f32(signal_Target->theta));
 }
 /**
  * @brief PI控制器

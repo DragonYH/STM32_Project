@@ -17,10 +17,10 @@ void ad7606_Init(void)
  * @param data 数据指针
  * @param channel 读取几个通道
  */
-void ad7606_Read(SPI_HandleTypeDef *hspi, uint16_t *data, uint16_t channel)
+void ad7606_Read(SPI_HandleTypeDef *hspi, int16_t *data, uint16_t channel)
 {
     AD7606_CS_RESET();
-    HAL_SPI_Receive(hspi, (uint8_t *)data, channel, 1000);
+    HAL_SPI_Receive(hspi, (uint8_t *)data, channel, 100);
     AD7606_CS_SET();
 }
 /**
@@ -48,12 +48,14 @@ void ad7606_Stop(TIM_HandleTypeDef *htim, uint32_t channel)
  * @param channel 通道数
  * @param adcValue 采样值
  */
-void ad7606_Convert(uint16_t *data, uint16_t channel, float *adcValue)
+void ad7606_Convert(int16_t *data, uint16_t channel, float *adcValue)
 {
     for (int i = 0; i < channel; i++)
     {
+        // 16位二进制补码转单精度浮点数
+
         data[i] = data[i] & 0x8000 ? (-((~data[i] + 1) & 0x7fff)) : data[i];
-        adcValue[i] = 5.0 * data[i] / 32768.0;
+        adcValue[i] = 5.f * data[i] / 32768.f;
     }
 }
 /**
@@ -64,7 +66,7 @@ void ad7606_Convert(uint16_t *data, uint16_t channel, float *adcValue)
  */
 void ad7606_GetValue(SPI_HandleTypeDef *hspi, uint16_t channel, float *adcValue)
 {
-    uint16_t ad7606_data[channel];
+    int16_t ad7606_data[channel];
     ad7606_Read(hspi, ad7606_data, channel);
     ad7606_Convert(ad7606_data, channel, adcValue);
 }

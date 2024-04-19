@@ -51,7 +51,8 @@ Src/main.o: ../Src/main.c ../Inc/main.h \
  ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_core.h \
  ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_ioreq.h \
  ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_ctlreq.h \
- ../Mycode/Include/ina238.h ../Mycode/Include/pid.h
+ ../Mycode/Include/ina238.h ../Mycode/Include/pid.h \
+ ../Mycode/Include/ad7606.h
 ../Inc/main.h:
 ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal.h:
 ../Inc/stm32h7xx_hal_conf.h:
@@ -117,3 +118,4 @@ Src/main.o: ../Src/main.c ../Inc/main.h \
 ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_ctlreq.h:
 ../Mycode/Include/ina238.h:
 ../Mycode/Include/pid.h:
+../Mycode/Include/ad7606.h:
