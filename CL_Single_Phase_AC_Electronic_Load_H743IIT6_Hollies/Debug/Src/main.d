@@ -20,9 +20,6 @@ Src/main.o: ../Src/main.c ../Inc/main.h \
  ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_mdma.h \
  ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_exti.h \
  ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_cortex.h \
- ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_adc.h \
- ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_ll_adc.h \
- ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_adc_ex.h \
  ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_dac.h \
  ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_dac_ex.h \
  ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_flash.h \
@@ -38,13 +35,12 @@ Src/main.o: ../Src/main.c ../Inc/main.h \
  ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_tim_ex.h \
  ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_pcd.h \
  ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_ll_usb.h \
- ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_pcd_ex.h ../Inc/adc.h \
- ../Inc/main.h ../Inc/dac.h ../Inc/dma.h ../Inc/i2c.h ../Inc/spi.h \
- ../Inc/tim.h ../Inc/usb_device.h \
+ ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_pcd_ex.h ../Inc/dac.h \
+ ../Inc/main.h ../Inc/i2c.h ../Inc/spi.h ../Inc/tim.h ../Inc/usb_device.h \
  ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_def.h \
  ../Inc/usbd_conf.h ../Inc/gpio.h ../Drivers/CMSIS/DSP/Include/arm_math.h \
  ../Drivers/CMSIS/Include/cmsis_compiler.h ../Mycode/Include/oled.h \
- ../Mycode/Include/pll.h ../Inc/usbd_cdc_if.h \
+ ../Mycode/Include/pll.h ../Mycode/Include/pid.h ../Inc/usbd_cdc_if.h \
  ../Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc/usbd_cdc.h \
  ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_ioreq.h \
  ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_def.h \
@@ -75,9 +71,6 @@ Src/main.o: ../Src/main.c ../Inc/main.h \
 ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_mdma.h:
 ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_exti.h:
 ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_cortex.h:
-../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_adc.h:
-../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_ll_adc.h:
-../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_adc_ex.h:
 ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_dac.h:
 ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_dac_ex.h:
 ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_flash.h:
@@ -94,10 +87,8 @@ Src/main.o: ../Src/main.c ../Inc/main.h \
 ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_pcd.h:
 ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_ll_usb.h:
 ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_pcd_ex.h:
-../Inc/adc.h:
-../Inc/main.h:
 ../Inc/dac.h:
-../Inc/dma.h:
+../Inc/main.h:
 ../Inc/i2c.h:
 ../Inc/spi.h:
 ../Inc/tim.h:
@@ -109,6 +100,7 @@ Src/main.o: ../Src/main.c ../Inc/main.h \
 ../Drivers/CMSIS/Include/cmsis_compiler.h:
 ../Mycode/Include/oled.h:
 ../Mycode/Include/pll.h:
+../Mycode/Include/pid.h:
 ../Inc/usbd_cdc_if.h:
 ../Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc/usbd_cdc.h:
 ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_ioreq.h:

@@ -2,105 +2,132 @@
 #include "stdlib.h"
 
 /**
- * @brief 信号参数初始化
+ * @brief 电压信号参数初始化
  * @param signal 信号指针
- * @param config 配置指针
  * @param f 信号频率(典型值:50)
  * @param F 采样频率(典型值:20000)
+ * @param pi_kp PI控制器kp参数
+ * @param pi_ki PI控制器ki参数
  */
-void pll_Init(pll_Signal *signal, pll_Config *config, float f, uint16_t F)
+void pll_Init_V(pll_Signal_V *signal, float f, uint16_t F, float pi_kp, float pi_ki)
 {
     // 初始化赋值
-    signal->u_0 = 0.f;
-    signal->u_1 = 0.f;
-    signal->u_2 = 0.f;
+    signal->input[0] = 0.f;
+    signal->input[1] = 0.f;
+    signal->input[2] = 0.f;
 
-    signal->sogi_a_1 = 0.f;
-    signal->sogi_a_2 = 0.f;
-    signal->sogi_b_1 = 0.f;
-    signal->sogi_b_2 = 0.f;
+    signal->sogi_a[1] = 0.f;
+    signal->sogi_a[2] = 0.f;
+    signal->sogi_b[1] = 0.f;
+    signal->sogi_b[2] = 0.f;
 
     signal->theta = 0.f;
-
-    config->omiga = 2 * PI * f; // f典型值50
-    config->Ts = 1.f / F;       // F典型值20000
-    config->k = 1.414f;         // 阻尼比典型值1.414
-    config->phase = 0.f;        // 设定相位差
-    // 计算中间量
-    signal->lamda = 0.5f * config->omiga * config->Ts;
-    signal->x = 2.f * config->k * config->omiga * config->Ts;
-    signal->y = config->omiga * config->Ts * config->omiga * config->Ts;
-
-    signal->b0 = signal->x / (signal->x + signal->y + 4);
-    signal->a1 = (8 - 2.f * signal->y) / (signal->x + signal->y + 4);
-    signal->a2 = (signal->x - signal->y - 4) / (signal->x + signal->y + 4);
+    signal->omiga0 = 2 * PI * f; // f典型值50
+    signal->Ts = 1.f / F;        // F典型值20000
+    signal->k = 1.414f;          // 阻尼比典型值1.414
+    signal->phase = 0.f;         // 设定相位差
     // 初始化pid参数
-    config->pid_kp = 70.73586f;
-    config->pid_ki = 15715.9305749f;
-    config->pid_kd = 0.f; // 只需要PI控制
-    signal->pid_err[1] = 0.f;
-    signal->pid_out = 0.f;
+    pid_Init(signal->pid, pi_kp, pi_ki, 0, MAX_COMPARE, 0);
+    // 计算sogi中间量
+    signal->sogi_lamda = 0.5f * signal->omiga0 * signal->Ts;
+    signal->sogi_x = 2.f * signal->k * signal->omiga0 * signal->Ts;
+    signal->sogi_y = signal->omiga0 * signal->Ts * signal->omiga0 * signal->Ts;
+    signal->sogi_b0 = signal->sogi_x / (signal->sogi_x + signal->sogi_y + 4);
+    signal->sogi_a1 = (8 - 2.f * signal->sogi_y) / (signal->sogi_x + signal->sogi_y + 4);
+    signal->sogi_a2 = (signal->sogi_x - signal->sogi_y - 4) / (signal->sogi_x + signal->sogi_y + 4);
 }
 /**
- * @brief 锁相控制
- * @param signal_In 信号指针
- * @param config 配置指针
- * @param signal_Target 目标信号指针
+ * @brief 电流信号参数初始化
+ * @param signal 信号指针
+ * @param f 信号频率(典型值:50)
+ * @param F 采样频率(典型值:20000)
+ * @param kp PR控制器kp参数
+ * @param kr PR控制器kr参数
  */
-void pll_Control(pll_Signal *signal_In, pll_Config *config, pll_Signal *signal_Target)
+void pll_Init_I(pll_Signal_I *signal, float f, uint16_t F, float pr_kp, float pr_kr, float pi_kp, float pi_ki)
+{
+    // 初始化赋值
+    signal->input = 0.f;
+    signal->omiga0 = 2 * PI * f;   // f典型值50
+    signal->omigaC = 2 * PI * 0.2; // 带宽2*pi*带宽
+    signal->Ts = 1.f / F;          // F典型值20000
+    // 初始化pr参数
+    signal->pr_out[1] = 0.f;
+    signal->pr_out[2] = 0.f;
+    signal->pr_err[1] = 0.f;
+    signal->pr_err[2] = 0.f;
+    // 初始化pid参数
+    pid_Init(signal->pid, pi_kp, pi_ki, 0, 50 * PI, -20 * PI);
+    // 计算pr中间量
+    signal->pr_a0 = 4 * pr_kp / (signal->Ts * signal->Ts) + 4 * signal->omigaC * (pr_kp + pr_kr) / signal->Ts + pr_kp * signal->omiga0 * signal->omiga0;
+    signal->pr_a1 = -8 * pr_kp / (signal->Ts * signal->Ts) + 2 * pr_kp * signal->omiga0 * signal->omiga0;
+    signal->pr_a2 = 4 * pr_kp / (signal->Ts * signal->Ts) - 4 * signal->omigaC * (pr_kp + pr_kr) / signal->Ts + pr_kp * signal->omiga0 * signal->omiga0;
+    signal->pr_b0 = 4 / (signal->Ts * signal->Ts) + 4 * signal->omigaC / signal->Ts + signal->omiga0 * signal->omiga0;
+    signal->pr_b1 = -8 / (signal->Ts * signal->Ts) + 2 * signal->omiga0 * signal->omiga0;
+    signal->pr_b2 = 4 / (signal->Ts * signal->Ts) - 4 * signal->omigaC / signal->Ts + signal->omiga0 * signal->omiga0;
+}
+/**
+ * @brief 电压锁相控制
+ * @param signal_V 电压信号指针
+ */
+void pll_Control_V(pll_Signal_V *signal_V)
 {
     // 对信号先进行sogi变换，得到两个相位相差90度的信号
-    pll_Sogi(signal_In);
+    pll_Sogi(signal_V);
     // 再对信号sogi变换后的信号进行park变换
-    arm_park_f32(signal_In->sogi_a_0, signal_In->sogi_b_0 / 382 * 3, &signal_In->park_d, &signal_In->park_q, arm_sin_f32(signal_Target->theta), arm_cos_f32(signal_Target->theta));
+    arm_park_f32(signal_V->sogi_a[0], signal_V->sogi_b[0] / 382 * 3, &signal_V->park_d, &signal_V->park_q, arm_sin_f32(signal_V->theta), arm_cos_f32(signal_V->theta));
     // 将park变换后的q送入PI控制器  输入值为设定值和采样值的误差
-    pll_Pid(signal_In, config);
+    pid(signal_V->pid, signal_V->park_q, signal_V->phase);
     // 更新theta
-    signal_In->theta += (signal_In->pid_out + config->omiga) * config->Ts;
-    signal_In->theta = (float)fmod(signal_In->theta, 2 * PI);
-    // 反park变换
-    // arm_inv_park_f32(signal_In->park_d, signal_In->park_q, &signal_In->park_inv_a, &signal_In->park_inv_b, arm_sin_f32(signal_Target->theta), arm_cos_f32(signal_Target->theta));
+    signal_V->theta += (signal_V->pid->result + signal_V->omiga0) * signal_V->Ts;
+    signal_V->theta = (float)fmod(signal_V->theta, 2 * PI);
 }
 /**
- * @brief PI控制器
+ * @brief 电流内环控制
+ * @param signal_I 电流信号指针
+ * @param signal_V 电压信号指针
+ * @param Udc 直流测采样电压
+ * @param Uset 直流设定电压
+ */
+void pll_Control_I(pll_Signal_I *signal_I, pll_Signal_V *signal_V, float Uset, float Udc)
+{
+    // 对直流电压进行PI控制
+    pid(signal_I->pid, Uset, Udc); // 电压内环
+    // PR控制
+    pll_Pr(signal_I, signal_I->pid->result * arm_sin_f32(signal_V->theta), signal_I->input);
+}
+/**
+ * @brief PR控制器
  * @param signal 信号指针
  * @param config 配置指针
  */
-void pll_Pid(pll_Signal *signal, pll_Config *config)
+void pll_Pr(pll_Signal_I *signal, float target, float sample)
 {
-    signal->pid_err[0] = signal->park_q - config->phase;
-    signal->pid_out += config->pid_kp * (signal->pid_err[0] - signal->pid_err[1]) + config->pid_ki * signal->pid_err[0];
-    signal->pid_err[1] = signal->pid_err[0];
+    signal->pr_err[0] = target - sample;
+    signal->pr_out[0] = -signal->pr_b1 * signal->pr_out[1] - signal->pr_b2 * signal->pr_out[2] + signal->pr_a0 * signal->pr_err[0] + signal->pr_a1 * signal->pr_err[1] + signal->pr_a2 * signal->pr_err[2];
+    signal->pr_out[0] = signal->pr_out[0] / signal->pr_b0;
     // 限制调参幅度，防止跑飞
-    if (signal->pid_out > 50 * PI)
-        signal->pid_out = 50 * PI;
-    else if (signal->pid_out < -50 * PI)
-        signal->pid_out = -50 * PI;
-}
-/**
- * @brief 回收空间
- * @param signal 信号指针
- * @param config 配置指针
- */
-void pll_Clear(pll_Signal *signal, pll_Config *config)
-{
-    free(signal);
-    free(config);
-}
+    if (signal->pr_out[0] > MAX_COMPARE)
+        signal->pr_out[0] = MAX_COMPARE;
+    else if (signal->pr_out[0] < 0)
+        signal->pr_out[0] = 0;
 
+    signal->pr_out[1] = signal->pr_out[0];
+    signal->pr_out[2] = signal->pr_out[1];
+}
 /**
  * @brief Sogi变换
  * @param signal 信号指针
  */
-void pll_Sogi(pll_Signal *signal)
+void pll_Sogi(pll_Signal_V *signal)
 {
-    signal->sogi_a_0 = signal->b0 * signal->u_0 - signal->b0 * signal->u_2 + signal->a1 * signal->sogi_a_1 + signal->a2 * signal->sogi_a_2;
-    signal->sogi_b_0 = signal->b0 * signal->u_0 + 2.0f * signal->b0 * signal->u_1 + signal->b0 * signal->u_2 + signal->a1 * signal->sogi_b_1 + signal->a2 * signal->sogi_b_2;
+    signal->sogi_a[0] = signal->sogi_b0 * signal->input[0] - signal->sogi_b0 * signal->input[2] + signal->sogi_a1 * signal->sogi_a[1] + signal->sogi_a2 * signal->sogi_a[2];
+    signal->sogi_b[0] = signal->sogi_b0 * signal->input[0] + 2.0f * signal->sogi_b0 * signal->input[1] + signal->sogi_b0 * signal->input[2] + signal->sogi_a1 * signal->sogi_b[1] + signal->sogi_a2 * signal->sogi_b[2];
 
-    signal->u_2 = signal->u_1;
-    signal->u_1 = signal->u_0;
-    signal->sogi_a_2 = signal->sogi_a_1;
-    signal->sogi_a_1 = signal->sogi_a_0;
-    signal->sogi_b_2 = signal->sogi_b_1;
-    signal->sogi_b_1 = signal->sogi_b_0;
+    signal->input[2] = signal->input[1];
+    signal->input[1] = signal->input[0];
+    signal->sogi_a[2] = signal->sogi_a[1];
+    signal->sogi_a[1] = signal->sogi_a[0];
+    signal->sogi_b[2] = signal->sogi_b[1];
+    signal->sogi_b[1] = signal->sogi_b[0];
 }

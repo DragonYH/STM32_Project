@@ -20,9 +20,6 @@ Mycode/pll.o: ../Mycode/pll.c ../Mycode/Include/pll.h ../Inc/main.h \
  ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_mdma.h \
  ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_exti.h \
  ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_cortex.h \
- ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_adc.h \
- ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_ll_adc.h \
- ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_adc_ex.h \
  ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_dac.h \
  ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_dac_ex.h \
  ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_flash.h \
@@ -40,7 +37,7 @@ Mycode/pll.o: ../Mycode/pll.c ../Mycode/Include/pll.h ../Inc/main.h \
  ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_ll_usb.h \
  ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_pcd_ex.h \
  ../Drivers/CMSIS/DSP/Include/arm_math.h \
- ../Drivers/CMSIS/Include/cmsis_compiler.h
+ ../Drivers/CMSIS/Include/cmsis_compiler.h ../Mycode/Include/pid.h
 ../Mycode/Include/pll.h:
 ../Inc/main.h:
 ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal.h:
@@ -64,9 +61,6 @@ Mycode/pll.o: ../Mycode/pll.c ../Mycode/Include/pll.h ../Inc/main.h \
 ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_mdma.h:
 ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_exti.h:
 ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_cortex.h:
-../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_adc.h:
-../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_ll_adc.h:
-../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_adc_ex.h:
 ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_dac.h:
 ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_dac_ex.h:
 ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_flash.h:
@@ -85,3 +79,4 @@ Mycode/pll.o: ../Mycode/pll.c ../Mycode/Include/pll.h ../Inc/main.h \
 ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_pcd_ex.h:
 ../Drivers/CMSIS/DSP/Include/arm_math.h:
 ../Drivers/CMSIS/Include/cmsis_compiler.h:
+../Mycode/Include/pid.h:

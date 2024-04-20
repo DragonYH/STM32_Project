@@ -23,8 +23,8 @@ void pid_Init(PID *pid, float kp, float ki, float kd, float max, float min) // P
 /**
  * @brief 增量式PID控制器
  * @param pid pid指针
- * @param measured 测量值
  * @param target 目标值
+ * @param sample 测量值
  * @return pid输出值
  * @note 根据增量式离散PID公式
  * @note dac+=kp[e(0)-e(1)]+ki*e(0)+kd[e(0)-2e(1)+e(2)]
@@ -32,9 +32,9 @@ void pid_Init(PID *pid, float kp, float ki, float kd, float max, float min) // P
  * @note e(1)代表上一次的偏差  以此类推
  * @note result代表增量输出
  */
-float pid(PID *pid, float Measured, float Target)
+float pid(PID *pid, float target, float sample)
 {
-	pid->bias[0] = Target - Measured;
+	pid->bias[0] = target - sample;
 	pid->result += pid->kp * (pid->bias[0] - pid->bias[1]) + pid->ki * pid->bias[0] + pid->kd * (pid->bias[0] - 2 * pid->bias[1] + pid->bias[2]);
 	pid->bias[2] = pid->bias[1];
 	pid->bias[1] = pid->bias[0];

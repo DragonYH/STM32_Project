@@ -7,6 +7,9 @@
     "*.toml": "yaml",
     "tim.h": "c",
     "limits": "c",
-    "pid.h": "c"
+    "pid.h": "c",
+    "pll.h": "c",
+    "arm_math.h": "c",
+    "stdlib.h": "c"
   }
 }

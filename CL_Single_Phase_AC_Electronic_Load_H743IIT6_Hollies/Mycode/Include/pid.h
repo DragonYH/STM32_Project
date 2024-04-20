@@ -13,7 +13,7 @@ typedef struct // PID初始化参数，每次一个PID都要重新定义一个�
 
 } PID;
 
-float pid(PID *PID, float Measured, float Target);							 // PID计算
+float pid(PID *pid, float target, float sample);							 // PID计算
 void pid_Init(PID *pid, float kp, float ki, float kd, float max, float min); // 初始化结构体PID
 
 #endif
