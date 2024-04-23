@@ -28,7 +28,7 @@ void pll_Init_V(pll_Signal_V *signal, float f, uint16_t F, float Umax)
     float ki = signal->omiga0 * signal->omiga0 / Umax;
     float kp = sqrt(2) * sqrt(Umax * ki) / Umax;
 
-    pid_Init(signal->pid, kp, ki, 0, MAX_COMPARE, 0);
+    pid_Init(signal->pid, kp, ki, 0, 50 * PI, -20 * PI);
     // 计算sogi中间量
     signal->sogi->k = 1.414f;
     signal->sogi->lamda = 0.5f * signal->omiga0 * signal->Ts;
@@ -67,7 +67,7 @@ void pll_Init_I(pll_Signal_I *signal, float f, uint16_t F, float pr_kp, float pr
     signal->pr->err[1] = 0.f;
     signal->pr->err[2] = 0.f;
     // 初始化pid参数
-    pid_Init(signal->pid, pi_kp, pi_ki, 0, 50 * PI, -20 * PI);
+    pid_Init(signal->pid, pi_kp, pi_ki, 0, 4, 0);
     // 计算pr中间量
     signal->pr->a0 = 4 * pr_kp / (signal->Ts * signal->Ts) + 4 * signal->omigaC * (pr_kp + pr_kr) / signal->Ts + pr_kp * signal->omiga0 * signal->omiga0;
     signal->pr->a1 = -8 * pr_kp / (signal->Ts * signal->Ts) + 2 * pr_kp * signal->omiga0 * signal->omiga0;
@@ -97,7 +97,7 @@ void pll_Control_V(pll_Signal_V *signal_V)
     // 将park变换后的q送入PI控制器  输入值为设定值和采样值的误差
     pid(signal_V->pid, signal_V->park_q, signal_V->phase);
     // 更新theta
-    signal_V->theta += (signal_V->pid->result + signal_V->omiga0) * signal_V->Ts;
+    signal_V->theta += (signal_V->pid->out + signal_V->omiga0) * signal_V->Ts;
     signal_V->theta = (float)fmod(signal_V->theta, 2 * PI);
 }
 /**
@@ -130,10 +130,10 @@ void pll_Pr(pll_Signal_I *signal, float target, float sample)
     signal->pr->out[0] = -signal->pr->b1 * signal->pr->out[1] - signal->pr->b2 * signal->pr->out[2] + signal->pr->a0 * signal->pr->err[0] + signal->pr->a1 * signal->pr->err[1] + signal->pr->a2 * signal->pr->err[2];
     signal->pr->out[0] = signal->pr->out[0] / signal->pr->b0;
     // 限制调参幅度，防止跑飞
-    if (signal->pr->out[0] > MAX_COMPARE)
-        signal->pr->out[0] = MAX_COMPARE;
-    else if (signal->pr->out[0] < 0)
-        signal->pr->out[0] = 0;
+    if (signal->pr->out[0] > COMPARE_MAX)
+        signal->pr->out[0] = COMPARE_MAX;
+    else if (signal->pr->out[0] < COMPARE_MIN)
+        signal->pr->out[0] = COMPARE_MIN;
 
     signal->pr->out[1] = signal->pr->out[0];
     signal->pr->out[2] = signal->pr->out[1];

@@ -5,7 +5,10 @@
 #include "arm_math.h"
 #include "pid.h"
 
-#define MAX_COMPARE 11999 // 计时器最大计数值
+#define COMPARE 12000              // 计时器计数值
+#define MI 0.95                    // 调制比
+#define COMPARE_MAX 0.95 * COMPARE // 计时器最大计数值
+#define COMPARE_MIN 0.05 * COMPARE // 计时器最小计数值
 
 // sogi结构体
 typedef struct SOGI
