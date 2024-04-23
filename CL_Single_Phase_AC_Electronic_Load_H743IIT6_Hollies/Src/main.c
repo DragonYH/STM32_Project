@@ -45,7 +45,7 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-#define USER_DEBUG 0
+#define USER_DEBUG 0 // 串口调试
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -85,9 +85,9 @@ __attribute__((section("._DTCM_Area"))) pll_Signal_I *signal_I;
 // 创建ADC数据空间
 float adcBuf[2] = {0};
 // 直流电压
+PID *dcPid;
 float dcVolt = 0.f;
 float dcCurrent = 0.f;
-PID *dcPid;
 // 显示函数
 uint8_t textBuf[256] = {0};
 void oled_Show(void)
@@ -444,6 +444,13 @@ void Error_Handler(void)
   __disable_irq();
   while (1)
   {
+    // 闪烁灯
+    HAL_GPIO_TogglePin(GPIOI, GPIO_PIN_0);
+    HAL_Delay(500);
+    HAL_GPIO_TogglePin(GPIOI, GPIO_PIN_0);
+    HAL_Delay(100);
+    HAL_GPIO_TogglePin(GPIOI, GPIO_PIN_0);
+    HAL_Delay(100);
   }
   /* USER CODE END Error_Handler_Debug */
 }
