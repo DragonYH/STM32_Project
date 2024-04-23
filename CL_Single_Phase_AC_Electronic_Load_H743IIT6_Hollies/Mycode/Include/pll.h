@@ -12,6 +12,7 @@ typedef struct SOGI
 {
     float a[3]; // 输出序列alpha
     float b[3]; // 输出序列beta	滞后90度于序列alpha
+    // 中间变量
     float lamda;
     float x;
     float y;
@@ -26,6 +27,7 @@ typedef struct PR
     float kr;     // 积分系数
     float out[3]; // 输出
     float err[3]; // 误差
+    // 中间变量
     float a0;
     float a1;
     float a2;
