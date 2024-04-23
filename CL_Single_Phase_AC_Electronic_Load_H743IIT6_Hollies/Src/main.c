@@ -226,15 +226,19 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-    /* USER CODE END WHILE */
-
-    /* USER CODE BEGIN 3 */
-    //    dcVolt = ina238_GetVolt(&hi2c3);
     oled_Show();
     HAL_GPIO_TogglePin(GPIOI, GPIO_PIN_0);
     HAL_Delay(100);
+    /* USER CODE END WHILE */
+
+    /* USER CODE BEGIN 3 */
   }
   ad7606_Stop(&htim2, TIM_CHANNEL_1);
+  free(signal_V->pid);
+  free(signal_I->pid);
+  free(signal_V->sogi);
+  free(signal_I->sogi);
+  free(signal_I->pr);
   free(signal_V);
   free(signal_I);
   free(dcPid);

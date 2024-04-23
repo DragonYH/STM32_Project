@@ -14,35 +14,32 @@ void pid_Init(PID *pid, float kp, float ki, float kd, float max, float min) // P
 	pid->kp = kp;
 	pid->ki = ki;
 	pid->kd = kd;
-	pid->resultMax = max;
-	pid->resultMin = min;
-	pid->bias[0] = 0;
-	pid->bias[1] = 0;
-	pid->bias[2] = 0;
+	pid->Max = max;
+	pid->Min = min;
+	pid->err[0] = 0;
+	pid->err[1] = 0;
+	pid->err[2] = 0;
 }
 /**
  * @brief 增量式PID控制器
  * @param pid pid指针
  * @param target 目标值
  * @param sample 测量值
- * @return pid输出值
  * @note 根据增量式离散PID公式
  * @note dac+=kp[e(0)-e(1)]+ki*e(0)+kd[e(0)-2e(1)+e(2)]
  * @note e(0)代表本次偏差
  * @note e(1)代表上一次的偏差  以此类推
  * @note result代表增量输出
  */
-float pid(PID *pid, float target, float sample)
+void pid(PID *pid, float target, float sample)
 {
-	pid->bias[0] = target - sample;
-	pid->result += pid->kp * (pid->bias[0] - pid->bias[1]) + pid->ki * pid->bias[0] + pid->kd * (pid->bias[0] - 2 * pid->bias[1] + pid->bias[2]);
-	pid->bias[2] = pid->bias[1];
-	pid->bias[1] = pid->bias[0];
+	pid->err[0] = target - sample;
+	pid->out += pid->kp * (pid->err[0] - pid->err[1]) + pid->ki * pid->err[0] + pid->kd * (pid->err[0] - 2 * pid->err[1] + pid->err[2]);
+	pid->err[2] = pid->err[1];
+	pid->err[1] = pid->err[0];
 	// 输出限幅
-	if (pid->result > pid->resultMax)
-		pid->result = pid->resultMax;
-	else if (pid->result < pid->resultMin)
-		pid->result = pid->resultMin;
-
-	return pid->result;
+	if (pid->out > pid->Max)
+		pid->out = pid->Max;
+	else if (pid->out < pid->Min)
+		pid->out = pid->Min;
 }
