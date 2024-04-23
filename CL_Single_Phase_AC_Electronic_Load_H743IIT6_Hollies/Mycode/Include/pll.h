@@ -44,15 +44,14 @@ typedef struct pll_Signal_V
     float park_d; // 有功分量
     float park_q; // 无功分量
     float theta;  // 当前角度
-    // sogi
-    SOGI *sogi; // sogi指针
-    // PI控制器相关变量
-    PID *pid; // pid指针
     // 配置参数
     float omiga0; // 无阻尼自然频率，2*pi*频率
     float Ts;     // 采样周期
     float k;      // 阻尼比 典型值1.41
     float phase;  // 设置相位
+
+    SOGI *sogi; // sogi指针
+    PID *pid;   // pid指针
 } pll_Signal_V;
 // 电流信号数据
 typedef struct pll_Signal_I
@@ -62,17 +61,15 @@ typedef struct pll_Signal_I
     // park变换相关变量
     float park_d; // 有功分量
     float park_q; // 无功分量
-    // sogi
-    SOGI *sogi; // sogi指针
-    // PI控制器相关变量
-    PID *pid; // pid指针
-    // pr
-    PR *pr; // pr指针
     // 配置参数
     float omiga0; // 无阻尼自然频率，2*pi*频率
     float omigaC; // 带宽2*pi*带宽
     float k;      // 阻尼比 典型值1.41
     float Ts;     // 采样周期
+
+    SOGI *sogi; // sogi指针
+    PID *pid;   // pid指针
+    PR *pr;     // pr指针
 } pll_Signal_I;
 
 void pll_Init_V(pll_Signal_V *signal, float f, uint16_t F, float Umax);
