@@ -116,7 +116,7 @@ void pll_Control_I(pll_Signal_I *signal_I, pll_Signal_V *signal_V, float Uset, f
     // 对直流电压进行PI控制
     pid(signal_I->pid, Uset, Udc); // 电压内环
     // PR控制
-    // pll_Pr(signal_I, signal_I->pid->result * arm_sin_f32(signal_V->theta), signal_I->input);
+    // ! pll_Pr(signal_I, signal_I->pid->result * arm_sin_f32(signal_V->theta), signal_I->input);
     pll_Pr(signal_I, 1.f * arm_sin_f32(signal_V->theta), signal_I->input[0]);
 }
 /**
