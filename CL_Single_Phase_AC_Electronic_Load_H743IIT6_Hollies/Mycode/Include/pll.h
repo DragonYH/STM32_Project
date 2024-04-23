@@ -37,7 +37,19 @@ typedef struct pll_Signal_V
 typedef struct pll_Signal_I
 {
     // 基本变量
-    float input; // 输入序列
+    float input[3];  // 输入序列
+    float sogi_a[3]; // 输出序列alpha
+    float sogi_b[3]; // 输出序列beta	滞后90度于序列alpha
+    // sogi中间变量
+    float sogi_lamda;
+    float sogi_x;
+    float sogi_y;
+    float sogi_b0;
+    float sogi_a1;
+    float sogi_a2;
+    // park变换相关变量
+    float park_d; // 有功分量
+    float park_q; // 无功分量
     // PR控制器相关变量
     float pr_kp;     // 比例系数
     float pr_kr;     // 积分系数
@@ -55,14 +67,16 @@ typedef struct pll_Signal_I
     // 配置参数
     float omiga0; // 无阻尼自然频率，2*pi*频率
     float omigaC; // 带宽2*pi*带宽
+    float k;      // 阻尼比 典型值1.41
     float Ts;     // 采样周期
 } pll_Signal_I;
 
-void pll_Init_V(pll_Signal_V *signal, float f, uint16_t F, float pi_kp, float pi_ki);
+void pll_Init_V(pll_Signal_V *signal, float f, uint16_t F, float Umax);
 void pll_Init_I(pll_Signal_I *signal, float f, uint16_t F, float pr_kp, float pr_kr, float pi_kp, float pi_ki);
 void pll_Control_V(pll_Signal_V *signal_V);
 void pll_Control_I(pll_Signal_I *signal_I, pll_Signal_V *signal_V, float Uset, float Udc);
 void pll_Pr(pll_Signal_I *signal, float target, float sample);
 void pll_Sogi(pll_Signal_V *signal);
+void pll_Sogi_I(pll_Signal_I *signal);
 
 #endif

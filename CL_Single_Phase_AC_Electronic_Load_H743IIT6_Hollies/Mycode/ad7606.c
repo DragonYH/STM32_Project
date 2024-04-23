@@ -53,7 +53,6 @@ void ad7606_Convert(int16_t *data, uint16_t channel, float *adcValue)
     for (int i = 0; i < channel; i++)
     {
         // 16位二进制补码转单精度浮点数
-
         data[i] = data[i] & 0x8000 ? (-((~data[i] + 1) & 0x7fff)) : data[i];
         adcValue[i] = 5.f * data[i] / 32768.f;
     }

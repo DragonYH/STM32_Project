@@ -45,7 +45,7 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-
+#define USER_DEBUG 0
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -92,8 +92,9 @@ PID *dcPid;
 uint8_t textBuf[256] = {0};
 void oled_Show(void)
 {
+#if !USER_DEBUG
   // IN:  输入
-  sprintf((char *)textBuf, "IN : %5.2fV %5.2fA", signal_V->input[0], signal_I->input);
+  sprintf((char *)textBuf, "IN : %5.2fV %5.2fA", signal_V->park_d / 1.4142135623f, signal_I->park_d / 1.4142135623f);
   OLED_ShowString(0, 0, textBuf, 12);
   // CDC_Transmit_FS((uint8_t *)textBuf, sizeof(textBuf));
 
@@ -103,7 +104,7 @@ void oled_Show(void)
   // CDC_Transmit_FS((uint8_t *)textBuf, sizeof(textBuf));
 
   // OUT: 输出
-  sprintf((char *)textBuf, "OUT: %5.2fV %5.2fA", signal_V->input[0], signal_I->input);
+  sprintf((char *)textBuf, "OUT: %5.2fV %5.2fA", signal_V->input[0], signal_I->input[0]);
   OLED_ShowString(0, 24, textBuf, 12);
   // CDC_Transmit_FS((uint8_t *)textBuf, sizeof(textBuf));
 
@@ -113,15 +114,16 @@ void oled_Show(void)
   // CDC_Transmit_FS((uint8_t *)textBuf, sizeof(textBuf));
 
   // EFF: 效率
-  sprintf((char *)textBuf, "EFF: %5.2f%%", (signal_V->input[0] * signal_I->input) / (signal_V->input[0] * signal_I->input) * 100.f);
+  sprintf((char *)textBuf, "EFF: %5.2f%%", (signal_V->input[0] * signal_I->input[0]) / (signal_V->input[0] * signal_I->input[0]) * 100.f);
   OLED_ShowString(0, 48, textBuf, 12);
   // CDC_Transmit_FS((uint8_t *)textBuf, sizeof(textBuf));
-
-  // 串口调试
-  // sprintf((char *)textBuf, "x=0,u=%.2f,park_Iq=%.2f,park_Id=%.2f,park_Vd=%.2f,park_Vq=%.2f,sogi_Va=%.2f,sogi_Vb=%.2f,sogi_Ia=%.2f,sogi_Ib=%.2f,inv_a=%.2f\n", signal_V->u[0], signal_I->park_q, signal_I->park_d, signal_V->park_d, signal_V->park_q, signal_V->sogi_a_0, signal_V->sogi_b_0 / 382 * 3, signal_I->sogi_a_0, signal_I->sogi_b_0 / 382 * 3, signal_I->park_inv_a);
-  // CDC_Transmit_FS((uint8_t *)textBuf, sizeof(textBuf));
-
   OLED_Refresh();
+#endif
+#if USER_DEBUG
+  // 串口调试
+  sprintf((char *)textBuf, "x=0,V=%.2f,I=%.2f,park_Iq=%.2f,park_Id=%.2f,park_Vd=%.2f,park_Vq=%.2f,sogi_Va=%.2f,sogi_Vb=%.2f,sogi_Ia=%.2f,sogi_Ib=%.2f,\n", signal_V->input[0], signal_I->input[0], signal_I->park_q, signal_I->park_d, signal_V->park_d, signal_V->park_q, signal_V->sogi_a[0], signal_V->sogi_b[0], signal_I->sogi_a[0], signal_I->sogi_b[0]);
+  CDC_Transmit_FS((uint8_t *)textBuf, sizeof(textBuf));
+#endif
 }
 // 连接电路
 void circuit_Connect(void)
@@ -194,8 +196,8 @@ int main(void)
   // uint16_t temprature = 0;
   // float temp_result = 0;
   // 锁相环初始化
-  pll_Init_V(signal_V, 50, 20000, 70.73586f, 15715.9305749f); // 电压环
-  pll_Init_I(signal_I, 50, 20000, 2.f, 20.f, 0.1f, 20.f);     // 电流环
+  pll_Init_V(signal_V, 50, 20000, 10); // 电压环
+  pll_Init_I(signal_I, 50, 20000, 0.4f, 10.f, 0.1f, 1.f);   // 电流环
   // DAC模拟输出初始化
   HAL_DAC_SetValue(&hdac1, DAC_CHANNEL_1, DAC_ALIGN_12B_R, 2048);
   HAL_DAC_Start(&hdac1, DAC_CHANNEL_1);
@@ -336,17 +338,19 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 {
   if (GPIO_Pin == AD7606_BUSY_Pin)
   {
-    ad7606_GetValue(&hspi2, 2, adcBuf);
+    ad7606_GetValue(&hspi2, 3, adcBuf);
     // 缓存adcBuf
-    signal_V->input[0] = adcBuf[0];
-    signal_I->input = adcBuf[1];
+    signal_V->input[0] = adcBuf[1] * 100.f;
+    signal_I->input[0] = adcBuf[2];
     // 锁相控制
-    pll_Control_V(signal_V);                     // 电压环
-    pll_Control_I(signal_I, signal_V, 20.f, 20); // 电流环
+    pll_Control_V(signal_V);                         // 电压环
+    pll_Control_I(signal_I, signal_V, 20.f, dcVolt); // 电流环
     // 调节SPWM占空比
     __HAL_TIM_SET_COMPARE(&htim8, TIM_CHANNEL_1, signal_I->pr_out[0]);
-    // 反馈侧
-
+    // 调试输出
+#if USER_DEBUG
+    oled_Show();
+#endif
     // DAC模拟输出，便于调试，不需要时可关闭
     HAL_DAC_SetValue(&hdac1, DAC_CHANNEL_1, DAC_ALIGN_12B_R, 2000.f * arm_cos_f32(signal_V->theta) + 2048.f);
   }

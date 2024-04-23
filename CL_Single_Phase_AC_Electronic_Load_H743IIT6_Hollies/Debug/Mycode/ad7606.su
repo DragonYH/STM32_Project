@@ -3,4 +3,4 @@
 ../Mycode/ad7606.c:31:6:ad7606_Start	16	static
 ../Mycode/ad7606.c:40:6:ad7606_Stop	16	static
 ../Mycode/ad7606.c:51:6:ad7606_Convert	32	static
-../Mycode/ad7606.c:67:6:ad7606_GetValue	56	dynamic
+../Mycode/ad7606.c:66:6:ad7606_GetValue	56	dynamic
