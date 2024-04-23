@@ -13,6 +13,7 @@ typedef struct SOGI
     float a[3]; // 输出序列alpha
     float b[3]; // 输出序列beta	滞后90度于序列alpha
     // 中间变量
+    float k; // 阻尼比 典型值1.41
     float lamda;
     float x;
     float y;
@@ -44,11 +45,10 @@ typedef struct pll_Signal_V
     float park_d; // 有功分量
     float park_q; // 无功分量
     float theta;  // 当前角度
+    float phase;  // 设置相位
     // 配置参数
     float omiga0; // 无阻尼自然频率，2*pi*频率
     float Ts;     // 采样周期
-    float k;      // 阻尼比 典型值1.41
-    float phase;  // 设置相位
 
     SOGI *sogi; // sogi指针
     PID *pid;   // pid指针
@@ -64,7 +64,6 @@ typedef struct pll_Signal_I
     // 配置参数
     float omiga0; // 无阻尼自然频率，2*pi*频率
     float omigaC; // 带宽2*pi*带宽
-    float k;      // 阻尼比 典型值1.41
     float Ts;     // 采样周期
 
     SOGI *sogi; // sogi指针

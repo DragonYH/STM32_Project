@@ -23,7 +23,6 @@ void pll_Init_V(pll_Signal_V *signal, float f, uint16_t F, float Umax)
     signal->theta = 0.f;
     signal->omiga0 = 2 * PI * f; // f典型值50
     signal->Ts = 1.f / F;        // F典型值20000
-    signal->k = 1.414f;          // 阻尼比典型值1.414
     signal->phase = 0.f;         // 设定相位差
     // 初始化pid参数
     float ki = signal->omiga0 * signal->omiga0 / Umax;
@@ -31,8 +30,9 @@ void pll_Init_V(pll_Signal_V *signal, float f, uint16_t F, float Umax)
 
     pid_Init(signal->pid, kp, ki, 0, MAX_COMPARE, 0);
     // 计算sogi中间量
+    signal->sogi->k = 1.414f;
     signal->sogi->lamda = 0.5f * signal->omiga0 * signal->Ts;
-    signal->sogi->x = 2.f * signal->k * signal->omiga0 * signal->Ts;
+    signal->sogi->x = 2.f * signal->sogi->k * signal->omiga0 * signal->Ts;
     signal->sogi->y = signal->omiga0 * signal->Ts * signal->omiga0 * signal->Ts;
     signal->sogi->b0 = signal->sogi->x / (signal->sogi->x + signal->sogi->y + 4);
     signal->sogi->a1 = (8 - 2.f * signal->sogi->y) / (signal->sogi->x + signal->sogi->y + 4);
@@ -76,8 +76,9 @@ void pll_Init_I(pll_Signal_I *signal, float f, uint16_t F, float pr_kp, float pr
     signal->pr->b1 = -8 / (signal->Ts * signal->Ts) + 2 * signal->omiga0 * signal->omiga0;
     signal->pr->b2 = 4 / (signal->Ts * signal->Ts) - 4 * signal->omigaC / signal->Ts + signal->omiga0 * signal->omiga0;
     // 计算sogi中间量
+    signal->sogi->k = 1.414f; // 阻尼比典型值1.414
     signal->sogi->lamda = 0.5f * signal->omiga0 * signal->Ts;
-    signal->sogi->x = 2.f * signal->k * signal->omiga0 * signal->Ts;
+    signal->sogi->x = 2.f * signal->sogi->k * signal->omiga0 * signal->Ts;
     signal->sogi->y = signal->omiga0 * signal->Ts * signal->omiga0 * signal->Ts;
     signal->sogi->b0 = signal->sogi->x / (signal->sogi->x + signal->sogi->y + 4);
     signal->sogi->a1 = (8 - 2.f * signal->sogi->y) / (signal->sogi->x + signal->sogi->y + 4);
