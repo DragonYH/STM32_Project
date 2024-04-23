@@ -109,7 +109,7 @@ void oled_Show(void)
   // CDC_Transmit_FS((uint8_t *)textBuf, sizeof(textBuf));
 
   // FAC: 功率因数
-  sprintf((char *)textBuf, "FAC: %4.2f %5.2f", arm_cos_f32(0), signal_I->pr_out[0]);
+  sprintf((char *)textBuf, "FAC: %4.2f %5.2f", arm_cos_f32(0), signal_I->pr->out[0]);
   OLED_ShowString(0, 36, textBuf, 12);
   // CDC_Transmit_FS((uint8_t *)textBuf, sizeof(textBuf));
 
@@ -191,13 +191,16 @@ int main(void)
   signal_I = (pll_Signal_I *)malloc(sizeof(pll_Signal_I));
   signal_V->pid = (PID *)malloc(sizeof(PID));
   signal_I->pid = (PID *)malloc(sizeof(PID));
+  signal_V->sogi = (SOGI *)malloc(sizeof(SOGI));
+  signal_I->sogi = (SOGI *)malloc(sizeof(SOGI));
+  signal_I->pr = (PR *)malloc(sizeof(PR));
   dcPid = (PID *)malloc(sizeof(PID));
   // 芯片温度
   // uint16_t temprature = 0;
   // float temp_result = 0;
   // 锁相环初始化
-  pll_Init_V(signal_V, 50, 20000, 10); // 电压环
-  pll_Init_I(signal_I, 50, 20000, 0.4f, 10.f, 0.1f, 1.f);   // 电流环
+  pll_Init_V(signal_V, 50, 20000, 10);                    // 电压环
+  pll_Init_I(signal_I, 50, 20000, 0.4f, 10.f, 0.1f, 1.f); // 电流环
   // DAC模拟输出初始化
   HAL_DAC_SetValue(&hdac1, DAC_CHANNEL_1, DAC_ALIGN_12B_R, 2048);
   HAL_DAC_Start(&hdac1, DAC_CHANNEL_1);
@@ -346,7 +349,7 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
     pll_Control_V(signal_V);                         // 电压环
     pll_Control_I(signal_I, signal_V, 20.f, dcVolt); // 电流环
     // 调节SPWM占空比
-    __HAL_TIM_SET_COMPARE(&htim8, TIM_CHANNEL_1, signal_I->pr_out[0]);
+    __HAL_TIM_SET_COMPARE(&htim8, TIM_CHANNEL_1, signal_I->pr->out[0]);
     // 调试输出
 #if USER_DEBUG
     oled_Show();

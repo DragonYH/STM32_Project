@@ -3,5 +3,4 @@
 ../Mycode/pll.c:90:6:pll_Control_V	1
 ../Mycode/pll.c:109:6:pll_Control_I	1
 ../Mycode/pll.c:126:6:pll_Pr	3
-../Mycode/pll.c:144:6:pll_Sogi	1
-../Mycode/pll.c:160:6:pll_Sogi_I	1
+../Mycode/pll.c:145:6:pll_Sogi	1
