@@ -11,8 +11,8 @@
 ../Src/main.c:136:6:circuit_Disconnect	4	static
 ../Src/main.c:145:5:main	32	static,ignoring_inline_asm
 ../Src/main.c:263:6:SystemClock_Config	128	static
-../Src/main.c:328:6:PeriphCommonClock_Config	200	static
-../Src/main.c:355:6:HAL_GPIO_EXTI_Callback	16	static
-../Src/main.c:383:6:MPU_Config	24	static
-../Src/main.c:435:6:HAL_TIM_PeriodElapsedCallback	16	static
-../Src/main.c:458:6:Error_Handler	8	static,ignoring_inline_asm
+../Src/main.c:326:6:PeriphCommonClock_Config	200	static
+../Src/main.c:353:6:HAL_GPIO_EXTI_Callback	16	static
+../Src/main.c:381:6:MPU_Config	24	static
+../Src/main.c:434:6:HAL_TIM_PeriodElapsedCallback	16	static
+../Src/main.c:456:6:Error_Handler	8	static,ignoring_inline_asm
