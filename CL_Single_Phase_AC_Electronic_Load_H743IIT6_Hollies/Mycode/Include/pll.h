@@ -4,6 +4,7 @@
 #include "main.h"
 #include "arm_math.h"
 #include "pid.h"
+#include "iir.h"
 
 #define COMPARE 12000              // 计时器计数值
 #define MI 0.95                    // 调制比
@@ -44,6 +45,7 @@ typedef struct pll_Signal_V
 {
     // 基本变量
     float input[3]; // 输入序列
+    float rms;   // 电压有效值
     // park变换相关变量
     float park_d; // 有功分量
     float park_q; // 无功分量
@@ -52,15 +54,19 @@ typedef struct pll_Signal_V
     // 配置参数
     float omiga0; // 无阻尼自然频率，2*pi*频率
     float Ts;     // 采样周期
+    // iir滤波器
+    float iirState[4 * iirNumStages]; // IIR滤波器状态变量
 
     SOGI *sogi; // sogi指针
     PID *pid;   // pid指针
+
 } pll_Signal_V;
 // 电流信号数据
 typedef struct pll_Signal_I
 {
     // 基本变量
     float input[3]; // 输入序列
+    float rms;  // 电流有效值
     // park变换相关变量
     float park_d; // 有功分量
     float park_q; // 无功分量
@@ -68,6 +74,8 @@ typedef struct pll_Signal_I
     float omiga0; // 无阻尼自然频率，2*pi*频率
     float omigaC; // 带宽2*pi*带宽
     float Ts;     // 采样周期
+    // iir滤波器
+    float iirState[4 * iirNumStages]; // IIR滤波器状态变量
 
     SOGI *sogi; // sogi指针
     PID *pid;   // pid指针

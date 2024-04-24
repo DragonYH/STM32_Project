@@ -104,6 +104,7 @@ target_sources(
     "Middlewares\\ST\\STM32_USB_Device_Library\\Core\\Src\\usbd_ctlreq.c"
     "Middlewares\\ST\\STM32_USB_Device_Library\\Core\\Src\\usbd_ioreq.c"
     "Mycode\\ad7606.c"
+    "Mycode\\iir.c"
     "Mycode\\ina238.c"
     "Mycode\\oled.c"
     "Mycode\\pid.c"

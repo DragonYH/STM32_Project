@@ -40,7 +40,8 @@ Src/main.o: ../Src/main.c ../Inc/main.h \
  ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_def.h \
  ../Inc/usbd_conf.h ../Inc/gpio.h ../Drivers/CMSIS/DSP/Include/arm_math.h \
  ../Drivers/CMSIS/Include/cmsis_compiler.h ../Mycode/Include/oled.h \
- ../Mycode/Include/pll.h ../Mycode/Include/pid.h ../Inc/usbd_cdc_if.h \
+ ../Mycode/Include/pll.h ../Mycode/Include/pid.h ../Mycode/Include/iir.h \
+ ../Inc/usbd_cdc_if.h \
  ../Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc/usbd_cdc.h \
  ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_ioreq.h \
  ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_def.h \
@@ -48,7 +49,7 @@ Src/main.o: ../Src/main.c ../Inc/main.h \
  ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_ioreq.h \
  ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_ctlreq.h \
  ../Mycode/Include/ina238.h ../Mycode/Include/pid.h \
- ../Mycode/Include/ad7606.h
+ ../Mycode/Include/ad7606.h ../Mycode/Include/iir.h
 ../Inc/main.h:
 ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal.h:
 ../Inc/stm32h7xx_hal_conf.h:
@@ -101,6 +102,7 @@ Src/main.o: ../Src/main.c ../Inc/main.h \
 ../Mycode/Include/oled.h:
 ../Mycode/Include/pll.h:
 ../Mycode/Include/pid.h:
+../Mycode/Include/iir.h:
 ../Inc/usbd_cdc_if.h:
 ../Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc/usbd_cdc.h:
 ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_ioreq.h:
@@ -111,3 +113,4 @@ Src/main.o: ../Src/main.c ../Inc/main.h \
 ../Mycode/Include/ina238.h:
 ../Mycode/Include/pid.h:
 ../Mycode/Include/ad7606.h:
+../Mycode/Include/iir.h:

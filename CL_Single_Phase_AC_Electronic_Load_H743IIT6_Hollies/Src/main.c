@@ -36,6 +36,7 @@
 #include "ina238.h"
 #include "pid.h"
 #include "ad7606.h"
+#include "iir.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -82,6 +83,8 @@ __attribute__((weak)) void _kill(void) {}
 // 将控制变量放到DTCM中，防止数据传输拖慢运行速度
 __attribute__((section("._DTCM_Area"))) pll_Signal_V *signal_V;
 __attribute__((section("._DTCM_Area"))) pll_Signal_I *signal_I;
+__attribute__((section("._DTCM_Area"))) arm_biquad_casd_df1_inst_f32 *iir_V; // IIR滤波器参数结构体
+__attribute__((section("._DTCM_Area"))) arm_biquad_casd_df1_inst_f32 *iir_I; // IIR滤波器参数结构体
 // 创建ADC数据空间
 float adcBuf[2] = {0};
 // 直流电压
@@ -121,7 +124,8 @@ void oled_Show(void)
 #endif
 #if USER_DEBUG
   // 串口调试
-  sprintf((char *)textBuf, "x=0,V=%.2f,I=%.2f,park_Iq=%.2f,park_Id=%.2f,park_Vd=%.2f,park_Vq=%.2f,sogi_Va=%.2f,sogi_Vb=%.2f,sogi_Ia=%.2f,sogi_Ib=%.2f,\n", signal_V->input[0], signal_I->input[0], signal_I->park_q, signal_I->park_d, signal_V->park_d, signal_V->park_q, signal_V->sogi_a[0], signal_V->sogi_b[0], signal_I->sogi_a[0], signal_I->sogi_b[0]);
+  //  sprintf((char *)textBuf, "x=0,V=%.2f,I=%.2f,park_Iq=%.2f,park_Id=%.2f,park_Vd=%.2f,park_Vq=%.2f,sogi_Va=%.2f,sogi_Vb=%.2f,sogi_Ia=%.2f,sogi_Ib=%.2f,\n", signal_V->input[0], signal_I->input[0], signal_I->park_q, signal_I->park_d, signal_V->park_d, signal_V->park_q, signal_V->sogi->a[0], signal_V->sogi->b[0], signal_I->sogi->a[0], signal_I->sogi->b[0]);
+  sprintf((char *)textBuf, "x=0,V=%.2f,park_Vd=%.2f,park_Vq=%.2f,sogi_Va=%.2f,sogi_Vb=%.2f,\n", signal_V->input[0], signal_V->park_d, signal_V->park_q, signal_V->sogi->a[0], signal_V->sogi->b[0]);
   CDC_Transmit_FS((uint8_t *)textBuf, sizeof(textBuf));
 #endif
 }
@@ -217,6 +221,11 @@ int main(void)
   ina238_Init(&hi2c3, 0);
   // pid初始化
   pid_Init(dcPid, 0.01, 0.1, 0.1, 0.95, 0.3);
+  // iir滤波器初始化
+  iir_V = (arm_biquad_casd_df1_inst_f32 *)malloc(sizeof(arm_biquad_casd_df1_inst_f32));
+  iir_I = (arm_biquad_casd_df1_inst_f32 *)malloc(sizeof(arm_biquad_casd_df1_inst_f32));
+  arm_biquad_cascade_df1_init_f32(iir_V, iirNumStages, iirCoeffs_5Hz, signal_V->iirState);
+  arm_biquad_cascade_df1_init_f32(iir_I, iirNumStages, iirCoeffs_5Hz, signal_V->iirState);
   // 开启中断
   ad7606_Start(&htim2, TIM_CHANNEL_1);
   HAL_TIM_Base_Start_IT(&htim3);
@@ -239,6 +248,8 @@ int main(void)
   free(signal_V->sogi);
   free(signal_I->sogi);
   free(signal_I->pr);
+  free(iir_V);
+  free(iir_I);
   free(signal_V);
   free(signal_I);
   free(dcPid);
@@ -347,13 +358,16 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
   {
     ad7606_GetValue(&hspi2, 3, adcBuf);
     // 缓存adcBuf
-    signal_V->input[0] = adcBuf[1] * 100.f;
-    signal_I->input[0] = adcBuf[2];
+    signal_V->input[0] = adcBuf[1] * 100.f / 2.4f;
+    signal_I->input[0] = adcBuf[2] * 2.5487179f;
     // 锁相控制
     pll_Control_V(signal_V);                         // 电压环
     pll_Control_I(signal_I, signal_V, 20.f, dcVolt); // 电流环
     // 调节SPWM占空比
     __HAL_TIM_SET_COMPARE(&htim8, TIM_CHANNEL_1, signal_I->pr->out[0]);
+    // 输出有效值滤波
+    arm_biquad_cascade_df1_f32(iir_V, &signal_V->park_d, &signal_V->rms, iirBlockSize);
+    arm_biquad_cascade_df1_f32(iir_I, &signal_I->park_d, &signal_I->rms, iirBlockSize);
     // 调试输出
 #if USER_DEBUG
     oled_Show();
