@@ -164,7 +164,7 @@ SECTIONS
     . = . + _Min_Heap_Size;
     . = . + _Min_Stack_Size;
     . = ALIGN(8);
-  } >DTCMRAM
+  } >RAM_D1
 
   /* Add RAM_D3 */
   ._D3_Area :

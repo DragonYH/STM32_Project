@@ -67,7 +67,7 @@ void pll_Init_I(pll_Signal_I *signal, float f, uint16_t F, float pr_kp, float pr
     signal->pr->err[1] = 0.f;
     signal->pr->err[2] = 0.f;
     // 初始化pid参数
-    pid_Init(signal->pid, pi_kp, pi_ki, 0, 4, 0);
+    pid_Init(signal->pid, pi_kp, pi_ki, 0, 4.f, 0.f);
     // 计算pr中间量
     signal->pr->a0 = 4 * pr_kp / (signal->Ts * signal->Ts) + 4 * signal->omigaC * (pr_kp + pr_kr) / signal->Ts + pr_kp * signal->omiga0 * signal->omiga0;
     signal->pr->a1 = -8 * pr_kp / (signal->Ts * signal->Ts) + 2 * pr_kp * signal->omiga0 * signal->omiga0;
@@ -116,27 +116,27 @@ void pll_Control_I(pll_Signal_I *signal_I, pll_Signal_V *signal_V, float Uset, f
     // 对直流电压进行PI控制
     pid(signal_I->pid, Uset, Udc); // 电压内环
     // PR控制
-    // ! pll_Pr(signal_I, signal_I->pid->result * arm_sin_f32(signal_V->theta), signal_I->input);
-    pll_Pr(signal_I, 1.f * arm_sin_f32(signal_V->theta), signal_I->input[0]);
+    pll_Pr(signal_I->pr, signal_I->pid->out * arm_cos_f32(signal_V->theta), signal_I->input[0]);
+    // pll_Pr(signal_I->pr, 100.f * arm_cos_f32(signal_V->theta), signal_I->input[0]);
 }
 /**
  * @brief PR控制器
  * @param signal 信号指针
  * @param config 配置指针
  */
-void pll_Pr(pll_Signal_I *signal, float target, float sample)
+void pll_Pr(PR *pr, float target, float sample)
 {
-    signal->pr->err[0] = target - sample;
-    signal->pr->out[0] = -signal->pr->b1 * signal->pr->out[1] - signal->pr->b2 * signal->pr->out[2] + signal->pr->a0 * signal->pr->err[0] + signal->pr->a1 * signal->pr->err[1] + signal->pr->a2 * signal->pr->err[2];
-    signal->pr->out[0] = signal->pr->out[0] / signal->pr->b0;
+    pr->err[0] = target - sample;
+    pr->out[0] = -pr->b1 * pr->out[1] - pr->b2 * pr->out[2] + pr->a0 * pr->err[0] + pr->a1 * pr->err[1] + pr->a2 * pr->err[2];
+    pr->out[0] = pr->out[0] / pr->b0;
     // 限制调参幅度，防止跑飞
-    if (signal->pr->out[0] > COMPARE_MAX)
-        signal->pr->out[0] = COMPARE_MAX;
-    else if (signal->pr->out[0] < COMPARE_MIN)
-        signal->pr->out[0] = COMPARE_MIN;
+    if (pr->out[0] > COMPARE_MAX)
+        pr->out[0] = COMPARE_MAX;
+    else if (pr->out[0] < COMPARE_MIN)
+        pr->out[0] = COMPARE_MIN;
 
-    signal->pr->out[1] = signal->pr->out[0];
-    signal->pr->out[2] = signal->pr->out[1];
+    pr->out[1] = pr->out[0];
+    pr->out[2] = pr->out[1];
 }
 /**
  * @brief Sogi变换

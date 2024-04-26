@@ -88,16 +88,15 @@ __attribute__((section("._DTCM_Area"))) arm_biquad_casd_df1_inst_f32 *iir_I; // 
 // 创建ADC数据空间
 __attribute__((section("._DTCM_Area"))) float adcBuf[2] = {0};
 // 直流电压
-PID *dcPid;
 float dcVolt = 0.f;
 float dcCurrent = 0.f;
 // 显示函数
-__attribute__((section("._DTCM_Area"))) uint8_t textBuf[256] = {0};
+uint8_t textBuf[256] = {0};
 void oled_Show(void)
 {
 #if !USER_DEBUG
   // IN:  输入
-  sprintf((char *)textBuf, "IN : %5.2fV %5.2fA", signal_V->park_d / 1.4142135623f, signal_I->park_d / 1.4142135623f);
+  sprintf((char *)textBuf, "IN : %5.2fV %5.2fA", signal_V->rms * iirScale_20Hz / 1.4f, signal_I->rms * iirScale_20Hz / 1.414f);
   OLED_ShowString(0, 0, textBuf, 12);
   // CDC_Transmit_FS((uint8_t *)textBuf, sizeof(textBuf));
 
@@ -112,7 +111,8 @@ void oled_Show(void)
   // CDC_Transmit_FS((uint8_t *)textBuf, sizeof(textBuf));
 
   // FAC: 功率因数
-  sprintf((char *)textBuf, "FAC: %4.2f %5.2f", arm_cos_f32(0), signal_I->pr->out[0]);
+  sprintf((char *)textBuf, "FAC: %4.2f %5ld", arm_cos_f32(0), __HAL_TIM_GET_COMPARE(&htim8, TIM_CHANNEL_1));
+  // sprintf((char *)textBuf, "FAC: %4.2f %.2f", arm_cos_f32(0), signal_I->pid->out);
   OLED_ShowString(0, 36, textBuf, 12);
   // CDC_Transmit_FS((uint8_t *)textBuf, sizeof(textBuf));
 
@@ -132,16 +132,18 @@ void oled_Show(void)
 // 连接电路
 void circuit_Connect(void)
 {
+  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_8, GPIO_PIN_SET);
 }
 void circuit_Disconnect(void)
 {
+  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_8, GPIO_PIN_RESET);
 }
 /* USER CODE END 0 */
 
 /**
-  * @brief  The application entry point.
-  * @retval int
-  */
+ * @brief  The application entry point.
+ * @retval int
+ */
 int main(void)
 {
 
@@ -172,7 +174,7 @@ int main(void)
   /* Configure the system clock */
   SystemClock_Config();
 
-/* Configure the peripherals common clocks */
+  /* Configure the peripherals common clocks */
   PeriphCommonClock_Config();
 
   /* USER CODE BEGIN SysInit */
@@ -198,13 +200,12 @@ int main(void)
   signal_V->sogi = (SOGI *)malloc(sizeof(SOGI));
   signal_I->sogi = (SOGI *)malloc(sizeof(SOGI));
   signal_I->pr = (PR *)malloc(sizeof(PR));
-  dcPid = (PID *)malloc(sizeof(PID));
   // 芯片温度
   // uint16_t temprature = 0;
   // float temp_result = 0;
   // 锁相环初始化
-  pll_Init_V(signal_V, 50, 20000, 10);                    // 电压环
-  pll_Init_I(signal_I, 50, 20000, 0.4f, 10.f, 0.1f, 1.f); // 电流环
+  pll_Init_V(signal_V, 50, 20000, 10 * 1.414);                     // 电压环
+  pll_Init_I(signal_I, 50, 20000, 10000.f, 1000000.f, 0.01f, 100.f); // 电流环
   // DAC模拟输出初始化
   HAL_DAC_SetValue(&hdac1, DAC_CHANNEL_1, DAC_ALIGN_12B_R, 2048);
   HAL_DAC_Start(&hdac1, DAC_CHANNEL_1);
@@ -219,13 +220,11 @@ int main(void)
   OLED_Init();
   // INA238初始化
   ina238_Init(&hi2c3, 0);
-  // pid初始化
-  pid_Init(dcPid, 0.01, 0.1, 0.1, 0.95, 0.3);
   // iir滤波器初始化
   iir_V = (arm_biquad_casd_df1_inst_f32 *)malloc(sizeof(arm_biquad_casd_df1_inst_f32));
   iir_I = (arm_biquad_casd_df1_inst_f32 *)malloc(sizeof(arm_biquad_casd_df1_inst_f32));
-  arm_biquad_cascade_df1_init_f32(iir_V, iirNumStages, iirCoeffs_5Hz, signal_V->iirState);
-  arm_biquad_cascade_df1_init_f32(iir_I, iirNumStages, iirCoeffs_5Hz, signal_V->iirState);
+  arm_biquad_cascade_df1_init_f32(iir_V, iirNumStages, iirCoeffs_20Hz, signal_V->iirState);
+  arm_biquad_cascade_df1_init_f32(iir_I, iirNumStages, iirCoeffs_20Hz, signal_I->iirState);
   // 开启中断
   ad7606_Start(&htim2, TIM_CHANNEL_1);
   HAL_TIM_Base_Start_IT(&htim3);
@@ -235,6 +234,10 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+    if (signal_I->rms * iirScale_20Hz / 1.414f > 0.2)
+      circuit_Connect();
+    else
+      circuit_Disconnect();
     oled_Show();
     HAL_GPIO_TogglePin(GPIOI, GPIO_PIN_0);
     HAL_Delay(100);
@@ -252,37 +255,40 @@ int main(void)
   free(iir_I);
   free(signal_V);
   free(signal_I);
-  free(dcPid);
   /* USER CODE END 3 */
 }
 
 /**
-  * @brief System Clock Configuration
-  * @retval None
-  */
+ * @brief System Clock Configuration
+ * @retval None
+ */
 void SystemClock_Config(void)
 {
   RCC_OscInitTypeDef RCC_OscInitStruct = {0};
   RCC_ClkInitTypeDef RCC_ClkInitStruct = {0};
 
   /** Supply configuration update enable
-  */
+   */
   HAL_PWREx_ConfigSupply(PWR_LDO_SUPPLY);
 
   /** Configure the main internal regulator output voltage
-  */
+   */
   __HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE1);
 
-  while(!__HAL_PWR_GET_FLAG(PWR_FLAG_VOSRDY)) {}
+  while (!__HAL_PWR_GET_FLAG(PWR_FLAG_VOSRDY))
+  {
+  }
 
   __HAL_RCC_SYSCFG_CLK_ENABLE();
   __HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE0);
 
-  while(!__HAL_PWR_GET_FLAG(PWR_FLAG_VOSRDY)) {}
+  while (!__HAL_PWR_GET_FLAG(PWR_FLAG_VOSRDY))
+  {
+  }
 
   /** Initializes the RCC Oscillators according to the specified parameters
-  * in the RCC_OscInitTypeDef structure.
-  */
+   * in the RCC_OscInitTypeDef structure.
+   */
   RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSE;
   RCC_OscInitStruct.HSEState = RCC_HSE_ON;
   RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
@@ -301,10 +307,8 @@ void SystemClock_Config(void)
   }
 
   /** Initializes the CPU, AHB and APB buses clocks
-  */
-  RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK|RCC_CLOCKTYPE_SYSCLK
-                              |RCC_CLOCKTYPE_PCLK1|RCC_CLOCKTYPE_PCLK2
-                              |RCC_CLOCKTYPE_D3PCLK1|RCC_CLOCKTYPE_D1PCLK1;
+   */
+  RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK | RCC_CLOCKTYPE_SYSCLK | RCC_CLOCKTYPE_PCLK1 | RCC_CLOCKTYPE_PCLK2 | RCC_CLOCKTYPE_D3PCLK1 | RCC_CLOCKTYPE_D1PCLK1;
   RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
   RCC_ClkInitStruct.SYSCLKDivider = RCC_SYSCLK_DIV1;
   RCC_ClkInitStruct.AHBCLKDivider = RCC_HCLK_DIV2;
@@ -320,16 +324,16 @@ void SystemClock_Config(void)
 }
 
 /**
-  * @brief Peripherals Common Clock Configuration
-  * @retval None
-  */
+ * @brief Peripherals Common Clock Configuration
+ * @retval None
+ */
 void PeriphCommonClock_Config(void)
 {
   RCC_PeriphCLKInitTypeDef PeriphClkInitStruct = {0};
 
   /** Initializes the peripherals clock
-  */
-  PeriphClkInitStruct.PeriphClockSelection = RCC_PERIPHCLK_SPI2|RCC_PERIPHCLK_SPI1;
+   */
+  PeriphClkInitStruct.PeriphClockSelection = RCC_PERIPHCLK_SPI2 | RCC_PERIPHCLK_SPI1;
   PeriphClkInitStruct.PLL3.PLL3M = 25;
   PeriphClkInitStruct.PLL3.PLL3N = 300;
   PeriphClkInitStruct.PLL3.PLL3P = 2;
@@ -359,8 +363,8 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
     signal_V->input[0] = adcBuf[1] * 100.f / 2.4f;
     signal_I->input[0] = adcBuf[2] * 2.5487179f;
     // 锁相控制
-    pll_Control_V(signal_V);                         // 电压环
-    pll_Control_I(signal_I, signal_V, 20.f, dcVolt); // 电流环
+    pll_Control_V(signal_V);                        // 电压环
+    pll_Control_I(signal_I, signal_V, 6.f, dcVolt); // 电流环
     // 调节SPWM占空比
     __HAL_TIM_SET_COMPARE(&htim8, TIM_CHANNEL_1, signal_I->pr->out[0]);
     // 输出有效值滤波
@@ -376,7 +380,7 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 }
 /* USER CODE END 4 */
 
- /* MPU Configuration */
+/* MPU Configuration */
 
 void MPU_Config(void)
 {
@@ -386,7 +390,7 @@ void MPU_Config(void)
   HAL_MPU_Disable();
 
   /** Initializes and configures the Region and the memory to be protected
-  */
+   */
   MPU_InitStruct.Enable = MPU_REGION_ENABLE;
   MPU_InitStruct.Number = MPU_REGION_NUMBER0;
   MPU_InitStruct.BaseAddress = 0x24000000;
@@ -402,7 +406,7 @@ void MPU_Config(void)
   HAL_MPU_ConfigRegion(&MPU_InitStruct);
 
   /** Initializes and configures the Region and the memory to be protected
-  */
+   */
   MPU_InitStruct.Number = MPU_REGION_NUMBER1;
   MPU_InitStruct.BaseAddress = 0x38000000;
   MPU_InitStruct.Size = MPU_REGION_SIZE_64KB;
@@ -412,7 +416,7 @@ void MPU_Config(void)
   HAL_MPU_ConfigRegion(&MPU_InitStruct);
 
   /** Initializes and configures the Region and the memory to be protected
-  */
+   */
   MPU_InitStruct.Number = MPU_REGION_NUMBER2;
   MPU_InitStruct.BaseAddress = 0x20000000;
   MPU_InitStruct.Size = MPU_REGION_SIZE_128KB;
@@ -420,23 +424,23 @@ void MPU_Config(void)
   HAL_MPU_ConfigRegion(&MPU_InitStruct);
   /* Enables the MPU */
   HAL_MPU_Enable(MPU_PRIVILEGED_DEFAULT);
-
 }
 
 /**
-  * @brief  Period elapsed callback in non blocking mode
-  * @note   This function is called  when TIM6 interrupt took place, inside
-  * HAL_TIM_IRQHandler(). It makes a direct call to HAL_IncTick() to increment
-  * a global variable "uwTick" used as application time base.
-  * @param  htim : TIM handle
-  * @retval None
-  */
+ * @brief  Period elapsed callback in non blocking mode
+ * @note   This function is called  when TIM6 interrupt took place, inside
+ * HAL_TIM_IRQHandler(). It makes a direct call to HAL_IncTick() to increment
+ * a global variable "uwTick" used as application time base.
+ * @param  htim : TIM handle
+ * @retval None
+ */
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
   /* USER CODE BEGIN Callback 0 */
 
   /* USER CODE END Callback 0 */
-  if (htim->Instance == TIM6) {
+  if (htim->Instance == TIM6)
+  {
     HAL_IncTick();
   }
   /* USER CODE BEGIN Callback 1 */
@@ -450,9 +454,9 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 }
 
 /**
-  * @brief  This function is executed in case of error occurrence.
-  * @retval None
-  */
+ * @brief  This function is executed in case of error occurrence.
+ * @retval None
+ */
 void Error_Handler(void)
 {
   /* USER CODE BEGIN Error_Handler_Debug */
@@ -471,14 +475,14 @@ void Error_Handler(void)
   /* USER CODE END Error_Handler_Debug */
 }
 
-#ifdef  USE_FULL_ASSERT
+#ifdef USE_FULL_ASSERT
 /**
-  * @brief  Reports the name of the source file and the source line number
-  *         where the assert_param error has occurred.
-  * @param  file: pointer to the source file name
-  * @param  line: assert_param error line source number
-  * @retval None
-  */
+ * @brief  Reports the name of the source file and the source line number
+ *         where the assert_param error has occurred.
+ * @param  file: pointer to the source file name
+ * @param  line: assert_param error line source number
+ * @retval None
+ */
 void assert_failed(uint8_t *file, uint32_t line)
 {
   /* USER CODE BEGIN 6 */

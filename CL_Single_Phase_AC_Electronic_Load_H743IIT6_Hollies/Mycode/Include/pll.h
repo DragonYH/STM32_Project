@@ -6,10 +6,10 @@
 #include "pid.h"
 #include "iir.h"
 
-#define COMPARE 12000              // 计时器计数值
-#define MI 0.95                    // 调制比
-#define COMPARE_MAX 0.95 * COMPARE // 计时器最大计数值
-#define COMPARE_MIN 0.05 * COMPARE // 计时器最小计数值
+#define COMPARE 12000           // 计时器计数值
+#define MI 0.9f                 // 调制比
+#define COMPARE_MAX MI *COMPARE // 计时器最大计数值
+#define COMPARE_MIN 0           // 计时器最小计数值
 
 // sogi结构体
 typedef struct SOGI
@@ -45,7 +45,7 @@ typedef struct pll_Signal_V
 {
     // 基本变量
     float input[3]; // 输入序列
-    float rms;   // 电压有效值
+    float rms;      // 电压有效值
     // park变换相关变量
     float park_d; // 有功分量
     float park_q; // 无功分量
@@ -66,7 +66,7 @@ typedef struct pll_Signal_I
 {
     // 基本变量
     float input[3]; // 输入序列
-    float rms;  // 电流有效值
+    float rms;      // 电流有效值
     // park变换相关变量
     float park_d; // 有功分量
     float park_q; // 无功分量
@@ -86,7 +86,7 @@ void pll_Init_V(pll_Signal_V *signal, float f, uint16_t F, float Umax);
 void pll_Init_I(pll_Signal_I *signal, float f, uint16_t F, float pr_kp, float pr_kr, float pi_kp, float pi_ki);
 void pll_Control_V(pll_Signal_V *signal_V);
 void pll_Control_I(pll_Signal_I *signal_I, pll_Signal_V *signal_V, float Uset, float Udc);
-void pll_Pr(pll_Signal_I *signal, float target, float sample);
+void pll_Pr(PR *signal, float target, float sample);
 void pll_Sogi(float *input, SOGI *sogi);
 
 #endif
