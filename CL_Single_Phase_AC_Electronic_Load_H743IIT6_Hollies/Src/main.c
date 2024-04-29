@@ -206,7 +206,7 @@ int main(void)
   // float temp_result = 0;
   // 锁相环初始化
   pll_Init_V(signal_V, 50, 20000, 30 * 1.414);                 // 电压锁相
-  pll_Init_I(signal_I, 50, 20000, 0.2f, 1000.f, 0.001f, 0.1f); // 电流环 1.414-7600
+  pll_Init_I(signal_I, 50, 20000, 0.5f, 7600.f, 0.001f, 0.1f); // 电流环 1.414-7600
   // DAC模拟输出初始化
   HAL_DAC_SetValue(&hdac1, DAC_CHANNEL_1, DAC_ALIGN_12B_R, 2048);
   HAL_DAC_Start(&hdac1, DAC_CHANNEL_1);
