@@ -6,4 +6,4 @@
 ../Src/usbd_desc.c:324:11:USBD_FS_ConfigStrDescriptor	2
 ../Src/usbd_desc.c:343:11:USBD_FS_InterfaceStrDescriptor	2
 ../Src/usbd_desc.c:361:13:Get_SerialNum	2
-../Src/usbd_desc.c:383:13:IntToUnicode	3
+../Src/usbd_desc.c:387:13:IntToUnicode	3

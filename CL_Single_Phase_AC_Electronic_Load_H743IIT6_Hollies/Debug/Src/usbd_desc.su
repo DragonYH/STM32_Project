@@ -6,4 +6,4 @@
 ../Src/usbd_desc.c:324:11:USBD_FS_ConfigStrDescriptor	16	static
 ../Src/usbd_desc.c:343:11:USBD_FS_InterfaceStrDescriptor	16	static
 ../Src/usbd_desc.c:361:13:Get_SerialNum	24	static
-../Src/usbd_desc.c:383:13:IntToUnicode	32	static
+../Src/usbd_desc.c:387:13:IntToUnicode	32	static

@@ -1,6 +1,8 @@
 #include "pll.h"
 #include "stdlib.h"
 
+float phase_set = 0.f;
+
 /**
  * @brief 电压信号参数初始化
  * @param signal 信号指针
@@ -43,8 +45,10 @@ void pll_Init_V(pll_Signal_V *signal, float f, uint16_t F, float Umax)
  * @param signal 信号指针
  * @param f 信号频率(典型值:50)
  * @param F 采样频率(典型值:20000)
- * @param kp PR控制器kp参数
- * @param kr PR控制器kr参数
+ * @param pr_kp PR控制器kp参数
+ * @param pr_kr PR控制器kr参数
+ * @param pi_kp PI控制器kp参数
+ * @param pi_ki PI控制器ki参数
  */
 void pll_Init_I(pll_Signal_I *signal, float f, uint16_t F, float pr_kp, float pr_kr, float pi_kp, float pi_ki)
 {
@@ -58,23 +62,23 @@ void pll_Init_I(pll_Signal_I *signal, float f, uint16_t F, float pr_kp, float pr
     signal->sogi->b[1] = 0.f;
     signal->sogi->b[2] = 0.f;
 
-    signal->omiga0 = 2 * PI * f;   // f典型值50
-    signal->omigaC = 2 * PI * 0.2; // 带宽2*pi*带宽
-    signal->Ts = 1.f / F;          // F典型值20000
+    signal->omiga0 = 2.f * PI * f;    // f典型值50
+    signal->omigaC = 2.f * PI * 0.5f; // 带宽2*pi*带宽
+    signal->Ts = 1.f / F;             // F典型值20000
     // 初始化pr参数
     signal->pr->out[1] = 0.f;
     signal->pr->out[2] = 0.f;
     signal->pr->err[1] = 0.f;
     signal->pr->err[2] = 0.f;
     // 初始化pid参数
-    pid_Init(signal->pid, pi_kp, pi_ki, 0, 4.f, 0.f);
+    pid_Init(signal->pid, pi_kp, pi_ki, 0, 0.f, 0.f);
     // 计算pr中间量
-    signal->pr->a0 = 4 * pr_kp / (signal->Ts * signal->Ts) + 4 * signal->omigaC * (pr_kp + pr_kr) / signal->Ts + pr_kp * signal->omiga0 * signal->omiga0;
-    signal->pr->a1 = -8 * pr_kp / (signal->Ts * signal->Ts) + 2 * pr_kp * signal->omiga0 * signal->omiga0;
-    signal->pr->a2 = 4 * pr_kp / (signal->Ts * signal->Ts) - 4 * signal->omigaC * (pr_kp + pr_kr) / signal->Ts + pr_kp * signal->omiga0 * signal->omiga0;
-    signal->pr->b0 = 4 / (signal->Ts * signal->Ts) + 4 * signal->omigaC / signal->Ts + signal->omiga0 * signal->omiga0;
-    signal->pr->b1 = -8 / (signal->Ts * signal->Ts) + 2 * signal->omiga0 * signal->omiga0;
-    signal->pr->b2 = 4 / (signal->Ts * signal->Ts) - 4 * signal->omigaC / signal->Ts + signal->omiga0 * signal->omiga0;
+    signal->pr->a0 = signal->omiga0 * signal->omiga0 * signal->Ts * signal->Ts + 4 * signal->omigaC * signal->Ts + 4;
+    signal->pr->a1 = (2 * signal->omiga0 * signal->omiga0 * signal->Ts * signal->Ts - 8) / signal->pr->a0;
+    signal->pr->a2 = (signal->omiga0 * signal->omiga0 * signal->Ts * signal->Ts - 4 * signal->omigaC * signal->Ts + 4) / signal->pr->a0;
+    signal->pr->b0 = (pr_kp * (signal->omiga0 * signal->omiga0 * signal->Ts * signal->Ts + 4 * signal->omigaC * signal->Ts + 4) + 4 * pr_kr * signal->omigaC * signal->Ts) / signal->pr->a0;
+    signal->pr->b1 = (pr_kp * (2 * signal->omiga0 * signal->omiga0 * signal->Ts * signal->Ts - 8)) / signal->pr->a0;
+    signal->pr->b2 = (pr_kp * (signal->omiga0 * signal->omiga0 * signal->Ts * signal->Ts - 4 * signal->omigaC * signal->Ts + 4) - 4 * pr_kr * signal->omigaC * signal->Ts) / signal->pr->a0;
     // 计算sogi中间量
     signal->sogi->k = 1.414f; // 阻尼比典型值1.414
     signal->sogi->lamda = 0.5f * signal->omiga0 * signal->Ts;
@@ -114,29 +118,32 @@ void pll_Control_I(pll_Signal_I *signal_I, pll_Signal_V *signal_V, float Uset, f
     // 再对信号sogi变换后的信号进行park变换
     arm_park_f32(signal_I->sogi->a[0], signal_I->sogi->b[0], &signal_I->park_d, &signal_I->park_q, arm_sin_f32(signal_V->theta), arm_cos_f32(signal_V->theta));
     // 对直流电压进行PI控制
-    pid(signal_I->pid, Uset, Udc); // 电压内环
+    // pid(signal_I->pid, Uset, Udc); // 电压内环
     // PR控制
-    pll_Pr(signal_I->pr, signal_I->pid->out * arm_cos_f32(signal_V->theta), signal_I->input[0]);
-    // pll_Pr(signal_I->pr, 100.f * arm_cos_f32(signal_V->theta), signal_I->input[0]);
+    // pll_Pr(signal_I->pr, signal_I->input[0], signal_I->pid->out * arm_cos_f32(signal_V->theta));
+    // ! pll_Pr(signal_I->pr, signal_I->input[0], 1.414f * arm_cos_f32(signal_V->theta + 0.2 * PI)); // PF= 1.00
+    pll_Pr(signal_I->pr, signal_I->input[0], 1.414f * arm_cos_f32(signal_V->theta + phase_set * PI));
 }
 /**
  * @brief PR控制器
- * @param signal 信号指针
- * @param config 配置指针
+ * @param pr PR控制器指针
+ * @param target 目标值
+ * @param sample 采样值
  */
 void pll_Pr(PR *pr, float target, float sample)
 {
     pr->err[0] = target - sample;
-    pr->out[0] = -pr->b1 * pr->out[1] - pr->b2 * pr->out[2] + pr->a0 * pr->err[0] + pr->a1 * pr->err[1] + pr->a2 * pr->err[2];
-    pr->out[0] = pr->out[0] / pr->b0;
+    pr->out[0] = pr->b0 * pr->err[0] + pr->b1 * pr->err[1] + pr->b2 * pr->err[2] - pr->a1 * pr->out[1] - pr->a2 * pr->out[2];
     // 限制调参幅度，防止跑飞
     if (pr->out[0] > COMPARE_MAX)
         pr->out[0] = COMPARE_MAX;
     else if (pr->out[0] < COMPARE_MIN)
         pr->out[0] = COMPARE_MIN;
 
-    pr->out[1] = pr->out[0];
     pr->out[2] = pr->out[1];
+    pr->out[1] = pr->out[0];
+    pr->err[2] = pr->err[1];
+    pr->err[1] = pr->err[0];
 }
 /**
  * @brief Sogi变换

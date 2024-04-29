@@ -6,10 +6,10 @@
 #include "pid.h"
 #include "iir.h"
 
-#define COMPARE 12000           // 计时器计数值
-#define MI 0.9f                 // 调制比
-#define COMPARE_MAX MI *COMPARE // 计时器最大计数值
-#define COMPARE_MIN 0           // 计时器最小计数值
+#define COMPARE (12000)                   // 计时器计数值
+#define MI (0.9f)                         // 调制比
+#define COMPARE_MAX (MI * COMPARE)        // 计时器最大计数值
+#define COMPARE_MIN (-1.f * MI * COMPARE) // 计时器最小计数值
 
 // sogi结构体
 typedef struct SOGI
@@ -81,6 +81,8 @@ typedef struct pll_Signal_I
     PID *pid;   // pid指针
     PR *pr;     // pr指针
 } pll_Signal_I;
+
+extern float phase_set;
 
 void pll_Init_V(pll_Signal_V *signal, float f, uint16_t F, float Umax);
 void pll_Init_I(pll_Signal_I *signal, float f, uint16_t F, float pr_kp, float pr_kr, float pi_kp, float pi_ki);

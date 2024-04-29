@@ -111,8 +111,9 @@ void oled_Show(void)
   // CDC_Transmit_FS((uint8_t *)textBuf, sizeof(textBuf));
 
   // FAC: 功率因数
-  sprintf((char *)textBuf, "FAC: %4.2f %5ld", arm_cos_f32(0), __HAL_TIM_GET_COMPARE(&htim8, TIM_CHANNEL_1));
-  // sprintf((char *)textBuf, "FAC: %4.2f %.2f", arm_cos_f32(0), signal_I->pid->out);
+  // sprintf((char *)textBuf, "FAC: %4.2f %5ld", arm_cos_f32(0), __HAL_TIM_GET_COMPARE(&htim8, TIM_CHANNEL_1));
+  sprintf((char *)textBuf, "FAC: %4.2f %.2f", arm_cos_f32(0), phase_set);
+  // sprintf((char *)textBuf, "FAC: %4.2f %8.0f", arm_cos_f32(0), signal_I->pr->out[0]);
   OLED_ShowString(0, 36, textBuf, 12);
   // CDC_Transmit_FS((uint8_t *)textBuf, sizeof(textBuf));
 
@@ -204,8 +205,8 @@ int main(void)
   // uint16_t temprature = 0;
   // float temp_result = 0;
   // 锁相环初始化
-  pll_Init_V(signal_V, 50, 20000, 10 * 1.414);                     // 电压环
-  pll_Init_I(signal_I, 50, 20000, 10000.f, 1000000.f, 0.01f, 100.f); // 电流环
+  pll_Init_V(signal_V, 50, 20000, 30 * 1.414);                 // 电压锁相
+  pll_Init_I(signal_I, 50, 20000, 0.2f, 1000.f, 0.001f, 0.1f); // 电流环 1.414-7600
   // DAC模拟输出初始化
   HAL_DAC_SetValue(&hdac1, DAC_CHANNEL_1, DAC_ALIGN_12B_R, 2048);
   HAL_DAC_Start(&hdac1, DAC_CHANNEL_1);
@@ -234,10 +235,18 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-    if (signal_I->rms * iirScale_20Hz / 1.414f > 0.2)
+    if (signal_I->rms * iirScale_20Hz / 1.414f > 0.1f)
+    {
       circuit_Connect();
+    }
     else
       circuit_Disconnect();
+    if (HAL_GPIO_ReadPin(GPIOI, GPIO_PIN_7) == GPIO_PIN_RESET)
+    {
+      while (HAL_GPIO_ReadPin(GPIOI, GPIO_PIN_7) == GPIO_PIN_RESET)
+        ;
+      phase_set += 0.01f;
+    }
     oled_Show();
     HAL_GPIO_TogglePin(GPIOI, GPIO_PIN_0);
     HAL_Delay(100);
@@ -360,23 +369,34 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
   {
     ad7606_GetValue(&hspi2, 3, adcBuf);
     // 缓存adcBuf
-    signal_V->input[0] = adcBuf[1] * 100.f / 2.4f;
+    signal_V->input[0] = adcBuf[1] * 100.f / 2.4026666666f;
     signal_I->input[0] = adcBuf[2] * 2.5487179f;
     // 锁相控制
-    pll_Control_V(signal_V);                        // 电压环
-    pll_Control_I(signal_I, signal_V, 6.f, dcVolt); // 电流环
+    pll_Control_V(signal_V);                         // 电压环
+    pll_Control_I(signal_I, signal_V, 50.f, dcVolt); // 电流环
     // 调节SPWM占空比
-    __HAL_TIM_SET_COMPARE(&htim8, TIM_CHANNEL_1, signal_I->pr->out[0]);
-    // 输出有效值滤波
-    arm_biquad_cascade_df1_f32(iir_V, &signal_V->park_d, &signal_V->rms, iirBlockSize);
-    arm_biquad_cascade_df1_f32(iir_I, &signal_I->park_d, &signal_I->rms, iirBlockSize);
-    // 调试输出
-#if USER_DEBUG
-    oled_Show();
-#endif
-    // DAC模拟输出，便于调试，不需要时可关闭
-    HAL_DAC_SetValue(&hdac1, DAC_CHANNEL_1, DAC_ALIGN_12B_R, 2000.f * arm_cos_f32(signal_V->theta) + 2048.f);
+    if (signal_I->pr->out[0] > 0)
+    {
+      __HAL_TIM_SET_COMPARE(&htim8, TIM_CHANNEL_1, signal_I->pr->out[0]);
+      __HAL_TIM_SET_COMPARE(&htim8, TIM_CHANNEL_2, 0);
+    }
+    else
+    {
+      __HAL_TIM_SET_COMPARE(&htim8, TIM_CHANNEL_1, 0);
+      __HAL_TIM_SET_COMPARE(&htim8, TIM_CHANNEL_2, -1.f * signal_I->pr->out[0]);
+    }
   }
+  // 输出有效值滤波
+  arm_biquad_cascade_df1_f32(iir_V, &signal_V->park_d, &signal_V->rms, iirBlockSize);
+  arm_biquad_cascade_df1_f32(iir_I, &signal_I->park_d, &signal_I->rms, iirBlockSize);
+  // 调试输出
+#if USER_DEBUG
+  oled_Show();
+#endif
+  // DAC模拟输出，便于调试，不需要时可关闭
+  HAL_DAC_SetValue(&hdac1, DAC_CHANNEL_1, DAC_ALIGN_12B_R, 2000.f * arm_cos_f32(signal_V->theta) + 2048.f);
+  // HAL_DAC_SetValue(&hdac1, DAC_CHANNEL_1, DAC_ALIGN_12B_R, 2000.f * (signal_I->input[0] / 4.f) + 2048.f);
+  // HAL_DAC_SetValue(&hdac1, DAC_CHANNEL_1, DAC_ALIGN_12B_R, (6000.f + signal_I->pr->out[0]) / 3.f);
 }
 /* USER CODE END 4 */
 
