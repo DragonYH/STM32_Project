@@ -387,9 +387,9 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
     signal_V->input[0] = adcBuf[1] * 100.f / 2.4026666666f;
     signal_I->input[0] = adcBuf[2] * 2.5487179f;
     // 锁相控制
-    pll_Control_V(signal_V);                         // 电压环
-    pll_Control_I(signal_I, signal_V, 50.f, dcVolt); // 电流环
+    pll_Control_V(signal_V);
 #if PRorPI
+    pll_Control_I(signal_I, signal_V, 50.f, dcVolt); // 电流环
     // 调节SPWM占空比
     if (signal_I->pr->out[0] > 0)
     {
@@ -402,6 +402,7 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
       __HAL_TIM_SET_COMPARE(&htim8, TIM_CHANNEL_2, -1.f * signal_I->pr->out[0]);
     }
 #else
+    pll_Control_I(signal_I, signal_V, 2.f, 0.f);
     // 调节SPWM占空比
     if (signal_I->park_d > 0)
     {
