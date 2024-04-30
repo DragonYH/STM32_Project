@@ -29,6 +29,7 @@ void pll_Init_V(pll_Signal_V *signal, float f, uint16_t F, float Umax)
     // 初始化pid参数
     float ki = signal->omiga0 * signal->omiga0 / Umax;
     float kp = sqrt(2) * sqrt(Umax * ki) / Umax;
+
     pid_Init(signal->pid, kp, ki, 0, 50 * PI, -20 * PI);
     // 计算sogi中间量
     signal->sogi->k = 1.414f;
@@ -39,7 +40,6 @@ void pll_Init_V(pll_Signal_V *signal, float f, uint16_t F, float Umax)
     signal->sogi->a1 = (8 - 2.f * signal->sogi->y) / (signal->sogi->x + signal->sogi->y + 4);
     signal->sogi->a2 = (signal->sogi->x - signal->sogi->y - 4) / (signal->sogi->x + signal->sogi->y + 4);
 }
-#if PRorPI
 /**
  * @brief 电流信号参数初始化
  * @param signal 信号指针
@@ -51,17 +51,6 @@ void pll_Init_V(pll_Signal_V *signal, float f, uint16_t F, float Umax)
  * @param pi_ki PI控制器ki参数
  */
 void pll_Init_I(pll_Signal_I *signal, float f, uint16_t F, float pr_kp, float pr_kr, float pi_kp, float pi_ki)
-#else
-/**
- * @brief 电流信号参数初始化
- * @param signal 信号指针
- * @param f 信号频率(典型值:50)
- * @param F 采样频率(典型值:20000)
- * @param pi_kp PI控制器kp参数
- * @param pi_ki PI控制器ki参数
- */
-void pll_Init_I(pll_Signal_I *signal, float f, uint16_t F, float pi_kp, float pi_ki)
-#endif
 {
     // 初始化赋值
     signal->input[0] = 0.f;
@@ -73,11 +62,10 @@ void pll_Init_I(pll_Signal_I *signal, float f, uint16_t F, float pi_kp, float pi
     signal->sogi->b[1] = 0.f;
     signal->sogi->b[2] = 0.f;
 
-    signal->omiga0 = 2.f * PI * f; // f典型值50
-    signal->Ts = 1.f / F;          // F典型值20000
-#if PRorPI
-    // 初始化pr参数
+    signal->omiga0 = 2.f * PI * f;    // f典型值50
     signal->omigaC = 2.f * PI * 0.5f; // 带宽2*pi*带宽
+    signal->Ts = 1.f / F;             // F典型值20000
+    // 初始化pr参数
     signal->pr->out[1] = 0.f;
     signal->pr->out[2] = 0.f;
     signal->pr->err[1] = 0.f;
@@ -91,11 +79,6 @@ void pll_Init_I(pll_Signal_I *signal, float f, uint16_t F, float pi_kp, float pi
     signal->pr->b0 = (pr_kp * (signal->omiga0 * signal->omiga0 * signal->Ts * signal->Ts + 4 * signal->omigaC * signal->Ts + 4) + 4 * pr_kr * signal->omigaC * signal->Ts) / signal->pr->a0;
     signal->pr->b1 = (pr_kp * (2 * signal->omiga0 * signal->omiga0 * signal->Ts * signal->Ts - 8)) / signal->pr->a0;
     signal->pr->b2 = (pr_kp * (signal->omiga0 * signal->omiga0 * signal->Ts * signal->Ts - 4 * signal->omigaC * signal->Ts + 4) - 4 * pr_kr * signal->omigaC * signal->Ts) / signal->pr->a0;
-#else
-    signal->L = 0.003f; // 3mH
-    pid_Init(signal->pid_d, pi_kp, pi_ki, 0, 20, -20);
-    pid_Init(signal->pid_q, pi_kp, pi_ki, 0, 20, -20);
-#endif
     // 计算sogi中间量
     signal->sogi->k = 1.414f; // 阻尼比典型值1.414
     signal->sogi->lamda = 0.5f * signal->omiga0 * signal->Ts;
@@ -121,7 +104,6 @@ void pll_Control_V(pll_Signal_V *signal_V)
     signal_V->theta += (signal_V->pid->out + signal_V->omiga0) * signal_V->Ts;
     signal_V->theta = (float)fmod(signal_V->theta, 2 * PI);
 }
-#if PRorPI
 /**
  * @brief 电流内环控制
  * @param signal_I 电流信号指针
@@ -130,47 +112,18 @@ void pll_Control_V(pll_Signal_V *signal_V)
  * @param Uset 直流设定电压
  */
 void pll_Control_I(pll_Signal_I *signal_I, pll_Signal_V *signal_V, float Uset, float Udc)
-#else
-/**
- * @brief 电流内环控制
- * @param signal_I 电流信号指针
- * @param signal_V 电压信号指针
- * @param Iset 电流设定值(有效值)
- * @param phase 相位设置
- */
-void pll_Control_I(pll_Signal_I *signal_I, pll_Signal_V *signal_V, float Iset, float phase)
-#endif
 {
     // 对信号先进行sogi变换，得到两个相位相差90度的信号
     pll_Sogi(signal_I->input, signal_I->sogi);
     // 再对信号sogi变换后的信号进行park变换
     arm_park_f32(signal_I->sogi->a[0], signal_I->sogi->b[0], &signal_I->park_d, &signal_I->park_q, arm_sin_f32(signal_V->theta), arm_cos_f32(signal_V->theta));
-#if PRorPI
     // 对直流电压进行PI控制
     // pid(signal_I->pid, Uset, Udc); // 电压内环
     // PR控制
-    // * pll_Pr(signal_I->pr, signal_I->input[0], signal_I->pid->out * arm_cos_f32(signal_V->theta));
-    // * pll_Pr(signal_I->pr, signal_I->input[0], 1.414f * arm_cos_f32(signal_V->theta + 0.2 * PI)); // PF= 1.00
+    // pll_Pr(signal_I->pr, signal_I->input[0], signal_I->pid->out * arm_cos_f32(signal_V->theta));
+    // ! pll_Pr(signal_I->pr, signal_I->input[0], 1.414f * arm_cos_f32(signal_V->theta + 0.2 * PI)); // PF= 1.00
     pll_Pr(signal_I->pr, signal_I->input[0], 1.414f * arm_cos_f32(signal_V->theta + phase_set * PI));
-#else
-    static float Uabd;
-    static float Uabq;
-    // PI控制
-    pid(signal_I->pid_d, signal_I->park_d, Iset * 1.414f); // 电流大小
-    pid(signal_I->pid_q, signal_I->park_q, phase);         // 相位
-    // 解耦调制
-    Uabd = signal_V->park_d - signal_I->pid_d->out - signal_I->park_q * signal_I->omiga0 * signal_I->L;
-    Uabq = signal_V->park_q - signal_I->pid_q->out + signal_I->park_d * signal_I->omiga0 * signal_I->L;
-    // park逆变换
-    arm_inv_park_f32(Uabd, Uabq, &signal_I->park_inv_a, &signal_I->park_inv_b, arm_sin_f32(signal_V->theta), arm_cos_f32(signal_V->theta));
-    // 输出限幅
-    if (signal_I->park_inv_a > COMPARE_MAX)
-        signal_I->park_inv_a = COMPARE_MAX;
-    else if (signal_I->park_inv_a < COMPARE_MIN)
-        signal_I->park_inv_a = COMPARE_MIN;
-#endif
 }
-#if PRorPI
 /**
  * @brief PR控制器
  * @param pr PR控制器指针
@@ -192,7 +145,6 @@ void pll_Pr(PR *pr, float target, float sample)
     pr->err[2] = pr->err[1];
     pr->err[1] = pr->err[0];
 }
-#endif
 /**
  * @brief Sogi变换
  * @param input 输入信号

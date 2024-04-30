@@ -46,7 +46,9 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-#define USER_DEBUG 0 // 串口调试
+#define USER_DEBUG 0                                                              // 串口调试
+#define circuit_Connect() HAL_GPIO_WritePin(GPIOA, GPIO_PIN_8, GPIO_PIN_SET)      // 电路连接
+#define circuit_Disconnect() HAL_GPIO_WritePin(GPIOA, GPIO_PIN_8, GPIO_PIN_RESET) // 电路断开
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -130,14 +132,23 @@ void oled_Show(void)
   CDC_Transmit_FS((uint8_t *)textBuf, sizeof(textBuf));
 #endif
 }
-// 连接电路
-void circuit_Connect(void)
+// 按键控制
+void key_Control(void)
 {
-  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_8, GPIO_PIN_SET);
+  if (HAL_GPIO_ReadPin(GPIOI, GPIO_PIN_7) == GPIO_PIN_RESET)
+  {
+    while (HAL_GPIO_ReadPin(GPIOI, GPIO_PIN_7) == GPIO_PIN_RESET)
+      ;
+    phase_set += 0.01f;
+  }
 }
-void circuit_Disconnect(void)
+// 电路开关
+void circuit_Control(void)
 {
-  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_8, GPIO_PIN_RESET);
+  if (signal_I->rms * iirScale_20Hz / 1.414f > 0.2f)
+    circuit_Connect();
+  else
+    circuit_Disconnect();
 }
 /* USER CODE END 0 */
 
@@ -197,16 +208,25 @@ int main(void)
   signal_V = (pll_Signal_V *)malloc(sizeof(pll_Signal_V));
   signal_I = (pll_Signal_I *)malloc(sizeof(pll_Signal_I));
   signal_V->pid = (PID *)malloc(sizeof(PID));
+#if PRorPI
   signal_I->pid = (PID *)malloc(sizeof(PID));
+  signal_I->pr = (PR *)malloc(sizeof(PR));
+#else
+  signal_I->pid_d = (PID *)malloc(sizeof(PID));
+  signal_I->pid_q = (PID *)malloc(sizeof(PID));
+#endif
   signal_V->sogi = (SOGI *)malloc(sizeof(SOGI));
   signal_I->sogi = (SOGI *)malloc(sizeof(SOGI));
-  signal_I->pr = (PR *)malloc(sizeof(PR));
   // 芯片温度
   // uint16_t temprature = 0;
   // float temp_result = 0;
   // 锁相环初始化
-  pll_Init_V(signal_V, 50, 20000, 30 * 1.414);                 // 电压锁相
+  pll_Init_V(signal_V, 50, 20000, 30 * 1.414); // 电压锁相
+#if PRorPI
   pll_Init_I(signal_I, 50, 20000, 0.5f, 7600.f, 0.001f, 0.1f); // 电流环 1.414-7600
+#else
+  pll_Init_I(signal_I, 50, 20000, 0.001f, 0.1f);
+#endif
   // DAC模拟输出初始化
   HAL_DAC_SetValue(&hdac1, DAC_CHANNEL_1, DAC_ALIGN_12B_R, 2048);
   HAL_DAC_Start(&hdac1, DAC_CHANNEL_1);
@@ -235,18 +255,8 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-    if (signal_I->rms * iirScale_20Hz / 1.414f > 0.1f)
-    {
-      circuit_Connect();
-    }
-    else
-      circuit_Disconnect();
-    if (HAL_GPIO_ReadPin(GPIOI, GPIO_PIN_7) == GPIO_PIN_RESET)
-    {
-      while (HAL_GPIO_ReadPin(GPIOI, GPIO_PIN_7) == GPIO_PIN_RESET)
-        ;
-      phase_set += 0.01f;
-    }
+    circuit_Control();
+    key_Control();
     oled_Show();
     HAL_GPIO_TogglePin(GPIOI, GPIO_PIN_0);
     HAL_Delay(100);
@@ -256,10 +266,15 @@ int main(void)
   }
   ad7606_Stop(&htim2, TIM_CHANNEL_1);
   free(signal_V->pid);
+#if PRorPI
   free(signal_I->pid);
+  free(signal_I->pr);
+#else
+  free(signal_I->pid_d);
+  free(signal_I->pid_q);
+#endif
   free(signal_V->sogi);
   free(signal_I->sogi);
-  free(signal_I->pr);
   free(iir_V);
   free(iir_I);
   free(signal_V);
@@ -374,6 +389,7 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
     // 锁相控制
     pll_Control_V(signal_V);                         // 电压环
     pll_Control_I(signal_I, signal_V, 50.f, dcVolt); // 电流环
+#if PRorPI
     // 调节SPWM占空比
     if (signal_I->pr->out[0] > 0)
     {
@@ -385,6 +401,19 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
       __HAL_TIM_SET_COMPARE(&htim8, TIM_CHANNEL_1, 0);
       __HAL_TIM_SET_COMPARE(&htim8, TIM_CHANNEL_2, -1.f * signal_I->pr->out[0]);
     }
+#else
+    // 调节SPWM占空比
+    if (signal_I->park_d > 0)
+    {
+      __HAL_TIM_SET_COMPARE(&htim8, TIM_CHANNEL_1, signal_I->park_inv_a);
+      __HAL_TIM_SET_COMPARE(&htim8, TIM_CHANNEL_2, 0);
+    }
+    else
+    {
+      __HAL_TIM_SET_COMPARE(&htim8, TIM_CHANNEL_1, 0);
+      __HAL_TIM_SET_COMPARE(&htim8, TIM_CHANNEL_2, -1.f * signal_I->park_inv_a);
+    }
+#endif
   }
   // 输出有效值滤波
   arm_biquad_cascade_df1_f32(iir_V, &signal_V->park_d, &signal_V->rms, iirBlockSize);
@@ -395,8 +424,6 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 #endif
   // DAC模拟输出，便于调试，不需要时可关闭
   HAL_DAC_SetValue(&hdac1, DAC_CHANNEL_1, DAC_ALIGN_12B_R, 2000.f * arm_cos_f32(signal_V->theta) + 2048.f);
-  // HAL_DAC_SetValue(&hdac1, DAC_CHANNEL_1, DAC_ALIGN_12B_R, 2000.f * (signal_I->input[0] / 4.f) + 2048.f);
-  // HAL_DAC_SetValue(&hdac1, DAC_CHANNEL_1, DAC_ALIGN_12B_R, (6000.f + signal_I->pr->out[0]) / 3.f);
 }
 /* USER CODE END 4 */
 
@@ -466,7 +493,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
   /* USER CODE BEGIN Callback 1 */
   if (htim->Instance == TIM3) // 100Hz
   {
-    // 控制中间直流电压
+    // 采集直流电压电流
     dcVolt = ina238_GetVolt(&hi2c3);
     dcCurrent = ina238_GetCurrent(&hi2c3);
   }

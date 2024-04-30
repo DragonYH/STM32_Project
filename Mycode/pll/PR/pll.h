@@ -11,8 +11,6 @@
 #define COMPARE_MAX (MI * COMPARE)        // 计时器最大计数值
 #define COMPARE_MIN (-1.f * MI * COMPARE) // 计时器最小计数值
 
-#define PRorPI 0 // 1:PR 0:PI
-
 // sogi结构体
 typedef struct SOGI
 {
@@ -27,7 +25,6 @@ typedef struct SOGI
     float a1;
     float a2;
 } SOGI;
-#if PRorPI
 // pr结构体
 typedef struct PR
 {
@@ -43,7 +40,6 @@ typedef struct PR
     float b1;
     float b2;
 } PR;
-#endif
 // 电压信号数据
 typedef struct pll_Signal_V
 {
@@ -74,40 +70,25 @@ typedef struct pll_Signal_I
     // park变换相关变量
     float park_d; // 有功分量
     float park_q; // 无功分量
-#if !PRorPI
-    float park_inv_a; // 逆变换后的alpha
-    float park_inv_b; // 逆变换后的beta
-#endif
     // 配置参数
     float omiga0; // 无阻尼自然频率，2*pi*频率
+    float omigaC; // 带宽2*pi*带宽
     float Ts;     // 采样周期
     // iir滤波器
     float iirState[4 * iirNumStages]; // IIR滤波器状态变量
 
     SOGI *sogi; // sogi指针
-#if PRorPI
-    float omigaC; // PR带宽 = 2*pi*带宽
-    PID *pid;     // 电压内环pid指针
-    PR *pr;       // 电压外环pr指针
-#else
-    float L;    // 电感
-    PID *pid_d; // 控制电流最大值pi指针
-    PID *pid_q; // 控制相位pi指针
-#endif
+    PID *pid;   // pid指针
+    PR *pr;     // pr指针
 } pll_Signal_I;
 
 extern float phase_set;
 
 void pll_Init_V(pll_Signal_V *signal, float f, uint16_t F, float Umax);
-void pll_Control_V(pll_Signal_V *signal_V);
-#if PRorPI
 void pll_Init_I(pll_Signal_I *signal, float f, uint16_t F, float pr_kp, float pr_kr, float pi_kp, float pi_ki);
+void pll_Control_V(pll_Signal_V *signal_V);
 void pll_Control_I(pll_Signal_I *signal_I, pll_Signal_V *signal_V, float Uset, float Udc);
 void pll_Pr(PR *signal, float target, float sample);
-#else
-void pll_Init_I(pll_Signal_I *signal, float f, uint16_t F, float pi_kp, float pi_ki);
-void pll_Control_I(pll_Signal_I *signal_I, pll_Signal_V *signal_V, float Iset, float phase);
-#endif
 void pll_Sogi(float *input, SOGI *sogi);
 
 #endif
