@@ -18,6 +18,7 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
+#include "adc.h"
 #include "dac.h"
 #include "i2c.h"
 #include "spi.h"
@@ -92,35 +93,43 @@ __attribute__((section("._DTCM_Area"))) float adcBuf[2] = {0};
 // 直流电压
 float dcVolt = 0.f;
 float dcCurrent = 0.f;
+// 芯片核心温度
+uint16_t temprature = 0;
+float temp_result = 0;
 // 显示函数
 uint8_t textBuf[256] = {0};
 void oled_Show(void)
 {
 #if !USER_DEBUG
   // IN:  输入
-  sprintf((char *)textBuf, "IN : %5.2fV %5.2fA", signal_V->rms * iirScale_20Hz / 1.4f, signal_I->rms * iirScale_20Hz / 1.414f);
+  sprintf((char *)textBuf, "IN :%7.2fV %6.2fA", signal_V->rms, signal_I->rms);
   OLED_ShowString(0, 0, textBuf, 12);
   // CDC_Transmit_FS((uint8_t *)textBuf, sizeof(textBuf));
 
   // DC:  直流
-  sprintf((char *)textBuf, "DC : %5.2fV %5.2fA", dcVolt, dcCurrent);
+  sprintf((char *)textBuf, "DC :%7.2fV %6.2fA", dcVolt, dcCurrent);
   OLED_ShowString(0, 12, textBuf, 12);
   // CDC_Transmit_FS((uint8_t *)textBuf, sizeof(textBuf));
 
   // OUT: 输出
-  sprintf((char *)textBuf, "OUT: %5.2fV %5.2fA", signal_V->input[0], signal_I->input[0]);
+  sprintf((char *)textBuf, "OUT:%7.2fV %6.2fA", signal_V->input[0], signal_I->input[0]);
   OLED_ShowString(0, 24, textBuf, 12);
   // CDC_Transmit_FS((uint8_t *)textBuf, sizeof(textBuf));
 
   // FAC: 功率因数
-  // sprintf((char *)textBuf, "FAC: %4.2f %5ld", arm_cos_f32(0), __HAL_TIM_GET_COMPARE(&htim8, TIM_CHANNEL_1));
-  sprintf((char *)textBuf, "FAC: %4.2f %.2f", arm_cos_f32(0), phase_set);
+  sprintf((char *)textBuf, "FAC:%6.2f %9.2f", phase_set, signal_I->park_inv_a);
+  // sprintf((char *)textBuf, "FAC:%5.2f %8.0f", arm_cos_f32(0), signal_I->park_inv_a);
   // sprintf((char *)textBuf, "FAC: %4.2f %8.0f", arm_cos_f32(0), signal_I->pr->out[0]);
   OLED_ShowString(0, 36, textBuf, 12);
   // CDC_Transmit_FS((uint8_t *)textBuf, sizeof(textBuf));
 
   // EFF: 效率
-  sprintf((char *)textBuf, "EFF: %5.2f%%", (signal_V->input[0] * signal_I->input[0]) / (signal_V->input[0] * signal_I->input[0]) * 100.f);
+  float eff = (dcVolt * dcCurrent) / ((signal_V->rms * iirScale_20Hz / 1.4f) * (signal_I->rms * iirScale_20Hz / 1.414f)) * 100.f;
+  if (eff > 100.f)
+    eff = 100.f;
+  else if (eff < 0.f)
+    eff = 0.f;
+  sprintf((char *)textBuf, "EFF:%7.2f%%%7.1fC", eff, temp_result);
   OLED_ShowString(0, 48, textBuf, 12);
   // CDC_Transmit_FS((uint8_t *)textBuf, sizeof(textBuf));
   OLED_Refresh();
@@ -139,13 +148,13 @@ void key_Control(void)
   {
     while (HAL_GPIO_ReadPin(GPIOI, GPIO_PIN_7) == GPIO_PIN_RESET)
       ;
-    phase_set += 0.01f;
+    phase_set -= 0.5f;
   }
 }
 // 电路开关
 void circuit_Control(void)
 {
-  if (signal_I->rms * iirScale_20Hz / 1.414f > 0.2f)
+  if (signal_I->rms > 0.2f)
     circuit_Connect();
   else
     circuit_Disconnect();
@@ -203,13 +212,14 @@ int main(void)
   MX_USB_DEVICE_Init();
   MX_I2C3_Init();
   MX_TIM3_Init();
+  MX_ADC3_Init();
   /* USER CODE BEGIN 2 */
   // 给变量分配存储空间
   signal_V = (pll_Signal_V *)malloc(sizeof(pll_Signal_V));
   signal_I = (pll_Signal_I *)malloc(sizeof(pll_Signal_I));
   signal_V->pid = (PID *)malloc(sizeof(PID));
 #if PRorPI
-  signal_I->pid = (PID *)malloc(sizeof(PID));
+  signal_I->pid_dc = (PID *)malloc(sizeof(PID));
   signal_I->pr = (PR *)malloc(sizeof(PR));
 #else
   signal_I->pid_d = (PID *)malloc(sizeof(PID));
@@ -217,15 +227,12 @@ int main(void)
 #endif
   signal_V->sogi = (SOGI *)malloc(sizeof(SOGI));
   signal_I->sogi = (SOGI *)malloc(sizeof(SOGI));
-  // 芯片温度
-  // uint16_t temprature = 0;
-  // float temp_result = 0;
   // 锁相环初始化
   pll_Init_V(signal_V, 50, 20000, 30 * 1.414); // 电压锁相
 #if PRorPI
   pll_Init_I(signal_I, 50, 20000, 0.5f, 7600.f, 0.001f, 0.1f); // 电流环 1.414-7600
 #else
-  pll_Init_I(signal_I, 50, 20000, 0.001f, 0.1f);
+  pll_Init_I(signal_I, 50, 20000, 0.1f, 0.02f);
 #endif
   // DAC模拟输出初始化
   HAL_DAC_SetValue(&hdac1, DAC_CHANNEL_1, DAC_ALIGN_12B_R, 2048);
@@ -241,6 +248,9 @@ int main(void)
   OLED_Init();
   // INA238初始化
   ina238_Init(&hi2c3, 0);
+  // ADC校准
+  HAL_ADCEx_Calibration_Start(&hadc3, ADC_SINGLE_ENDED, ADC_CALIB_OFFSET);
+  HAL_ADCEx_Calibration_Start(&hadc3, ADC_SINGLE_ENDED, ADC_CALIB_OFFSET_LINEARITY);
   // iir滤波器初始化
   iir_V = (arm_biquad_casd_df1_inst_f32 *)malloc(sizeof(arm_biquad_casd_df1_inst_f32));
   iir_I = (arm_biquad_casd_df1_inst_f32 *)malloc(sizeof(arm_biquad_casd_df1_inst_f32));
@@ -267,7 +277,7 @@ int main(void)
   ad7606_Stop(&htim2, TIM_CHANNEL_1);
   free(signal_V->pid);
 #if PRorPI
-  free(signal_I->pid);
+  free(signal_I->pid_dc);
   free(signal_I->pr);
 #else
   free(signal_I->pid_d);
@@ -384,8 +394,8 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
   {
     ad7606_GetValue(&hspi2, 3, adcBuf);
     // 缓存adcBuf
-    signal_V->input[0] = adcBuf[1] * 100.f / 2.4026666666f;
-    signal_I->input[0] = adcBuf[2] * 2.5487179f;
+    signal_V->input[0] = adcBuf[1] / 0.02373021108f;
+    signal_I->input[0] = adcBuf[2] * 2.464809491f;
     // 锁相控制
     pll_Control_V(signal_V);
 #if PRorPI
@@ -402,23 +412,28 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
       __HAL_TIM_SET_COMPARE(&htim8, TIM_CHANNEL_2, -1.f * signal_I->pr->out[0]);
     }
 #else
-    pll_Control_I(signal_I, signal_V, 2.f, 0.f);
+    pll_Control_I(signal_I, signal_V, 2.f, phase_set);
     // 调节SPWM占空比
-    if (signal_I->park_d > 0)
+    if (signal_I->park_inv_a > 0)
     {
-      __HAL_TIM_SET_COMPARE(&htim8, TIM_CHANNEL_1, signal_I->park_inv_a);
+      __HAL_TIM_SET_COMPARE(&htim8, TIM_CHANNEL_1, signal_I->park_inv_a / 100.f / 1.1f * 12000.f);
       __HAL_TIM_SET_COMPARE(&htim8, TIM_CHANNEL_2, 0);
     }
     else
     {
       __HAL_TIM_SET_COMPARE(&htim8, TIM_CHANNEL_1, 0);
-      __HAL_TIM_SET_COMPARE(&htim8, TIM_CHANNEL_2, -1.f * signal_I->park_inv_a);
+      __HAL_TIM_SET_COMPARE(&htim8, TIM_CHANNEL_2, -signal_I->park_inv_a / 100.f / 1.1f * 12000.f);
     }
 #endif
   }
   // 输出有效值滤波
-  arm_biquad_cascade_df1_f32(iir_V, &signal_V->park_d, &signal_V->rms, iirBlockSize);
-  arm_biquad_cascade_df1_f32(iir_I, &signal_I->park_d, &signal_I->rms, iirBlockSize);
+  float filter_temp = 0.f;
+  arm_sqrt_f32(signal_V->park_d * signal_V->park_d + signal_V->park_q * signal_V->park_q, &signal_V->peak);
+  arm_sqrt_f32(signal_I->park_d * signal_I->park_d + signal_I->park_q * signal_I->park_q, &signal_I->peak);
+  arm_biquad_cascade_df1_f32(iir_V, &signal_V->peak, &filter_temp, iirBlockSize);
+  signal_V->rms = filter_temp * iirScale_20Hz / 1.41421356237f;
+  arm_biquad_cascade_df1_f32(iir_I, &signal_I->peak, &filter_temp, iirBlockSize);
+  signal_I->rms = filter_temp * iirScale_20Hz / 1.41421356237f;
   // 调试输出
 #if USER_DEBUG
   oled_Show();
@@ -497,6 +512,13 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
     // 采集直流电压电流
     dcVolt = ina238_GetVolt(&hi2c3);
     dcCurrent = ina238_GetCurrent(&hi2c3);
+    // 采集芯片核心温度
+    HAL_ADC_Start(&hadc3);
+    if (HAL_ADC_PollForConversion(&hadc3, 10) == HAL_OK) // 判断是否转换完成
+    {
+      temprature = HAL_ADC_GetValue(&hadc3); // 读出转换结果
+      temp_result = ((110.0 - 30.0) / (*(unsigned short *)(0x1FF1E840) - *(unsigned short *)(0x1FF1E820))) * (temprature - *(unsigned short *)(0x1FF1E820)) + 30;
+    }
   }
   /* USER CODE END Callback 1 */
 }

@@ -92,9 +92,9 @@ void pll_Init_I(pll_Signal_I *signal, float f, uint16_t F, float pi_kp, float pi
     signal->pr->b1 = (pr_kp * (2 * signal->omiga0 * signal->omiga0 * signal->Ts * signal->Ts - 8)) / signal->pr->a0;
     signal->pr->b2 = (pr_kp * (signal->omiga0 * signal->omiga0 * signal->Ts * signal->Ts - 4 * signal->omigaC * signal->Ts + 4) - 4 * pr_kr * signal->omigaC * signal->Ts) / signal->pr->a0;
 #else
-    signal->L = 0.003f; // 3mH
-    pid_Init(signal->pid_d, pi_kp, pi_ki, 0, 20, -20);
-    pid_Init(signal->pid_q, pi_kp, pi_ki, 0, 20, -20);
+    signal->L = 0.0043f; // 4.3mH
+    pid_Init(signal->pid_d, 0.05f, 0.002f, 0, 50.f, -50.f);
+    pid_Init(signal->pid_q, pi_kp, pi_ki, 0, 90.f, -90.f);
 #endif
     // 计算sogi中间量
     signal->sogi->k = 1.414f; // 阻尼比典型值1.414
@@ -112,7 +112,7 @@ void pll_Init_I(pll_Signal_I *signal, float f, uint16_t F, float pi_kp, float pi
 void pll_Control_V(pll_Signal_V *signal_V)
 {
     // 对信号先进行sogi变换，得到两个相位相差90度的信号
-    pll_Sogi(signal_V->input, signal_V->sogi);
+    pll_Sogi(signal_V->sogi, signal_V->input);
     // 再对信号sogi变换后的信号进行park变换
     arm_park_f32(signal_V->sogi->a[0], signal_V->sogi->b[0], &signal_V->park_d, &signal_V->park_q, arm_sin_f32(signal_V->theta), arm_cos_f32(signal_V->theta));
     // 将park变换后的q送入PI控制器  输入值为设定值和采样值的误差
@@ -141,13 +141,9 @@ void pll_Control_I(pll_Signal_I *signal_I, pll_Signal_V *signal_V, float Uset, f
 void pll_Control_I(pll_Signal_I *signal_I, pll_Signal_V *signal_V, float Iset, float phase)
 #endif
 {
-    // 对信号先进行sogi变换，得到两个相位相差90度的信号
-    pll_Sogi(signal_I->input, signal_I->sogi);
-    // 再对信号sogi变换后的信号进行park变换
-    arm_park_f32(signal_I->sogi->a[0], signal_I->sogi->b[0], &signal_I->park_d, &signal_I->park_q, arm_sin_f32(signal_V->theta), arm_cos_f32(signal_V->theta));
 #if PRorPI
     // 对直流电压进行PI控制
-    // pid(signal_I->pid, Uset, Udc); // 电压内环
+    // pid(signal_I->pid_dc, Uset, Udc); // 电压内环
     // PR控制
     // * pll_Pr(signal_I->pr, signal_I->input[0], signal_I->pid->out * arm_cos_f32(signal_V->theta));
     // * pll_Pr(signal_I->pr, signal_I->input[0], 1.414f * arm_cos_f32(signal_V->theta + 0.2 * PI)); // PF= 1.00
@@ -155,19 +151,23 @@ void pll_Control_I(pll_Signal_I *signal_I, pll_Signal_V *signal_V, float Iset, f
 #else
     static float Uabd;
     static float Uabq;
+    // 对信号先进行sogi变换，得到两个相位相差90度的信号
+    pll_Sogi(signal_I->sogi, signal_I->input);
+    // 在电压的系上得出电流的dq值
+    arm_park_f32(signal_I->sogi->a[0], signal_I->sogi->b[0], &signal_I->park_d, &signal_I->park_q, arm_sin_f32(signal_V->theta), arm_cos_f32(signal_V->theta));
     // PI控制
-    pid(signal_I->pid_d, signal_I->park_d, Iset * 1.414f); // 电流大小
-    pid(signal_I->pid_q, signal_I->park_q, phase);         // 相位
+    pid(signal_I->pid_d, Iset, signal_I->peak);    // 电流大小
+    pid(signal_I->pid_q, phase, signal_I->park_q); // 相位
     // 解耦调制
-    Uabd = signal_V->park_d - signal_I->pid_d->out - signal_I->park_q * signal_I->omiga0 * signal_I->L;
-    Uabq = signal_V->park_q - signal_I->pid_q->out + signal_I->park_d * signal_I->omiga0 * signal_I->L;
+    Uabd = signal_V->park_d - signal_I->pid_d->out + signal_I->park_q * signal_I->omiga0 * signal_I->L;
+    Uabq = signal_V->park_q - signal_I->pid_q->out - signal_I->park_d * signal_I->omiga0 * signal_I->L;
     // park逆变换
     arm_inv_park_f32(Uabd, Uabq, &signal_I->park_inv_a, &signal_I->park_inv_b, arm_sin_f32(signal_V->theta), arm_cos_f32(signal_V->theta));
     // 输出限幅
-    if (signal_I->park_inv_a > COMPARE_MAX)
-        signal_I->park_inv_a = COMPARE_MAX;
-    else if (signal_I->park_inv_a < COMPARE_MIN)
-        signal_I->park_inv_a = COMPARE_MIN;
+    if (signal_I->park_inv_a > 100.f)
+        signal_I->park_inv_a = 100.f;
+    else if (signal_I->park_inv_a < -100.f)
+        signal_I->park_inv_a = -100.f;
 #endif
 }
 #if PRorPI
@@ -198,7 +198,7 @@ void pll_Pr(PR *pr, float target, float sample)
  * @param input 输入信号
  * @param sogi sogi指针
  */
-void pll_Sogi(float *input, SOGI *sogi)
+void pll_Sogi(SOGI *sogi, float *input)
 {
     sogi->a[0] = sogi->b0 * input[0] - sogi->b0 * input[2] + sogi->a1 * sogi->a[1] + sogi->a2 * sogi->a[2];
     sogi->b[0] = sogi->lamda * sogi->b0 * (input[0] + 2 * input[1] + input[2]) + sogi->a1 * sogi->b[1] + sogi->a2 * sogi->b[2];

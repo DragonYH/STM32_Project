@@ -10,6 +10,7 @@
     "pid.h": "c",
     "pll.h": "c",
     "arm_math.h": "c",
-    "stdlib.h": "c"
+    "stdlib.h": "c",
+    "iir.h": "c"
   }
 }

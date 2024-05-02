@@ -6,8 +6,8 @@
 #include "pid.h"
 #include "iir.h"
 
-#define COMPARE (12000)                   // 计时器计数值
-#define MI (0.9f)                         // 调制比
+#define COMPARE (32.f * 1.414f)           // 计时器计数值
+#define MI (1.f)                          // 调制比
 #define COMPARE_MAX (MI * COMPARE)        // 计时器最大计数值
 #define COMPARE_MIN (-1.f * MI * COMPARE) // 计时器最小计数值
 
@@ -49,6 +49,7 @@ typedef struct pll_Signal_V
 {
     // 基本变量
     float input[3]; // 输入序列
+    float peak;     // 电压峰值
     float rms;      // 电压有效值
     // park变换相关变量
     float park_d; // 有功分量
@@ -61,15 +62,15 @@ typedef struct pll_Signal_V
     // iir滤波器
     float iirState[4 * iirNumStages]; // IIR滤波器状态变量
 
+    PID *pid;   // 锁相pid指针
     SOGI *sogi; // sogi指针
-    PID *pid;   // pid指针
-
 } pll_Signal_V;
 // 电流信号数据
 typedef struct pll_Signal_I
 {
     // 基本变量
     float input[3]; // 输入序列
+    float peak;     // 电流峰值
     float rms;      // 电流有效值
     // park变换相关变量
     float park_d; // 有功分量
@@ -87,7 +88,7 @@ typedef struct pll_Signal_I
     SOGI *sogi; // sogi指针
 #if PRorPI
     float omigaC; // PR带宽 = 2*pi*带宽
-    PID *pid;     // 电压内环pid指针
+    PID *pid_dc;  // 电压内环pid指针
     PR *pr;       // 电压外环pr指针
 #else
     float L;    // 电感
@@ -108,6 +109,6 @@ void pll_Pr(PR *signal, float target, float sample);
 void pll_Init_I(pll_Signal_I *signal, float f, uint16_t F, float pi_kp, float pi_ki);
 void pll_Control_I(pll_Signal_I *signal_I, pll_Signal_V *signal_V, float Iset, float phase);
 #endif
-void pll_Sogi(float *input, SOGI *sogi);
+void pll_Sogi(SOGI *sogi, float *input);
 
 #endif

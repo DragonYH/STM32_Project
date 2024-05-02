@@ -85,6 +85,7 @@ target_link_options(
 target_sources(
     ${TARGET_NAME} PRIVATE
     "Core\\Startup\\startup_stm32h743iitx.s"
+    "Src\\adc.c"
     "Src\\dac.c"
     "Src\\gpio.c"
     "Src\\i2c.c"
@@ -109,6 +110,8 @@ target_sources(
     "Mycode\\oled.c"
     "Mycode\\pid.c"
     "Mycode\\pll.c"
+    "Drivers\\STM32H7xx_HAL_Driver\\Src\\stm32h7xx_hal_adc_ex.c"
+    "Drivers\\STM32H7xx_HAL_Driver\\Src\\stm32h7xx_hal_adc.c"
     "Drivers\\STM32H7xx_HAL_Driver\\Src\\stm32h7xx_hal_cortex.c"
     "Drivers\\STM32H7xx_HAL_Driver\\Src\\stm32h7xx_hal_dac_ex.c"
     "Drivers\\STM32H7xx_HAL_Driver\\Src\\stm32h7xx_hal_dac.c"
