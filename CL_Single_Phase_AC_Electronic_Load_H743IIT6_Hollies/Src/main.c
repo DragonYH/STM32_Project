@@ -232,7 +232,7 @@ int main(void)
 #if PRorPI
   pll_Init_I(signal_I, 50, 20000, 0.5f, 7600.f, 0.001f, 0.1f); // 电流环 1.414-7600
 #else
-  pll_Init_I(signal_I, 50, 20000, 0.1f, 0.02f);
+  pll_Init_I(signal_I, 50, 20000);
 #endif
   // DAC模拟输出初始化
   HAL_DAC_SetValue(&hdac1, DAC_CHANNEL_1, DAC_ALIGN_12B_R, 2048);
@@ -416,13 +416,13 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
     // 调节SPWM占空比
     if (signal_I->park_inv_a > 0)
     {
-      __HAL_TIM_SET_COMPARE(&htim8, TIM_CHANNEL_1, signal_I->park_inv_a / 100.f / 1.1f * 12000.f);
+      __HAL_TIM_SET_COMPARE(&htim8, TIM_CHANNEL_1, signal_I->park_inv_a / 200.f / 1.1f * 12000.f);
       __HAL_TIM_SET_COMPARE(&htim8, TIM_CHANNEL_2, 0);
     }
     else
     {
       __HAL_TIM_SET_COMPARE(&htim8, TIM_CHANNEL_1, 0);
-      __HAL_TIM_SET_COMPARE(&htim8, TIM_CHANNEL_2, -signal_I->park_inv_a / 100.f / 1.1f * 12000.f);
+      __HAL_TIM_SET_COMPARE(&htim8, TIM_CHANNEL_2, -signal_I->park_inv_a / 200.f / 1.1f * 12000.f);
     }
 #endif
   }

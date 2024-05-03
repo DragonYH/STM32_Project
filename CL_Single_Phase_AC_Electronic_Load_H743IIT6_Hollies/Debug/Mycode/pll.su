@@ -1,5 +1,5 @@
 ../Mycode/pll.c:13:6:pll_Init_V	32	static
-../Mycode/pll.c:63:6:pll_Init_I	32	static
+../Mycode/pll.c:63:6:pll_Init_I	24	static
 ../Mycode/pll.c:112:6:pll_Control_V	64	static
 ../Mycode/pll.c:141:6:pll_Control_I	96	static
 ../Mycode/pll.c:201:6:pll_Sogi	16	static

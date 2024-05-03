@@ -60,7 +60,7 @@ void pll_Init_I(pll_Signal_I *signal, float f, uint16_t F, float pr_kp, float pr
  * @param pi_kp PI控制器kp参数
  * @param pi_ki PI控制器ki参数
  */
-void pll_Init_I(pll_Signal_I *signal, float f, uint16_t F, float pi_kp, float pi_ki)
+void pll_Init_I(pll_Signal_I *signal, float f, uint16_t F)
 #endif
 {
     // 初始化赋值
@@ -93,8 +93,8 @@ void pll_Init_I(pll_Signal_I *signal, float f, uint16_t F, float pi_kp, float pi
     signal->pr->b2 = (pr_kp * (signal->omiga0 * signal->omiga0 * signal->Ts * signal->Ts - 4 * signal->omigaC * signal->Ts + 4) - 4 * pr_kr * signal->omigaC * signal->Ts) / signal->pr->a0;
 #else
     signal->L = 0.0043f; // 4.3mH
-    pid_Init(signal->pid_d, 0.05f, 0.002f, 0, 50.f, -50.f);
-    pid_Init(signal->pid_q, pi_kp, pi_ki, 0, 90.f, -90.f);
+    pid_Init(signal->pid_d, 0.05f, 0.05f, 0, 140.f, -140.f);
+    pid_Init(signal->pid_q, 0.05f, 0.002f, 0, 160.f, -160.f);
 #endif
     // 计算sogi中间量
     signal->sogi->k = 1.414f; // 阻尼比典型值1.414
@@ -156,18 +156,18 @@ void pll_Control_I(pll_Signal_I *signal_I, pll_Signal_V *signal_V, float Iset, f
     // 在电压的系上得出电流的dq值
     arm_park_f32(signal_I->sogi->a[0], signal_I->sogi->b[0], &signal_I->park_d, &signal_I->park_q, arm_sin_f32(signal_V->theta), arm_cos_f32(signal_V->theta));
     // PI控制
-    pid(signal_I->pid_d, Iset, signal_I->peak);    // 电流大小
-    pid(signal_I->pid_q, phase, signal_I->park_q); // 相位
+    pid(signal_I->pid_d, Iset * 1.414, signal_I->peak); // 电流大小
+    pid(signal_I->pid_q, phase, signal_I->park_q);      // 相位
     // 解耦调制
     Uabd = signal_V->park_d - signal_I->pid_d->out + signal_I->park_q * signal_I->omiga0 * signal_I->L;
     Uabq = signal_V->park_q - signal_I->pid_q->out - signal_I->park_d * signal_I->omiga0 * signal_I->L;
     // park逆变换
     arm_inv_park_f32(Uabd, Uabq, &signal_I->park_inv_a, &signal_I->park_inv_b, arm_sin_f32(signal_V->theta), arm_cos_f32(signal_V->theta));
     // 输出限幅
-    if (signal_I->park_inv_a > 100.f)
-        signal_I->park_inv_a = 100.f;
-    else if (signal_I->park_inv_a < -100.f)
-        signal_I->park_inv_a = -100.f;
+    if (signal_I->park_inv_a > 200.f)
+        signal_I->park_inv_a = 200.f;
+    else if (signal_I->park_inv_a < -200.f)
+        signal_I->park_inv_a = -200.f;
 #endif
 }
 #if PRorPI

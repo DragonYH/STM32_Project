@@ -106,7 +106,7 @@ void pll_Init_I(pll_Signal_I *signal, float f, uint16_t F, float pr_kp, float pr
 void pll_Control_I(pll_Signal_I *signal_I, pll_Signal_V *signal_V, float Uset, float Udc);
 void pll_Pr(PR *signal, float target, float sample);
 #else
-void pll_Init_I(pll_Signal_I *signal, float f, uint16_t F, float pi_kp, float pi_ki);
+void pll_Init_I(pll_Signal_I *signal, float f, uint16_t F);
 void pll_Control_I(pll_Signal_I *signal_I, pll_Signal_V *signal_V, float Iset, float phase);
 #endif
 void pll_Sogi(SOGI *sogi, float *input);
