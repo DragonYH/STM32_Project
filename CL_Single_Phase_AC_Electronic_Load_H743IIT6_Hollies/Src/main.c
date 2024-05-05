@@ -145,11 +145,19 @@ void oled_Show(void)
 // 按键控制
 void key_Control(void)
 {
+  static flag = 0;
   if (HAL_GPIO_ReadPin(GPIOI, GPIO_PIN_7) == GPIO_PIN_RESET)
   {
     while (HAL_GPIO_ReadPin(GPIOI, GPIO_PIN_7) == GPIO_PIN_RESET)
       ;
-    phase_set -= 0.1f;
+    if (flag == 0)
+      phase_set -= 0.1f;
+    else
+      phase_set += 0.1f;
+    if (phase_set >= 2.7f || phase_set <= -2.7f)
+    {
+      flag = !flag;
+    }
   }
 }
 // 电路开关
