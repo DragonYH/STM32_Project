@@ -88,6 +88,7 @@ __attribute__((section("._DTCM_Area"))) pll_Signal_V *signal_V;
 __attribute__((section("._DTCM_Area"))) pll_Signal_I *signal_I;
 __attribute__((section("._DTCM_Area"))) arm_biquad_casd_df1_inst_f32 *iir_V; // IIR滤波器参数结构体
 __attribute__((section("._DTCM_Area"))) arm_biquad_casd_df1_inst_f32 *iir_I; // IIR滤波器参数结构体
+PID *pid_DC_V;                                                               // 直流稳压PID控制器
 // 创建ADC数据空间
 __attribute__((section("._DTCM_Area"))) float adcBuf[2] = {0};
 // 直流电压
@@ -117,7 +118,7 @@ void oled_Show(void)
   // CDC_Transmit_FS((uint8_t *)textBuf, sizeof(textBuf));
 
   // FAC: 功率因数
-  sprintf((char *)textBuf, "FAC:%6.2f %9.2f", phase_set, signal_I->park_inv_a);
+  sprintf((char *)textBuf, "FAC:%6.2f %9.0f", phase_set, pid_DC_V->out);
   // sprintf((char *)textBuf, "FAC:%5.2f %8.0f", arm_cos_f32(0), signal_I->park_inv_a);
   // sprintf((char *)textBuf, "FAC: %4.2f %8.0f", arm_cos_f32(0), signal_I->pr->out[0]);
   OLED_ShowString(0, 36, textBuf, 12);
@@ -148,7 +149,7 @@ void key_Control(void)
   {
     while (HAL_GPIO_ReadPin(GPIOI, GPIO_PIN_7) == GPIO_PIN_RESET)
       ;
-    phase_set -= 0.5f;
+    phase_set -= 0.1f;
   }
 }
 // 电路开关
@@ -213,6 +214,7 @@ int main(void)
   MX_I2C3_Init();
   MX_TIM3_Init();
   MX_ADC3_Init();
+  MX_TIM12_Init();
   /* USER CODE BEGIN 2 */
   // 给变量分配存储空间
   signal_V = (pll_Signal_V *)malloc(sizeof(pll_Signal_V));
@@ -227,6 +229,7 @@ int main(void)
 #endif
   signal_V->sogi = (SOGI *)malloc(sizeof(SOGI));
   signal_I->sogi = (SOGI *)malloc(sizeof(SOGI));
+  pid_DC_V = (PID *)malloc(sizeof(PID));
   // 锁相环初始化
   pll_Init_V(signal_V, 50, 20000, 30 * 1.414); // 电压锁相
 #if PRorPI
@@ -241,9 +244,9 @@ int main(void)
   ad7606_Init();
   // 打开PWM波
   HAL_TIM_PWM_Start(&htim8, TIM_CHANNEL_1);
-  HAL_TIMEx_PWMN_Start(&htim8, TIM_CHANNEL_1);
   HAL_TIM_PWM_Start(&htim8, TIM_CHANNEL_2);
-  HAL_TIMEx_PWMN_Start(&htim8, TIM_CHANNEL_2);
+  HAL_TIM_PWM_Start(&htim12, TIM_CHANNEL_1);
+  HAL_TIM_PWM_Start(&htim12, TIM_CHANNEL_2);
   // OLED初始化
   OLED_Init();
   // INA238初始化
@@ -256,6 +259,8 @@ int main(void)
   iir_I = (arm_biquad_casd_df1_inst_f32 *)malloc(sizeof(arm_biquad_casd_df1_inst_f32));
   arm_biquad_cascade_df1_init_f32(iir_V, iirNumStages, iirCoeffs_20Hz, signal_V->iirState);
   arm_biquad_cascade_df1_init_f32(iir_I, iirNumStages, iirCoeffs_20Hz, signal_I->iirState);
+  // DC稳压PID初始化
+  pid_Init(pid_DC_V, 0.2f, 0.05f, 0, 11999.f, 8000.f);
   // 开启中断
   ad7606_Start(&htim2, TIM_CHANNEL_1);
   HAL_TIM_Base_Start_IT(&htim3);
@@ -424,6 +429,18 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
       __HAL_TIM_SET_COMPARE(&htim8, TIM_CHANNEL_1, 0);
       __HAL_TIM_SET_COMPARE(&htim8, TIM_CHANNEL_2, -signal_I->park_inv_a / 200.f / 1.1f * 12000.f);
     }
+    pid(pid_DC_V, dcVolt, 60.f);
+    if (arm_cos_f32(signal_V->theta) > 0)
+    {
+      __HAL_TIM_SET_COMPARE(&htim12, TIM_CHANNEL_1, pid_DC_V->out * arm_cos_f32(signal_V->theta));
+      __HAL_TIM_SET_COMPARE(&htim12, TIM_CHANNEL_2, 0);
+    }
+    else
+    {
+      __HAL_TIM_SET_COMPARE(&htim12, TIM_CHANNEL_1, 0);
+      __HAL_TIM_SET_COMPARE(&htim12, TIM_CHANNEL_2, -pid_DC_V->out * arm_cos_f32(signal_V->theta));
+    }
+
 #endif
   }
   // 输出有效值滤波
