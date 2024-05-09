@@ -133,8 +133,7 @@ void oled_Show(void)
   OLED_ShowString(0, 48, textBuf, 12);
   // CDC_Transmit_FS((uint8_t *)textBuf, sizeof(textBuf));
   OLED_Refresh();
-#endif
-#if USER_DEBUG
+#else USER_DEBUG
   // 串口调试
   //  sprintf((char *)textBuf, "x=0,V=%.2f,I=%.2f,park_Iq=%.2f,park_Id=%.2f,park_Vd=%.2f,park_Vq=%.2f,sogi_Va=%.2f,sogi_Vb=%.2f,sogi_Ia=%.2f,sogi_Ib=%.2f,\n", signal_V->input[0], signal_I->input[0], signal_I->park_q, signal_I->park_d, signal_V->park_d, signal_V->park_q, signal_V->sogi->a[0], signal_V->sogi->b[0], signal_I->sogi->a[0], signal_I->sogi->b[0]);
   sprintf((char *)textBuf, "x=0,V=%.2f,park_Vd=%.2f,park_Vq=%.2f,sogi_Va=%.2f,sogi_Vb=%.2f,\n", signal_V->input[0], signal_V->park_d, signal_V->park_q, signal_V->sogi->a[0], signal_V->sogi->b[0]);
