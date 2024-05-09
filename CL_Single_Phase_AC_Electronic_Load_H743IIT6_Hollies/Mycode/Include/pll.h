@@ -6,10 +6,10 @@
 #include "pid.h"
 #include "iir.h"
 
-#define COMPARE (32.f * 1.414f)           // 计时器计数值
-#define MI (1.f)                          // 调制比
-#define COMPARE_MAX (MI * COMPARE)        // 计时器最大计数值
-#define COMPARE_MIN (-1.f * MI * COMPARE) // 计时器最小计数值
+// #define COMPARE (32.f * 1.414f)           // 计时器计数值
+// #define MI (1.f)                          // 调制比
+// #define COMPARE_MAX (MI * COMPARE)        // 计时器最大计数值
+// #define COMPARE_MIN (-1.f * MI * COMPARE) // 计时器最小计数值
 
 #define PRorPI 0 // 1:PR 0:PI
 
@@ -99,16 +99,18 @@ typedef struct pll_Signal_I
 
 extern float phase_set;
 
-void pll_Init_V(pll_Signal_V *signal, float f, uint16_t F, float Umax);
+void pll_Init_V(pll_Signal_V **signal, float f, uint16_t F, float Umax);
 void pll_Control_V(pll_Signal_V *signal_V);
 #if PRorPI
-void pll_Init_I(pll_Signal_I *signal, float f, uint16_t F, float pr_kp, float pr_kr, float pi_kp, float pi_ki);
+void pll_Init_I(pll_Signal_I **signal, float f, uint16_t F, float pr_kp, float pr_kr, float pi_kp, float pi_ki);
 void pll_Control_I(pll_Signal_I *signal_I, pll_Signal_V *signal_V, float Uset, float Udc);
 void pll_Pr(PR *signal, float target, float sample);
 #else
-void pll_Init_I(pll_Signal_I *signal, float f, uint16_t F);
+void pll_Init_I(pll_Signal_I **signal, float f, uint16_t F);
 void pll_Control_I(pll_Signal_I *signal_I, pll_Signal_V *signal_V, float Iset, float phase);
 #endif
 void pll_Sogi(SOGI *sogi, float *input);
+void pll_Free_V(pll_Signal_V *signal);
+void pll_Free_I(pll_Signal_I *signal);
 
 #endif

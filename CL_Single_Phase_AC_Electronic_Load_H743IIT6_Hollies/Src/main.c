@@ -38,6 +38,15 @@
 #include "pid.h"
 #include "ad7606.h"
 #include "iir.h"
+// IDE版本错误临时修复
+__attribute__((weak)) void _close(void) {}
+__attribute__((weak)) void _lseek(void) {}
+__attribute__((weak)) void _read(void) {}
+__attribute__((weak)) void _write(void) {}
+__attribute__((weak)) void _fstat(void) {}
+__attribute__((weak)) void _getpid(void) {}
+__attribute__((weak)) void _isatty(void) {}
+__attribute__((weak)) void _kill(void) {}
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -73,15 +82,6 @@ static void MPU_Config(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-// IDE版本错误临时修复
-__attribute__((weak)) void _close(void) {}
-__attribute__((weak)) void _lseek(void) {}
-__attribute__((weak)) void _read(void) {}
-__attribute__((weak)) void _write(void) {}
-__attribute__((weak)) void _fstat(void) {}
-__attribute__((weak)) void _getpid(void) {}
-__attribute__((weak)) void _isatty(void) {}
-__attribute__((weak)) void _kill(void) {}
 // 定义交流电压和电流信号和信号配置变量
 // 将控制变量放到DTCM中，防止数据传输拖慢运行速度
 __attribute__((section("._DTCM_Area"))) pll_Signal_V *signal_V;
@@ -90,14 +90,13 @@ __attribute__((section("._DTCM_Area"))) arm_biquad_casd_df1_inst_f32 *iir_V; // 
 __attribute__((section("._DTCM_Area"))) arm_biquad_casd_df1_inst_f32 *iir_I; // IIR滤波器参数结构体
 PID *pid_DC_V;                                                               // 直流稳压PID控制器
 // 创建ADC数据空间
-__attribute__((section("._DTCM_Area"))) float adcBuf[2] = {0};
-// 直流电压
+__attribute__((section("._DTCM_Area"))) float adcBuf[3] = {0};
+// 直流侧电压电流
 float dcVolt = 0.f;
 float dcCurrent = 0.f;
 // 芯片核心温度
-uint16_t temprature = 0;
-float temp_result = 0;
-// 显示函数
+float chipTemp = 0;
+// 显示
 uint8_t textBuf[256] = {0};
 void oled_Show(void)
 {
@@ -130,7 +129,7 @@ void oled_Show(void)
     eff = 100.f;
   else if (eff < 0.f)
     eff = 0.f;
-  sprintf((char *)textBuf, "EFF:%7.2f%%%7.1fC", eff, temp_result);
+  sprintf((char *)textBuf, "EFF:%7.2f%%%7.1fC", eff, chipTemp);
   OLED_ShowString(0, 48, textBuf, 12);
   // CDC_Transmit_FS((uint8_t *)textBuf, sizeof(textBuf));
   OLED_Refresh();
@@ -145,7 +144,7 @@ void oled_Show(void)
 // 按键控制
 void key_Control(void)
 {
-  static flag = 0;
+  static uint8_t flag = 0;
   if (HAL_GPIO_ReadPin(GPIOI, GPIO_PIN_7) == GPIO_PIN_RESET)
   {
     while (HAL_GPIO_ReadPin(GPIOI, GPIO_PIN_7) == GPIO_PIN_RESET)
@@ -224,41 +223,17 @@ int main(void)
   MX_ADC3_Init();
   MX_TIM12_Init();
   /* USER CODE BEGIN 2 */
-  // 给变量分配存储空间
-  signal_V = (pll_Signal_V *)malloc(sizeof(pll_Signal_V));
-  signal_I = (pll_Signal_I *)malloc(sizeof(pll_Signal_I));
-  signal_V->pid = (PID *)malloc(sizeof(PID));
-#if PRorPI
-  signal_I->pid_dc = (PID *)malloc(sizeof(PID));
-  signal_I->pr = (PR *)malloc(sizeof(PR));
-#else
-  signal_I->pid_d = (PID *)malloc(sizeof(PID));
-  signal_I->pid_q = (PID *)malloc(sizeof(PID));
-#endif
-  signal_V->sogi = (SOGI *)malloc(sizeof(SOGI));
-  signal_I->sogi = (SOGI *)malloc(sizeof(SOGI));
-  pid_DC_V = (PID *)malloc(sizeof(PID));
   // 锁相环初始化
-  pll_Init_V(signal_V, 50, 20000, 30 * 1.414); // 电压锁相
+  pll_Init_V(&signal_V, 50, 20000, 30 * 1.414); // 电压锁相
 #if PRorPI
   pll_Init_I(signal_I, 50, 20000, 0.5f, 7600.f, 0.001f, 0.1f); // 电流环 1.414-7600
 #else
-  pll_Init_I(signal_I, 50, 20000);
+  pll_Init_I(&signal_I, 50, 20000); // 电流环
 #endif
-  // DAC模拟输出初始化
-  HAL_DAC_SetValue(&hdac1, DAC_CHANNEL_1, DAC_ALIGN_12B_R, 2048);
-  HAL_DAC_Start(&hdac1, DAC_CHANNEL_1);
-  // 初始化AD7606
-  ad7606_Init();
-  // 打开PWM波
-  HAL_TIM_PWM_Start(&htim8, TIM_CHANNEL_1);
-  HAL_TIM_PWM_Start(&htim8, TIM_CHANNEL_2);
-  HAL_TIM_PWM_Start(&htim12, TIM_CHANNEL_1);
-  HAL_TIM_PWM_Start(&htim12, TIM_CHANNEL_2);
-  // OLED初始化
-  OLED_Init();
-  // INA238初始化
-  ina238_Init(&hi2c3, 0);
+  // 外设初始化
+  OLED_Init();            // OLED初始化
+  ad7606_Init();          // 初始化AD7606
+  ina238_Init(&hi2c3, 0); // INA238初始化
   // ADC校准
   HAL_ADCEx_Calibration_Start(&hadc3, ADC_SINGLE_ENDED, ADC_CALIB_OFFSET);
   HAL_ADCEx_Calibration_Start(&hadc3, ADC_SINGLE_ENDED, ADC_CALIB_OFFSET_LINEARITY);
@@ -268,10 +243,19 @@ int main(void)
   arm_biquad_cascade_df1_init_f32(iir_V, iirNumStages, iirCoeffs_20Hz, signal_V->iirState);
   arm_biquad_cascade_df1_init_f32(iir_I, iirNumStages, iirCoeffs_20Hz, signal_I->iirState);
   // DC稳压PID初始化
+  pid_DC_V = (PID *)malloc(sizeof(PID));
   pid_Init(pid_DC_V, 0.2f, 0.05f, 0, 11999.f, 8000.f);
+  // DAC模拟输出初始化
+  HAL_DAC_SetValue(&hdac1, DAC_CHANNEL_1, DAC_ALIGN_12B_R, 2048);
+  HAL_DAC_Start(&hdac1, DAC_CHANNEL_1);
+  // 打开PWM波
+  HAL_TIM_PWM_Start(&htim8, TIM_CHANNEL_1);
+  HAL_TIM_PWM_Start(&htim8, TIM_CHANNEL_2);
+  HAL_TIM_PWM_Start(&htim12, TIM_CHANNEL_1);
+  HAL_TIM_PWM_Start(&htim12, TIM_CHANNEL_2);
   // 开启中断
-  ad7606_Start(&htim2, TIM_CHANNEL_1);
   HAL_TIM_Base_Start_IT(&htim3);
+  ad7606_Start(&htim2, TIM_CHANNEL_1);
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -288,20 +272,11 @@ int main(void)
     /* USER CODE BEGIN 3 */
   }
   ad7606_Stop(&htim2, TIM_CHANNEL_1);
-  free(signal_V->pid);
-#if PRorPI
-  free(signal_I->pid_dc);
-  free(signal_I->pr);
-#else
-  free(signal_I->pid_d);
-  free(signal_I->pid_q);
-#endif
-  free(signal_V->sogi);
-  free(signal_I->sogi);
+  // 释放内存
   free(iir_V);
   free(iir_I);
-  free(signal_V);
-  free(signal_I);
+  pll_Free_V(signal_V);
+  pll_Free_I(signal_I);
   /* USER CODE END 3 */
 }
 
@@ -437,6 +412,7 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
       __HAL_TIM_SET_COMPARE(&htim8, TIM_CHANNEL_1, 0);
       __HAL_TIM_SET_COMPARE(&htim8, TIM_CHANNEL_2, -signal_I->park_inv_a / 200.f / 1.1f * 12000.f);
     }
+    // 直流稳压
     pid(pid_DC_V, dcVolt, 60.f);
     if (arm_cos_f32(signal_V->theta) > 0)
     {
@@ -448,7 +424,6 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
       __HAL_TIM_SET_COMPARE(&htim12, TIM_CHANNEL_1, 0);
       __HAL_TIM_SET_COMPARE(&htim12, TIM_CHANNEL_2, -pid_DC_V->out * arm_cos_f32(signal_V->theta));
     }
-
 #endif
   }
   // 输出有效值滤波
@@ -541,8 +516,8 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
     HAL_ADC_Start(&hadc3);
     if (HAL_ADC_PollForConversion(&hadc3, 10) == HAL_OK) // 判断是否转换完成
     {
-      temprature = HAL_ADC_GetValue(&hadc3); // 读出转换结果
-      temp_result = ((110.0 - 30.0) / (*(unsigned short *)(0x1FF1E840) - *(unsigned short *)(0x1FF1E820))) * (temprature - *(unsigned short *)(0x1FF1E820)) + 30;
+      uint16_t temprature = HAL_ADC_GetValue(&hadc3); // 读出转换结果
+      chipTemp = ((110.0 - 30.0) / (*(unsigned short *)(0x1FF1E840) - *(unsigned short *)(0x1FF1E820))) * (temprature - *(unsigned short *)(0x1FF1E820)) + 30;
     }
   }
   /* USER CODE END Callback 1 */

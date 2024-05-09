@@ -1,5 +1,7 @@
-../Mycode/pll.c:13:6:pll_Init_V	1
-../Mycode/pll.c:63:6:pll_Init_I	1
-../Mycode/pll.c:112:6:pll_Control_V	1
-../Mycode/pll.c:141:6:pll_Control_I	3
-../Mycode/pll.c:201:6:pll_Sogi	1
+../Mycode/pll.c:15:6:pll_Init_V	1
+../Mycode/pll.c:69:6:pll_Init_I	1
+../Mycode/pll.c:127:6:pll_Control_V	1
+../Mycode/pll.c:156:6:pll_Control_I	3
+../Mycode/pll.c:216:6:pll_Sogi	1
+../Mycode/pll.c:232:6:pll_Free_V	1
+../Mycode/pll.c:242:6:pll_Free_I	1

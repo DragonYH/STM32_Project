@@ -383,7 +383,7 @@ void OLED_ScrollDisplay(uint8_t num, uint8_t space)
 		{
 			for (r = 0; r < 16 * space; r++) // 显示间隔
 			{
-				for (i = 0; i < 144; i++)
+				for (i = 1; i < 144; i++)
 				{
 					for (n = 0; n < 8; n++)
 					{
@@ -399,7 +399,7 @@ void OLED_ScrollDisplay(uint8_t num, uint8_t space)
 		{
 			m = 0;
 		}
-		for (i = 0; i < 144; i++) // 实现左移
+		for (i = 1; i < 144; i++) // 实现左移
 		{
 			for (n = 0; n < 8; n++)
 			{

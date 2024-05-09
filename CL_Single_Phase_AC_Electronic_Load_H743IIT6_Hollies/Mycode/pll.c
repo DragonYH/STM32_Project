@@ -1,5 +1,7 @@
 #include "pll.h"
+#include "pid.h"
 #include "stdlib.h"
+#include "malloc.h"
 
 float phase_set = 0.f;
 
@@ -10,34 +12,38 @@ float phase_set = 0.f;
  * @param F 采样频率(典型值:20000)
  * @param Umax 交流电压峰值
  */
-void pll_Init_V(pll_Signal_V *signal, float f, uint16_t F, float Umax)
+void pll_Init_V(pll_Signal_V **signal, float f, uint16_t F, float Umax)
 {
+    // 分配内存空间
+    (*signal) = (pll_Signal_V *)malloc(sizeof(pll_Signal_V));
+    (*signal)->pid = (PID *)malloc(sizeof(PID));
+    (*signal)->sogi = (SOGI *)malloc(sizeof(SOGI));
     // 初始化赋值
-    signal->input[0] = 0.f;
-    signal->input[1] = 0.f;
-    signal->input[2] = 0.f;
+    (*signal)->input[0] = 0.f;
+    (*signal)->input[1] = 0.f;
+    (*signal)->input[2] = 0.f;
 
-    signal->sogi->a[1] = 0.f;
-    signal->sogi->a[2] = 0.f;
-    signal->sogi->b[1] = 0.f;
-    signal->sogi->b[2] = 0.f;
+    (*signal)->sogi->a[1] = 0.f;
+    (*signal)->sogi->a[2] = 0.f;
+    (*signal)->sogi->b[1] = 0.f;
+    (*signal)->sogi->b[2] = 0.f;
 
-    signal->theta = 0.f;
-    signal->omiga0 = 2 * PI * f; // f典型值50
-    signal->Ts = 1.f / F;        // F典型值20000
-    signal->phase = 0.f;         // 设定相位差
+    (*signal)->theta = 0.f;
+    (*signal)->omiga0 = 2 * PI * f; // f典型值50
+    (*signal)->Ts = 1.f / F;        // F典型值20000
+    (*signal)->phase = 0.f;         // 设定相位差
     // 初始化pid参数
-    float ki = signal->omiga0 * signal->omiga0 / Umax;
+    float ki = (*signal)->omiga0 * (*signal)->omiga0 / Umax;
     float kp = sqrt(2) * sqrt(Umax * ki) / Umax;
-    pid_Init(signal->pid, kp, ki, 0, 50 * PI, -20 * PI);
+    pid_Init((*signal)->pid, kp, ki, 0, 50 * PI, -20 * PI);
     // 计算sogi中间量
-    signal->sogi->k = 1.414f;
-    signal->sogi->lamda = 0.5f * signal->omiga0 * signal->Ts;
-    signal->sogi->x = 2.f * signal->sogi->k * signal->omiga0 * signal->Ts;
-    signal->sogi->y = signal->omiga0 * signal->Ts * signal->omiga0 * signal->Ts;
-    signal->sogi->b0 = signal->sogi->x / (signal->sogi->x + signal->sogi->y + 4);
-    signal->sogi->a1 = (8 - 2.f * signal->sogi->y) / (signal->sogi->x + signal->sogi->y + 4);
-    signal->sogi->a2 = (signal->sogi->x - signal->sogi->y - 4) / (signal->sogi->x + signal->sogi->y + 4);
+    (*signal)->sogi->k = 1.414f;
+    (*signal)->sogi->lamda = 0.5f * (*signal)->omiga0 * (*signal)->Ts;
+    (*signal)->sogi->x = 2.f * (*signal)->sogi->k * (*signal)->omiga0 * (*signal)->Ts;
+    (*signal)->sogi->y = (*signal)->omiga0 * (*signal)->Ts * (*signal)->omiga0 * (*signal)->Ts;
+    (*signal)->sogi->b0 = (*signal)->sogi->x / ((*signal)->sogi->x + (*signal)->sogi->y + 4);
+    (*signal)->sogi->a1 = (8 - 2.f * (*signal)->sogi->y) / ((*signal)->sogi->x + (*signal)->sogi->y + 4);
+    (*signal)->sogi->a2 = ((*signal)->sogi->x - (*signal)->sogi->y - 4) / ((*signal)->sogi->x + (*signal)->sogi->y + 4);
 }
 #if PRorPI
 /**
@@ -50,7 +56,7 @@ void pll_Init_V(pll_Signal_V *signal, float f, uint16_t F, float Umax)
  * @param pi_kp PI控制器kp参数
  * @param pi_ki PI控制器ki参数
  */
-void pll_Init_I(pll_Signal_I *signal, float f, uint16_t F, float pr_kp, float pr_kr, float pi_kp, float pi_ki)
+void pll_Init_I(pll_Signal_I **signal, float f, uint16_t F, float pr_kp, float pr_kr, float pi_kp, float pi_ki)
 #else
 /**
  * @brief 电流信号参数初始化
@@ -60,50 +66,59 @@ void pll_Init_I(pll_Signal_I *signal, float f, uint16_t F, float pr_kp, float pr
  * @param pi_kp PI控制器kp参数
  * @param pi_ki PI控制器ki参数
  */
-void pll_Init_I(pll_Signal_I *signal, float f, uint16_t F)
+void pll_Init_I(pll_Signal_I **signal, float f, uint16_t F)
 #endif
 {
+    (*signal) = (pll_Signal_I *)malloc(sizeof(pll_Signal_I));
+    (*signal)->sogi = (SOGI *)malloc(sizeof(SOGI));
+#if PRorPI
+    (*signal)->pid_dc = (PID *)malloc(sizeof(PID));
+    (*signal)->pr = (PR *)malloc(sizeof(PR));
+#else
+    (*signal)->pid_d = (PID *)malloc(sizeof(PID));
+    (*signal)->pid_q = (PID *)malloc(sizeof(PID));
+#endif
     // 初始化赋值
-    signal->input[0] = 0.f;
-    signal->input[1] = 0.f;
-    signal->input[2] = 0.f;
+    (*signal)->input[0] = 0.f;
+    (*signal)->input[1] = 0.f;
+    (*signal)->input[2] = 0.f;
 
-    signal->sogi->a[1] = 0.f;
-    signal->sogi->a[2] = 0.f;
-    signal->sogi->b[1] = 0.f;
-    signal->sogi->b[2] = 0.f;
+    (*signal)->sogi->a[1] = 0.f;
+    (*signal)->sogi->a[2] = 0.f;
+    (*signal)->sogi->b[1] = 0.f;
+    (*signal)->sogi->b[2] = 0.f;
 
-    signal->omiga0 = 2.f * PI * f; // f典型值50
-    signal->Ts = 1.f / F;          // F典型值20000
+    (*signal)->omiga0 = 2.f * PI * f; // f典型值50
+    (*signal)->Ts = 1.f / F;          // F典型值20000
 #if PRorPI
     // 初始化pr参数
-    signal->omigaC = 2.f * PI * 0.5f; // 带宽2*pi*带宽
-    signal->pr->out[1] = 0.f;
-    signal->pr->out[2] = 0.f;
-    signal->pr->err[1] = 0.f;
-    signal->pr->err[2] = 0.f;
+    (*signal)->omigaC = 2.f * PI * 0.5f; // 带宽2*pi*带宽
+    (*signal)->pr->out[1] = 0.f;
+    (*signal)->pr->out[2] = 0.f;
+    (*signal)->pr->err[1] = 0.f;
+    (*signal)->pr->err[2] = 0.f;
     // 初始化pid参数
-    pid_Init(signal->pid, pi_kp, pi_ki, 0, 0.f, 0.f);
+    pid_Init((*signal)->pid, pi_kp, pi_ki, 0, 0.f, 0.f);
     // 计算pr中间量
-    signal->pr->a0 = signal->omiga0 * signal->omiga0 * signal->Ts * signal->Ts + 4 * signal->omigaC * signal->Ts + 4;
-    signal->pr->a1 = (2 * signal->omiga0 * signal->omiga0 * signal->Ts * signal->Ts - 8) / signal->pr->a0;
-    signal->pr->a2 = (signal->omiga0 * signal->omiga0 * signal->Ts * signal->Ts - 4 * signal->omigaC * signal->Ts + 4) / signal->pr->a0;
-    signal->pr->b0 = (pr_kp * (signal->omiga0 * signal->omiga0 * signal->Ts * signal->Ts + 4 * signal->omigaC * signal->Ts + 4) + 4 * pr_kr * signal->omigaC * signal->Ts) / signal->pr->a0;
-    signal->pr->b1 = (pr_kp * (2 * signal->omiga0 * signal->omiga0 * signal->Ts * signal->Ts - 8)) / signal->pr->a0;
-    signal->pr->b2 = (pr_kp * (signal->omiga0 * signal->omiga0 * signal->Ts * signal->Ts - 4 * signal->omigaC * signal->Ts + 4) - 4 * pr_kr * signal->omigaC * signal->Ts) / signal->pr->a0;
+    (*signal)->pr->a0 = (*signal)->omiga0 * (*signal)->omiga0 * (*signal)->Ts * (*signal)->Ts + 4 * (*signal)->omigaC * (*signal)->Ts + 4;
+    (*signal)->pr->a1 = (2 * (*signal)->omiga0 * (*signal)->omiga0 * (*signal)->Ts * (*signal)->Ts - 8) / (*signal)->pr->a0;
+    (*signal)->pr->a2 = ((*signal)->omiga0 * (*signal)->omiga0 * (*signal)->Ts * (*signal)->Ts - 4 * (*signal)->omigaC * (*signal)->Ts + 4) / (*signal)->pr->a0;
+    (*signal)->pr->b0 = (pr_kp * ((*signal)->omiga0 * (*signal)->omiga0 * (*signal)->Ts * (*signal)->Ts + 4 * (*signal)->omigaC * (*signal)->Ts + 4) + 4 * pr_kr * (*signal)->omigaC * (*signal)->Ts) / (*signal)->pr->a0;
+    (*signal)->pr->b1 = (pr_kp * (2 * (*signal)->omiga0 * (*signal)->omiga0 * (*signal)->Ts * (*signal)->Ts - 8)) / (*signal)->pr->a0;
+    (*signal)->pr->b2 = (pr_kp * ((*signal)->omiga0 * (*signal)->omiga0 * (*signal)->Ts * (*signal)->Ts - 4 * (*signal)->omigaC * (*signal)->Ts + 4) - 4 * pr_kr * (*signal)->omigaC * (*signal)->Ts) / (*signal)->pr->a0;
 #else
-    signal->L = 0.0043f; // 4.3mH
-    pid_Init(signal->pid_d, 0.05f, 0.05f, 0, 140.f, -140.f);
-    pid_Init(signal->pid_q, 0.05f, 0.002f, 0, 160.f, -160.f);
+    (*signal)->L = 0.0043f; // 4.3mH
+    pid_Init((*signal)->pid_d, 0.05f, 0.05f, 0, 140.f, -140.f);
+    pid_Init((*signal)->pid_q, 0.05f, 0.002f, 0, 160.f, -160.f);
 #endif
     // 计算sogi中间量
-    signal->sogi->k = 1.414f; // 阻尼比典型值1.414
-    signal->sogi->lamda = 0.5f * signal->omiga0 * signal->Ts;
-    signal->sogi->x = 2.f * signal->sogi->k * signal->omiga0 * signal->Ts;
-    signal->sogi->y = signal->omiga0 * signal->Ts * signal->omiga0 * signal->Ts;
-    signal->sogi->b0 = signal->sogi->x / (signal->sogi->x + signal->sogi->y + 4);
-    signal->sogi->a1 = (8 - 2.f * signal->sogi->y) / (signal->sogi->x + signal->sogi->y + 4);
-    signal->sogi->a2 = (signal->sogi->x - signal->sogi->y - 4) / (signal->sogi->x + signal->sogi->y + 4);
+    (*signal)->sogi->k = 1.414f; // 阻尼比典型值1.414
+    (*signal)->sogi->lamda = 0.5f * (*signal)->omiga0 * (*signal)->Ts;
+    (*signal)->sogi->x = 2.f * (*signal)->sogi->k * (*signal)->omiga0 * (*signal)->Ts;
+    (*signal)->sogi->y = (*signal)->omiga0 * (*signal)->Ts * (*signal)->omiga0 * (*signal)->Ts;
+    (*signal)->sogi->b0 = (*signal)->sogi->x / ((*signal)->sogi->x + (*signal)->sogi->y + 4);
+    (*signal)->sogi->a1 = (8 - 2.f * (*signal)->sogi->y) / ((*signal)->sogi->x + (*signal)->sogi->y + 4);
+    (*signal)->sogi->a2 = ((*signal)->sogi->x - (*signal)->sogi->y - 4) / ((*signal)->sogi->x + (*signal)->sogi->y + 4);
 }
 /**
  * @brief 电压锁相控制
@@ -209,4 +224,30 @@ void pll_Sogi(SOGI *sogi, float *input)
     sogi->a[1] = sogi->a[0];
     sogi->b[2] = sogi->b[1];
     sogi->b[1] = sogi->b[0];
+}
+/**
+ * @brief 释放内存
+ * @param signal 信号指针
+ */
+void pll_Free_V(pll_Signal_V *signal)
+{
+    free(signal->pid);
+    free(signal->sogi);
+    free(signal);
+}
+/**
+ * @brief 释放内存
+ * @param signal 信号指针
+ */
+void pll_Free_I(pll_Signal_I *signal)
+{
+#if PRorPI
+    free(signal->pid_dc);
+    free(signal->pr);
+#else
+    free(signal->pid_d);
+    free(signal->pid_q);
+#endif
+    free(signal->sogi);
+    free(signal);
 }

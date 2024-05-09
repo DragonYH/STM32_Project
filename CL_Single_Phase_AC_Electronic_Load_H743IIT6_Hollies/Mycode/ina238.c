@@ -26,14 +26,14 @@ void ina238_Init(I2C_HandleTypeDef *hi2c, int8_t error)
 float ina238_GetVolt(I2C_HandleTypeDef *hi2c)
 {
 	uint8_t pData[2];
-	float volt;
+	float volt = 0.f;
 	if (HAL_I2C_Mem_Read(hi2c, ADDR_READ, VBUS, 1, pData, 2, 100) == HAL_OK)
 	{
-		volt = pData[0] * 256 + pData[1];
-		if (volt > 32767) // 为负数的情况
-			volt = (volt - 65536) * 3.125 / 1000;
+		volt = pData[0] * 256.f + pData[1];
+		if (volt > 32767.f) // 为负数的情况
+			volt = (volt - 65536.f) * 3.125f / 1000.f;
 		else
-			volt = volt * 3.125 / 1000;
+			volt = volt * 3.125f / 1000.f;
 	}
 	return volt;
 }
@@ -45,14 +45,14 @@ float ina238_GetVolt(I2C_HandleTypeDef *hi2c)
 float ina238_GetCurrent(I2C_HandleTypeDef *hi2c)
 {
 	uint8_t pData[2];
-	float current;
+	float current = 0.f;
 	if (HAL_I2C_Mem_Read(hi2c, ADDR_READ, CURRENT, 1, pData, 2, 100) == HAL_OK)
 	{
-		current = pData[0] * 256 + pData[1];
-		if (current > 32767)
-			current = (current - 65536) * (8 / 32768.0);
+		current = pData[0] * 256.f + pData[1];
+		if (current > 32767.f)
+			current = (current - 65536.f) * (8.f / 32768.f);
 		else
-			current = current * (8 / 32768.0);
+			current = current * (8.f / 32768.f);
 	}
 	return current;
 }
@@ -64,10 +64,10 @@ float ina238_GetCurrent(I2C_HandleTypeDef *hi2c)
 float ina238_GetPower(I2C_HandleTypeDef *hi2c)
 {
 	uint8_t pData[3];
-	float power;
+	float power = 0.f;
 	if (HAL_I2C_Mem_Read(hi2c, ADDR_READ, POWER, 1, pData, 3, 100) == HAL_OK)
 	{
-		power = 0.2 * (pData[0] * 65536 + pData[1] * 256 + pData[2]) * (8 / 32768.0);
+		power = 0.2f * (pData[0] * 65536.f + pData[1] * 256.f + pData[2]) * (8.f / 32768.f);
 	}
 	return power;
 }
@@ -79,14 +79,14 @@ float ina238_GetPower(I2C_HandleTypeDef *hi2c)
 float ina238_GetTemperature(I2C_HandleTypeDef *hi2c)
 {
 	uint8_t pData[2];
-	float Temperature;
+	float Temperature = 0.f;
 	if (HAL_I2C_Mem_Read(hi2c, ADDR_READ, DIETEMP, 1, pData, 2, 100) == HAL_OK)
 	{
-		Temperature = (pData[0] >> 4) * 256 + (pData[1] >> 4);
-		if (Temperature > 2047)
-			Temperature = (Temperature - 2048) * 0.125;
+		Temperature = (pData[0] >> 4) * 256.f + (pData[1] >> 4);
+		if (Temperature > 2047.f)
+			Temperature = (Temperature - 2048.f) * 0.125f;
 		else
-			Temperature = Temperature * 0.125;
+			Temperature = Temperature * 0.125f;
 	}
 	return Temperature;
 }
