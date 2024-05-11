@@ -379,9 +379,9 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 {
   if (GPIO_Pin == AD7606_BUSY_Pin)
   {
+    // 读取采样值
     ad7606_GetValue(&hspi2, 3, adcBuf);
-    // 缓存adcBuf
-    signal_V->input[0] = adcBuf[1] / 0.02373021108f;
+    signal_V->input[0] = adcBuf[1] * 42.140375263f;
     signal_I->input[0] = adcBuf[2] * 2.464809491f;
     // 锁相控制
     pll_Control_V(signal_V);
