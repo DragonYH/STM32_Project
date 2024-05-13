@@ -1,9 +1,8 @@
 #include "pll.h"
 #include "pid.h"
+#include "math.h"
 #include "stdlib.h"
 #include "malloc.h"
-
-float phase_set = 0.f;
 
 /**
  * @brief 电压信号参数初始化
@@ -107,9 +106,10 @@ void pll_Init_I(pll_Signal_I **signal, float f, uint16_t F)
     (*signal)->pr->b1 = (pr_kp * (2 * (*signal)->omiga0 * (*signal)->omiga0 * (*signal)->Ts * (*signal)->Ts - 8)) / (*signal)->pr->a0;
     (*signal)->pr->b2 = (pr_kp * ((*signal)->omiga0 * (*signal)->omiga0 * (*signal)->Ts * (*signal)->Ts - 4 * (*signal)->omigaC * (*signal)->Ts + 4) - 4 * pr_kr * (*signal)->omigaC * (*signal)->Ts) / (*signal)->pr->a0;
 #else
+    (*signal)->CorL = 0;    // 0:感性 1:容性
     (*signal)->L = 0.0043f; // 4.3mH
-    pid_Init((*signal)->pid_d, 0.05f, 0.05f, 0, 140.f, -140.f);
-    pid_Init((*signal)->pid_q, 0.05f, 0.002f, 0, 160.f, -160.f);
+    pid_Init((*signal)->pid_d, 1.f, 0.01f, 0, -80.f, -160.f);
+    pid_Init((*signal)->pid_q, 0.50f, 0.01f, 0, 160.f, -160.f);
 #endif
     // 计算sogi中间量
     (*signal)->sogi->k = 1.414f; // 阻尼比典型值1.414
@@ -151,9 +151,9 @@ void pll_Control_I(pll_Signal_I *signal_I, pll_Signal_V *signal_V, float Uset, f
  * @param signal_I 电流信号指针
  * @param signal_V 电压信号指针
  * @param Iset 电流设定值(有效值)
- * @param phase 相位设置
+ * @param PF 功率因数
  */
-void pll_Control_I(pll_Signal_I *signal_I, pll_Signal_V *signal_V, float Iset, float phase)
+void pll_Control_I(pll_Signal_I *signal_I, pll_Signal_V *signal_V, float Iset, float PF)
 #endif
 {
 #if PRorPI
@@ -166,13 +166,23 @@ void pll_Control_I(pll_Signal_I *signal_I, pll_Signal_V *signal_V, float Iset, f
 #else
     static float Uabd;
     static float Uabq;
+    static float PFTheta;
     // 对信号先进行sogi变换，得到两个相位相差90度的信号
     pll_Sogi(signal_I->sogi, signal_I->input);
     // 在电压的系上得出电流的dq值
     arm_park_f32(signal_I->sogi->a[0], signal_I->sogi->b[0], &signal_I->park_d, &signal_I->park_q, arm_sin_f32(signal_V->theta), arm_cos_f32(signal_V->theta));
     // PI控制
-    pid(signal_I->pid_d, Iset * 1.414, signal_I->peak); // 电流大小
-    pid(signal_I->pid_q, phase, signal_I->park_q);      // 相位
+    PFTheta = acosf(PF);
+    pid(signal_I->pid_d, Iset * 1.414f * arm_cos_f32(PFTheta), signal_I->park_d); // 电流大小
+    if (signal_I->CorL == 0)
+    {
+        pid(signal_I->pid_q, Iset * 1.414f * arm_sin_f32(PFTheta), signal_I->park_q); // 相位
+    }
+    else
+    {
+        pid(signal_I->pid_q, -Iset * 1.414f * arm_sin_f32(PFTheta), signal_I->park_q); // 相位
+    }
+
     // 解耦调制
     Uabd = signal_V->park_d - signal_I->pid_d->out + signal_I->park_q * signal_I->omiga0 * signal_I->L;
     Uabq = signal_V->park_q - signal_I->pid_q->out - signal_I->park_d * signal_I->omiga0 * signal_I->L;

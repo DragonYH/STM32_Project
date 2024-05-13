@@ -1,10 +1,10 @@
 #ifndef __PLL_H
 #define __PLL_H
 
-#include "main.h"
-#include "arm_math.h"
 #include "pid.h"
 #include "iir.h"
+#include "main.h"
+#include "arm_math.h"
 
 // #define COMPARE (32.f * 1.414f)           // 计时器计数值
 // #define MI (1.f)                          // 调制比
@@ -49,7 +49,6 @@ typedef struct pll_Signal_V
 {
     // 基本变量
     float input[3]; // 输入序列
-    float peak;     // 电压峰值
     float rms;      // 电压有效值
     // park变换相关变量
     float park_d; // 有功分量
@@ -70,7 +69,6 @@ typedef struct pll_Signal_I
 {
     // 基本变量
     float input[3]; // 输入序列
-    float peak;     // 电流峰值
     float rms;      // 电流有效值
     // park变换相关变量
     float park_d; // 有功分量
@@ -91,13 +89,12 @@ typedef struct pll_Signal_I
     PID *pid_dc;  // 电压内环pid指针
     PR *pr;       // 电压外环pr指针
 #else
-    float L;    // 电感
-    PID *pid_d; // 控制电流最大值pi指针
-    PID *pid_q; // 控制相位pi指针
+    uint8_t CorL; // 0:感性 1:容性
+    float L;      // 电感
+    PID *pid_d;   // 控制电流最大值pi指针
+    PID *pid_q;   // 控制相位pi指针
 #endif
 } pll_Signal_I;
-
-extern float phase_set;
 
 void pll_Init_V(pll_Signal_V **signal, float f, uint16_t F, float Umax);
 void pll_Control_V(pll_Signal_V *signal_V);
@@ -107,7 +104,7 @@ void pll_Control_I(pll_Signal_I *signal_I, pll_Signal_V *signal_V, float Uset, f
 void pll_Pr(PR *signal, float target, float sample);
 #else
 void pll_Init_I(pll_Signal_I **signal, float f, uint16_t F);
-void pll_Control_I(pll_Signal_I *signal_I, pll_Signal_V *signal_V, float Iset, float phase);
+void pll_Control_I(pll_Signal_I *signal_I, pll_Signal_V *signal_V, float Iset, float PF);
 #endif
 void pll_Sogi(SOGI *sogi, float *input);
 void pll_Free_V(pll_Signal_V *signal);

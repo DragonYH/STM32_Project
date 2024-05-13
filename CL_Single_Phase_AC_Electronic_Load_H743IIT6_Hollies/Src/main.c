@@ -89,6 +89,7 @@ __attribute__((section("._DTCM_Area"))) pll_Signal_I *signal_I;
 __attribute__((section("._DTCM_Area"))) arm_biquad_casd_df1_inst_f32 *iir_V; // IIR滤波器参数结构体
 __attribute__((section("._DTCM_Area"))) arm_biquad_casd_df1_inst_f32 *iir_I; // IIR滤波器参数结构体
 PID *pid_DC_V;                                                               // 直流稳压PID控制器
+float PF = 1.f;                                                              // 功率因数
 // 创建ADC数据空间
 __attribute__((section("._DTCM_Area"))) float adcBuf[3] = {0};
 // 直流侧电压电流
@@ -111,13 +112,22 @@ void oled_Show(void)
   OLED_ShowString(0, 12, textBuf, 12);
   // CDC_Transmit_FS((uint8_t *)textBuf, sizeof(textBuf));
 
-  // OUT: 输出
-  sprintf((char *)textBuf, "OUT:%7.2fV %6.2fA", signal_V->input[0], signal_I->input[0]);
+  // // OUT: 输出
+  // sprintf((char *)textBuf, "OUT:%7.2fV %6.2fA", signal_I->park_d, signal_I->park_q);
+  // OLED_ShowString(0, 24, textBuf, 12);
+  // // CDC_Transmit_FS((uint8_t *)textBuf, sizeof(textBuf));
+  sprintf((char *)textBuf, "%6.0f %6.0f", signal_I->pid_d->out, signal_I->pid_q->out);
   OLED_ShowString(0, 24, textBuf, 12);
-  // CDC_Transmit_FS((uint8_t *)textBuf, sizeof(textBuf));
 
   // FAC: 功率因数
-  sprintf((char *)textBuf, "FAC:%6.2f %9.0f", phase_set, pid_DC_V->out);
+  if (signal_I->CorL == 0)
+  {
+    sprintf((char *)textBuf, "FAC:%6.2f    FUN: L", PF);
+  }
+  else
+  {
+    sprintf((char *)textBuf, "FAC:%6.2f    FUN: C", PF);
+  }
   // sprintf((char *)textBuf, "FAC:%5.2f %8.0f", arm_cos_f32(0), signal_I->park_inv_a);
   // sprintf((char *)textBuf, "FAC: %4.2f %8.0f", arm_cos_f32(0), signal_I->pr->out[0]);
   OLED_ShowString(0, 36, textBuf, 12);
@@ -149,22 +159,29 @@ void key_Control(void)
     while (HAL_GPIO_ReadPin(GPIOI, GPIO_PIN_7) == GPIO_PIN_RESET)
       ;
     if (flag == 0)
-      phase_set -= 0.1f;
+      PF -= 0.1f;
     else
-      phase_set += 0.1f;
-    if (phase_set >= 2.7f || phase_set <= -2.7f)
+      PF += 0.1f;
+    if (PF <= 0.51f)
     {
       flag = !flag;
+    }
+    if (PF >= 0.99f)
+    {
+      flag = !flag;
+      signal_I->CorL = !signal_I->CorL;
     }
   }
 }
 // 电路开关
 void circuit_Control(void)
 {
-  if (signal_I->rms > 0.2f)
+  if (signal_I->rms > 0.2f && signal_V->park_q < 0.05f && signal_V->park_q > -0.05f)
+  {
     circuit_Connect();
-  else
-    circuit_Disconnect();
+  }
+  //  else
+  //    circuit_Disconnect();
 }
 /* USER CODE END 0 */
 
@@ -243,7 +260,7 @@ int main(void)
   arm_biquad_cascade_df1_init_f32(iir_I, iirNumStages, iirCoeffs_20Hz, signal_I->iirState);
   // DC稳压PID初始化
   pid_DC_V = (PID *)malloc(sizeof(PID));
-  pid_Init(pid_DC_V, 0.2f, 0.05f, 0, 11999.f, 8000.f);
+  pid_Init(pid_DC_V, 0.2f, 0.02f, 0, 11999.f, 8000.f);
   // DAC模拟输出初始化
   HAL_DAC_SetValue(&hdac1, DAC_CHANNEL_1, DAC_ALIGN_12B_R, 2048);
   HAL_DAC_Start(&hdac1, DAC_CHANNEL_1);
@@ -261,11 +278,11 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+    HAL_Delay(100);
     circuit_Control();
     key_Control();
     oled_Show();
     HAL_GPIO_TogglePin(GPIOI, GPIO_PIN_0);
-    HAL_Delay(100);
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -399,7 +416,7 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
       __HAL_TIM_SET_COMPARE(&htim8, TIM_CHANNEL_2, -1.f * signal_I->pr->out[0]);
     }
 #else
-    pll_Control_I(signal_I, signal_V, 2.f, phase_set);
+    pll_Control_I(signal_I, signal_V, 2.f, PF);
     // 调节SPWM占空比
     if (signal_I->park_inv_a > 0)
     {
@@ -426,13 +443,13 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 #endif
   }
   // 输出有效值滤波
-  float filter_temp = 0.f;
-  arm_sqrt_f32(signal_V->park_d * signal_V->park_d + signal_V->park_q * signal_V->park_q, &signal_V->peak);
-  arm_sqrt_f32(signal_I->park_d * signal_I->park_d + signal_I->park_q * signal_I->park_q, &signal_I->peak);
-  arm_biquad_cascade_df1_f32(iir_V, &signal_V->peak, &filter_temp, iirBlockSize);
-  signal_V->rms = filter_temp * iirScale_20Hz / 1.41421356237f;
-  arm_biquad_cascade_df1_f32(iir_I, &signal_I->peak, &filter_temp, iirBlockSize);
-  signal_I->rms = filter_temp * iirScale_20Hz / 1.41421356237f;
+  // float filter_temp = 0.f;
+  arm_sqrt_f32(signal_V->park_d * signal_V->park_d + signal_V->park_q * signal_V->park_q, &signal_V->rms);
+  arm_sqrt_f32(signal_I->park_d * signal_I->park_d + signal_I->park_q * signal_I->park_q, &signal_I->rms);
+  arm_biquad_cascade_df1_f32(iir_V, &signal_V->rms, &signal_V->rms, iirBlockSize);
+  signal_V->rms = signal_V->rms * iirScale_20Hz / 1.41421356237f;
+  arm_biquad_cascade_df1_f32(iir_I, &signal_I->rms, &signal_I->rms, iirBlockSize);
+  signal_I->rms = signal_I->rms * iirScale_20Hz / 1.41421356237f;
   // 调试输出
 #if USER_DEBUG
   oled_Show();
