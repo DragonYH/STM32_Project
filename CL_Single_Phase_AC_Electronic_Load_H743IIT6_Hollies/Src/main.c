@@ -116,22 +116,8 @@ void oled_Show(void)
   // sprintf((char *)textBuf, "OUT:%7.2fV %6.2fA", signal_I->park_d, signal_I->park_q);
   // OLED_ShowString(0, 24, textBuf, 12);
   // // CDC_Transmit_FS((uint8_t *)textBuf, sizeof(textBuf));
-  sprintf((char *)textBuf, "%6.0f %6.0f", signal_I->pid_d->out, signal_I->pid_q->out);
-  OLED_ShowString(0, 24, textBuf, 12);
-
-  // FAC: 功率因数
-  if (signal_I->CorL == 0)
-  {
-    sprintf((char *)textBuf, "FAC:%6.2f    FUN: L", PF);
-  }
-  else
-  {
-    sprintf((char *)textBuf, "FAC:%6.2f    FUN: C", PF);
-  }
-  // sprintf((char *)textBuf, "FAC:%5.2f %8.0f", arm_cos_f32(0), signal_I->park_inv_a);
-  // sprintf((char *)textBuf, "FAC: %4.2f %8.0f", arm_cos_f32(0), signal_I->pr->out[0]);
-  OLED_ShowString(0, 36, textBuf, 12);
-  // CDC_Transmit_FS((uint8_t *)textBuf, sizeof(textBuf));
+  // sprintf((char *)textBuf, "%6.0f %6.0f", signal_I->pid_d->out, signal_I->pid_q->out);
+  // OLED_ShowString(0, 24, textBuf, 12);
 
   // EFF: 效率
   float eff = (dcVolt * dcCurrent) / ((signal_V->rms * iirScale_20Hz / 1.4f) * (signal_I->rms * iirScale_20Hz / 1.414f)) * 100.f;
@@ -139,7 +125,22 @@ void oled_Show(void)
     eff = 100.f;
   else if (eff < 0.f)
     eff = 0.f;
-  sprintf((char *)textBuf, "EFF:%7.2f%%%7.1fC", eff, chipTemp);
+  sprintf((char *)textBuf, "EFF:%7.2f%%", eff);
+  OLED_ShowString(0, 24, textBuf, 12);
+
+  // FAC: 功率因数
+  sprintf((char *)textBuf, "FAC:%7.2f", PF);
+  OLED_ShowString(0, 36, textBuf, 12);
+
+  // FUN: 功能, TEP: 芯片温度
+  if (signal_I->CorL == 0)
+  {
+    sprintf((char *)textBuf, "FUN: L   TEP:%5.1fC", chipTemp);
+  }
+  else
+  {
+    sprintf((char *)textBuf, "FUN: C    TEP:%5.1fC", chipTemp);
+  }
   OLED_ShowString(0, 48, textBuf, 12);
   // CDC_Transmit_FS((uint8_t *)textBuf, sizeof(textBuf));
   OLED_Refresh();
@@ -420,13 +421,13 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
     // 调节SPWM占空比
     if (signal_I->park_inv_a > 0)
     {
-      __HAL_TIM_SET_COMPARE(&htim8, TIM_CHANNEL_1, signal_I->park_inv_a / 200.f / 1.1f * 12000.f);
+      __HAL_TIM_SET_COMPARE(&htim8, TIM_CHANNEL_1, signal_I->park_inv_a * 55.f);
       __HAL_TIM_SET_COMPARE(&htim8, TIM_CHANNEL_2, 0);
     }
     else
     {
       __HAL_TIM_SET_COMPARE(&htim8, TIM_CHANNEL_1, 0);
-      __HAL_TIM_SET_COMPARE(&htim8, TIM_CHANNEL_2, -signal_I->park_inv_a / 200.f / 1.1f * 12000.f);
+      __HAL_TIM_SET_COMPARE(&htim8, TIM_CHANNEL_2, -signal_I->park_inv_a * 55.f);
     }
     // 直流稳压
     pid(pid_DC_V, dcVolt, 60.f);
@@ -455,7 +456,7 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
   oled_Show();
 #endif
   // DAC模拟输出，便于调试，不需要时可关闭
-  HAL_DAC_SetValue(&hdac1, DAC_CHANNEL_1, DAC_ALIGN_12B_R, 2000.f * arm_cos_f32(signal_V->theta) + 2048.f);
+  // HAL_DAC_SetValue(&hdac1, DAC_CHANNEL_1, DAC_ALIGN_12B_R, 2000.f * arm_cos_f32(signal_V->theta) + 2048.f);
 }
 /* USER CODE END 4 */
 

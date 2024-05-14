@@ -108,8 +108,8 @@ void pll_Init_I(pll_Signal_I **signal, float f, uint16_t F)
 #else
     (*signal)->CorL = 0;    // 0:感性 1:容性
     (*signal)->L = 0.0043f; // 4.3mH
-    pid_Init((*signal)->pid_d, 1.f, 0.01f, 0, -80.f, -160.f);
-    pid_Init((*signal)->pid_q, 0.50f, 0.01f, 0, 160.f, -160.f);
+    pid_Init((*signal)->pid_d, 0.5f, 0.01f, 0, -80.f, -160.f);
+    pid_Init((*signal)->pid_q, 0.5f, 0.01f, 0, 20.f, -10.f);
 #endif
     // 计算sogi中间量
     (*signal)->sogi->k = 1.414f; // 阻尼比典型值1.414
@@ -174,7 +174,7 @@ void pll_Control_I(pll_Signal_I *signal_I, pll_Signal_V *signal_V, float Iset, f
     // PI控制
     PFTheta = acosf(PF);
     pid(signal_I->pid_d, Iset * 1.414f * arm_cos_f32(PFTheta), signal_I->park_d); // 电流大小
-    if (signal_I->CorL == 0)
+    if (signal_I->CorL == 1)
     {
         pid(signal_I->pid_q, Iset * 1.414f * arm_sin_f32(PFTheta), signal_I->park_q); // 相位
     }
