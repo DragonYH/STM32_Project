@@ -105,19 +105,10 @@ void oled_Show(void)
   // IN:  输入
   sprintf((char *)textBuf, "IN :%7.2fV %6.2fA", signal_V->rms, signal_I->rms);
   OLED_ShowString(0, 0, textBuf, 12);
-  // CDC_Transmit_FS((uint8_t *)textBuf, sizeof(textBuf));
 
   // DC:  直流
   sprintf((char *)textBuf, "DC :%7.2fV %6.2fA", dcVolt, dcCurrent);
   OLED_ShowString(0, 12, textBuf, 12);
-  // CDC_Transmit_FS((uint8_t *)textBuf, sizeof(textBuf));
-
-  // // OUT: 输出
-  // sprintf((char *)textBuf, "OUT:%7.2fV %6.2fA", signal_I->park_d, signal_I->park_q);
-  // OLED_ShowString(0, 24, textBuf, 12);
-  // // CDC_Transmit_FS((uint8_t *)textBuf, sizeof(textBuf));
-  // sprintf((char *)textBuf, "%6.0f %6.0f", signal_I->pid_d->out, signal_I->pid_q->out);
-  // OLED_ShowString(0, 24, textBuf, 12);
 
   // EFF: 效率
   float eff = (dcVolt * dcCurrent) / ((signal_V->rms * iirScale_20Hz / 1.4f) * (signal_I->rms * iirScale_20Hz / 1.414f)) * 100.f;
@@ -142,7 +133,7 @@ void oled_Show(void)
     sprintf((char *)textBuf, "FUN: C    TEP:%5.1fC", chipTemp);
   }
   OLED_ShowString(0, 48, textBuf, 12);
-  // CDC_Transmit_FS((uint8_t *)textBuf, sizeof(textBuf));
+
   OLED_Refresh();
 #else
   // 串口调试
@@ -181,8 +172,6 @@ void circuit_Control(void)
   {
     circuit_Connect();
   }
-  //  else
-  //    circuit_Disconnect();
 }
 /* USER CODE END 0 */
 
@@ -444,7 +433,6 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 #endif
   }
   // 输出有效值滤波
-  // float filter_temp = 0.f;
   arm_sqrt_f32(signal_V->park_d * signal_V->park_d + signal_V->park_q * signal_V->park_q, &signal_V->rms);
   arm_sqrt_f32(signal_I->park_d * signal_I->park_d + signal_I->park_q * signal_I->park_q, &signal_I->rms);
   arm_biquad_cascade_df1_f32(iir_V, &signal_V->rms, &signal_V->rms, iirBlockSize);
