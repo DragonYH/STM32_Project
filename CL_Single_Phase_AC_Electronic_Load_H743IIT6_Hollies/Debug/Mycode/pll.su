@@ -1,7 +1,7 @@
 ../Mycode/pll.c:14:6:pll_Init_V	40	static
 ../Mycode/pll.c:68:6:pll_Init_I	32	static
-../Mycode/pll.c:127:6:pll_Control_V	64	static
-../Mycode/pll.c:156:6:pll_Control_I	96	static
-../Mycode/pll.c:226:6:pll_Sogi	16	static
-../Mycode/pll.c:242:6:pll_Free_V	16	static
-../Mycode/pll.c:252:6:pll_Free_I	16	static
+../Mycode/pll.c:128:6:pll_Control_V	64	static
+../Mycode/pll.c:157:6:pll_Control_I	96	static
+../Mycode/pll.c:227:6:pll_Sogi	16	static
+../Mycode/pll.c:243:6:pll_Free_V	16	static
+../Mycode/pll.c:253:6:pll_Free_I	16	static

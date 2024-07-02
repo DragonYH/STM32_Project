@@ -27,29 +27,29 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, ALLOC, LOAD, DATA
  11 .ARM.attributes 0000002e  00000000  00000000  0001a01c  2**0
                   CONTENTS, READONLY
- 12 .debug_line   0003187a  00000000  00000000  0001a04a  2**0
+ 12 .debug_line   00031874  00000000  00000000  0001a04a  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 13 .debug_line_str 00000081  00000000  00000000  0004b8c4  2**0
+ 13 .debug_line_str 00000081  00000000  00000000  0004b8be  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 14 .debug_info   00033889  00000000  00000000  0004b945  2**0
+ 14 .debug_info   00033889  00000000  00000000  0004b93f  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 15 .debug_abbrev 00006c03  00000000  00000000  0007f1ce  2**0
+ 15 .debug_abbrev 00006c03  00000000  00000000  0007f1c8  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 16 .debug_aranges 00002238  00000000  00000000  00085dd8  2**3
+ 16 .debug_aranges 00002238  00000000  00000000  00085dd0  2**3
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 17 .debug_str    0017d6bd  00000000  00000000  00088010  2**0
+ 17 .debug_str    0017d6bd  00000000  00000000  00088008  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 18 .debug_rnglists 000019a9  00000000  00000000  002056cd  2**0
+ 18 .debug_rnglists 000019a9  00000000  00000000  002056c5  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 19 .debug_macro  0003fccf  00000000  00000000  00207076  2**0
+ 19 .debug_macro  0003fccf  00000000  00000000  0020706e  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 20 .comment      000000b8  00000000  00000000  00246d45  2**0
+ 20 .comment      000000fb  00000000  00000000  00246d3d  2**0
                   CONTENTS, READONLY
- 21 .debug_frame  00009f94  00000000  00000000  00246e00  2**2
+ 21 .debug_frame  00009f94  00000000  00000000  00246e38  2**2
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 22 .debug_loc    00000a31  00000000  00000000  00250d94  2**0
+ 22 .debug_loc    00000a31  00000000  00000000  00250dcc  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 23 .debug_ranges 00000040  00000000  00000000  002517c5  2**0
+ 23 .debug_ranges 00000040  00000000  00000000  002517fd  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
 
 Disassembly of section .text:
@@ -38220,6 +38220,7 @@ void pll_Init_I(pll_Signal_I **signal, float f, uint16_t F)
  800e994:	681b      	ldr	r3, [r3, #0]
  800e996:	4a6c      	ldr	r2, [pc, #432]	@ (800eb48 <pll_Init_I+0x284>)
  800e998:	651a      	str	r2, [r3, #80]	@ 0x50
+    // 在调整取值范围时看实际输出值逐渐逼近，防止上电瞬间电流过大
     pid_Init((*signal)->pid_d, 0.5f, 0.01f, 0, -80.f, -160.f);
  800e99a:	68fb      	ldr	r3, [r7, #12]
  800e99c:	681b      	ldr	r3, [r3, #0]
@@ -39956,7 +39957,6 @@ void oled_Show(void)
  800f702:	2100      	movs	r1, #0
  800f704:	2000      	movs	r0, #0
  800f706:	f7fe fe17 	bl	800e338 <OLED_ShowString>
-  // CDC_Transmit_FS((uint8_t *)textBuf, sizeof(textBuf));
 
   // DC:  直流
   sprintf((char *)textBuf, "DC :%7.2fV %6.2fA", dcVolt, dcCurrent);
@@ -39977,9 +39977,6 @@ void oled_Show(void)
  800f732:	210c      	movs	r1, #12
  800f734:	2000      	movs	r0, #0
  800f736:	f7fe fdff 	bl	800e338 <OLED_ShowString>
-  // // CDC_Transmit_FS((uint8_t *)textBuf, sizeof(textBuf));
-  // sprintf((char *)textBuf, "%6.0f %6.0f", signal_I->pid_d->out, signal_I->pid_q->out);
-  // OLED_ShowString(0, 24, textBuf, 12);
 
   // EFF: 效率
   float eff = (dcVolt * dcCurrent) / ((signal_V->rms * iirScale_20Hz / 1.4f) * (signal_I->rms * iirScale_20Hz / 1.414f)) * 100.f;
@@ -40092,7 +40089,7 @@ void oled_Show(void)
  800f83e:	2130      	movs	r1, #48	@ 0x30
  800f840:	2000      	movs	r0, #0
  800f842:	f7fe fd79 	bl	800e338 <OLED_ShowString>
-  // CDC_Transmit_FS((uint8_t *)textBuf, sizeof(textBuf));
+
   OLED_Refresh();
  800f846:	f7fe fc07 	bl	800e058 <OLED_Refresh>
   // 串口调试
@@ -40255,8 +40252,6 @@ void circuit_Control(void)
   {
     circuit_Connect();
   }
-  //  else
-  //    circuit_Disconnect();
 }
  800f996:	e01d      	b.n	800f9d4 <circuit_Control+0x58>
   if (signal_I->rms > 0.2f && signal_V->park_q < 0.05f && signal_V->park_q > -0.05f)
@@ -41120,7 +41115,6 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 #endif
   }
   // 输出有效值滤波
-  // float filter_temp = 0.f;
   arm_sqrt_f32(signal_V->park_d * signal_V->park_d + signal_V->park_q * signal_V->park_q, &signal_V->rms);
  800ffa4:	4b54      	ldr	r3, [pc, #336]	@ (80100f8 <HAL_GPIO_EXTI_Callback+0x2d4>)
  800ffa6:	681b      	ldr	r3, [r3, #0]
