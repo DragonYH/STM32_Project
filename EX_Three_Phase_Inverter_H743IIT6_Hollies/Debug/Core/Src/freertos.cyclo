@@ -1,5 +1,5 @@
-../Core/Src/freertos.c:95:6:MX_FREERTOS_Init	1
-../Core/Src/freertos.c:146:6:StartStateLED	1
-../Core/Src/freertos.c:173:6:StartOledShow	1
-../Core/Src/freertos.c:212:6:StartDcSamp	1
-../Core/Src/freertos.c:231:6:HAL_GPIO_EXTI_Callback	2
+../Core/Src/freertos.c:96:6:MX_FREERTOS_Init	1
+../Core/Src/freertos.c:147:6:StartStateLED	1
+../Core/Src/freertos.c:174:6:StartOledShow	1
+../Core/Src/freertos.c:213:6:StartDcSamp	1
+../Core/Src/freertos.c:229:6:HAL_GPIO_EXTI_Callback	2

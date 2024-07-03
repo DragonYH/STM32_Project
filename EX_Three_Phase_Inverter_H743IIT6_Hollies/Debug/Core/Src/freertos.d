@@ -45,7 +45,8 @@ Core/Src/freertos.o: ../Core/Src/freertos.c \
  ../User/Inc/oled.h ../Core/Inc/gpio.h ../Core/Inc/main.h \
  ../User/Inc/user.h ../User/Inc/ina228.h ../Core/Inc/i2c.h \
  ../User/Inc/ad7606.h ../Core/Inc/spi.h ../Core/Inc/tim.h \
- ../User/Inc/ina228.h
+ ../User/Inc/ina228.h ../Drivers/CMSIS/DSP/Include/arm_math.h \
+ ../Drivers/CMSIS/Include/cmsis_compiler.h
 ../Middlewares/Third_Party/FreeRTOS/Source/include/FreeRTOS.h:
 ../Core/Inc/FreeRTOSConfig.h:
 ../Middlewares/Third_Party/FreeRTOS/Source/include/projdefs.h:
@@ -100,3 +101,5 @@ Core/Src/freertos.o: ../Core/Src/freertos.c \
 ../Core/Inc/spi.h:
 ../Core/Inc/tim.h:
 ../User/Inc/ina228.h:
+../Drivers/CMSIS/DSP/Include/arm_math.h:
+../Drivers/CMSIS/Include/cmsis_compiler.h:

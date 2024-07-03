@@ -33,6 +33,7 @@
 #include "tim.h"
 #include "gpio.h"
 #include "ina228.h"
+#include "arm_math.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -193,9 +194,9 @@ void StartOledShow(void *argument)
     OLED_ShowString(0, 36, text, 12);
     sprintf((char *)text, "7: %.3f", I);
     OLED_ShowString(64, 36, text, 12);
-    // // 获取当前堆栈剩余空间
-    // sprintf((char *)text, "stack free: %ld", uxTaskGetStackHighWaterMark(NULL));
-    // OLED_ShowString(0, 48, text, 12);
+    // 获取当前堆栈剩余空间
+    sprintf((char *)text, "stack free: %ld", uxTaskGetStackHighWaterMark(NULL));
+    OLED_ShowString(0, 48, text, 12);
     OLED_Refresh();
     osDelay(100);
   }
@@ -217,9 +218,6 @@ void StartDcSamp(void *argument)
   {
     U = INA228_getVBUS_V(INA228_0);
     I = INA228_getCURRENT_A(INA228_0);
-    // 获取当前堆栈剩余空间
-    sprintf((char *)text, "stack free: %ld", uxTaskGetStackHighWaterMark(NULL));
-    OLED_ShowString(0, 48, text, 12);
     osDelay(10);
   }
   /* USER CODE END StartDcSamp */
