@@ -57,23 +57,23 @@ uint8_t text[32] = {0};
 /* Definitions for stateLED */
 osThreadId_t stateLEDHandle;
 const osThreadAttr_t stateLED_attributes = {
-  .name = "stateLED",
-  .stack_size = 128 * 4,
-  .priority = (osPriority_t) osPriorityNormal,
+    .name = "stateLED",
+    .stack_size = 128 * 4,
+    .priority = (osPriority_t)osPriorityNormal,
 };
 /* Definitions for oledShow */
 osThreadId_t oledShowHandle;
 const osThreadAttr_t oledShow_attributes = {
-  .name = "oledShow",
-  .stack_size = 512 * 4,
-  .priority = (osPriority_t) osPriorityNormal,
+    .name = "oledShow",
+    .stack_size = 512 * 4,
+    .priority = (osPriority_t)osPriorityNormal,
 };
 /* Definitions for dcSamp */
 osThreadId_t dcSampHandle;
 const osThreadAttr_t dcSamp_attributes = {
-  .name = "dcSamp",
-  .stack_size = 256 * 4,
-  .priority = (osPriority_t) osPriorityLow,
+    .name = "dcSamp",
+    .stack_size = 256 * 4,
+    .priority = (osPriority_t)osPriorityLow,
 };
 
 /* Private function prototypes -----------------------------------------------*/
@@ -88,11 +88,12 @@ void StartDcSamp(void *argument);
 void MX_FREERTOS_Init(void); /* (MISRA C 2004 rule 8.1) */
 
 /**
-  * @brief  FreeRTOS initialization
-  * @param  None
-  * @retval None
-  */
-void MX_FREERTOS_Init(void) {
+ * @brief  FreeRTOS initialization
+ * @param  None
+ * @retval None
+ */
+void MX_FREERTOS_Init(void)
+{
   /* USER CODE BEGIN Init */
   OLED_Init();
   ad7606_Init();
@@ -133,7 +134,6 @@ void MX_FREERTOS_Init(void) {
   /* USER CODE BEGIN RTOS_EVENTS */
   /* add events, ... */
   /* USER CODE END RTOS_EVENTS */
-
 }
 
 /* USER CODE BEGIN Header_StartStateLED */
@@ -149,14 +149,16 @@ void StartStateLED(void *argument)
   /* Infinite loop */
   for (;;)
   {
+    HAL_GPIO_WritePin(GPIOI, GPIO_PIN_1, GPIO_PIN_RESET);
+    osDelay(1000);
     HAL_GPIO_TogglePin(GPIOI, GPIO_PIN_0);
     osDelay(100);
     HAL_GPIO_TogglePin(GPIOI, GPIO_PIN_0);
+    osDelay(200);
+    HAL_GPIO_TogglePin(GPIOI, GPIO_PIN_0);
     osDelay(100);
     HAL_GPIO_TogglePin(GPIOI, GPIO_PIN_0);
-    osDelay(250);
-    HAL_GPIO_TogglePin(GPIOI, GPIO_PIN_0);
-    osDelay(250);
+    osDelay(200);
   }
   /* USER CODE END StartStateLED */
 }
@@ -234,4 +236,3 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
   }
 }
 /* USER CODE END Application */
-
