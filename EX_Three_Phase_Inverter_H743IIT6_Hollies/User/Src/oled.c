@@ -33,7 +33,10 @@
 #include "math.h"
 uint8_t OLED_GRAM[144][8];
 
-// 反显函数
+/**
+ * @brief 反显函数
+ * @param i 0 正常显示 1 反色显示
+ */
 void OLED_ColorTurn(uint8_t i)
 {
 	if (i == 0)
@@ -46,7 +49,10 @@ void OLED_ColorTurn(uint8_t i)
 	}
 }
 
-// 屏幕旋转180度
+/**
+ * @brief 屏幕旋转180度
+ * @param i 0 正常显示 1 旋转180度
+ */
 void OLED_DisplayTurn(uint8_t i)
 {
 	if (i == 0)
@@ -61,6 +67,11 @@ void OLED_DisplayTurn(uint8_t i)
 	}
 }
 
+/**
+ * @brief 写入数据
+ * @param dat 要写入的数据
+ * @param cmd 数据类型 0 写入命令 1 写入数据
+ */
 void OLED_WR_Byte(uint8_t dat, uint8_t cmd)
 {
 	uint8_t *data = &dat;
@@ -76,7 +87,9 @@ void OLED_WR_Byte(uint8_t dat, uint8_t cmd)
 	OLED_DC_Set();
 }
 
-// 开启OLED显示
+/**
+ * @brief 开启OLED显示
+ */
 void OLED_DisPlay_On(void)
 {
 	OLED_WR_Byte(0x8D, OLED_CMD); // 电荷泵使能
@@ -84,7 +97,9 @@ void OLED_DisPlay_On(void)
 	OLED_WR_Byte(0xAF, OLED_CMD); // 点亮屏幕
 }
 
-// 关闭OLED显示
+/**
+ * @brief 关闭OLED显示
+ */
 void OLED_DisPlay_Off(void)
 {
 	OLED_WR_Byte(0x8D, OLED_CMD); // 电荷泵使能
@@ -92,7 +107,9 @@ void OLED_DisPlay_Off(void)
 	OLED_WR_Byte(0xAF, OLED_CMD); // 关闭屏幕
 }
 
-// 更新显存到OLED
+/**
+ * @brief 更新显存到OLED
+ */
 void OLED_Refresh(void)
 {
 	uint8_t i, n;
@@ -105,7 +122,10 @@ void OLED_Refresh(void)
 			OLED_WR_Byte(OLED_GRAM[n][i], OLED_DATA);
 	}
 }
-// 清屏函数
+
+/**
+ * @brief 清屏
+ */
 void OLED_Clear(void)
 {
 	uint8_t i, n;
@@ -119,9 +139,11 @@ void OLED_Clear(void)
 	OLED_Refresh(); // 更新显示
 }
 
-// 画点
-// x:0~127
-// y:0~63
+/**
+ * @brief 画点
+ * @param x x坐标
+ * @param y y坐标
+ */
 void OLED_DrawPoint(uint8_t x, uint8_t y)
 {
 	uint8_t i, m, n;
@@ -131,9 +153,11 @@ void OLED_DrawPoint(uint8_t x, uint8_t y)
 	OLED_GRAM[x][i] |= n;
 }
 
-// 清除一个点
-// x:0~127
-// y:0~63
+/**
+ * @brief 清除一个点
+ * @param x x坐标
+ * @param y y坐标
+ */
 void OLED_ClearPoint(uint8_t x, uint8_t y)
 {
 	uint8_t i, m, n;
@@ -145,9 +169,13 @@ void OLED_ClearPoint(uint8_t x, uint8_t y)
 	OLED_GRAM[x][i] = ~OLED_GRAM[x][i];
 }
 
-// 画线
-// x:0~128
-// y:0~64
+/**
+ * @brief 画线
+ * @param x1 起点x坐标
+ * @param y1 起点y坐标
+ * @param x2 终点x坐标
+ * @param y2 终点y坐标
+ */
 void OLED_DrawLine(uint8_t x1, uint8_t y1, uint8_t x2, uint8_t y2)
 {
 	uint8_t i, k, k1, k2;
@@ -178,8 +206,14 @@ void OLED_DrawLine(uint8_t x1, uint8_t y1, uint8_t x2, uint8_t y2)
 		}
 	}
 }
-// 画方形;x:0~127 y:0~63
-// x1,y1,左上角坐标；x2,y2,右下角坐标
+
+/**
+ * @brief 画矩形
+ * @param x1 左上角x坐标
+ * @param y1 左上角y坐标
+ * @param x2 右下角x坐标
+ * @param y2 右下角y坐标
+ */
 void OLED_DrawSquare(uint8_t x1, uint8_t y1, uint8_t x2, uint8_t y2)
 {
 	OLED_DrawLine(x1, y1, x2, y1);
@@ -187,8 +221,13 @@ void OLED_DrawSquare(uint8_t x1, uint8_t y1, uint8_t x2, uint8_t y2)
 	OLED_DrawLine(x1, y1, x1, y2);
 	OLED_DrawLine(x2, y1, x2, y2);
 }
-// x,y:圆心坐标
-// r:圆的半径
+
+/**
+ * @brief 画圆
+ * @param x 圆心x坐标
+ * @param y 圆心y坐标
+ * @param r 圆半径
+ */
 void OLED_DrawCircle(uint8_t x, uint8_t y, uint8_t r)
 {
 	int a, b, num;
@@ -216,11 +255,14 @@ void OLED_DrawCircle(uint8_t x, uint8_t y, uint8_t r)
 	}
 }
 
-// 在指定位置显示一个字符,包括部分字符
-// x:0~127
-// y:0~63
-// size:选择字体 12/16/24
-// 取模方式 逐列式
+/**
+ * @brief 显示一个字符
+ * @param x x坐标0-127
+ * @param y y坐标0-63
+ * @param chr 要显示的字符
+ * @param size1 字体大小 12/16/24
+ * @note 取模方式 逐列式
+ */
 void OLED_ShowChar(uint8_t x, uint8_t y, uint8_t chr, uint8_t size1)
 {
 	uint8_t i, m, temp, size2, chr1;
@@ -261,10 +303,13 @@ void OLED_ShowChar(uint8_t x, uint8_t y, uint8_t chr, uint8_t size1)
 	}
 }
 
-// 显示字符串
-// x,y:起点坐标
-// size1:字体大小
-//*chr:字符串起始地址
+/**
+ *@brief 显示字符串
+ *@param x x坐标
+ *@param y y坐标
+ *@param chr 字符串起始地址
+ *@param size1 字体大小
+ */
 void OLED_ShowString(uint8_t x, uint8_t y, uint8_t *chr, uint8_t size1)
 {
 	while ((*chr >= ' ') && (*chr <= '~')) // 判断是不是非法字符!
@@ -280,7 +325,11 @@ void OLED_ShowString(uint8_t x, uint8_t y, uint8_t *chr, uint8_t size1)
 	}
 }
 
-// m^n
+/**
+ * @brief 计算m的n次方
+ * @param m 底数
+ * @param n 幂
+ */
 uint32_t OLED_Pow(uint8_t m, uint8_t n)
 {
 	uint32_t result = 1;
@@ -291,10 +340,14 @@ uint32_t OLED_Pow(uint8_t m, uint8_t n)
 	return result;
 }
 
-////显示2个数字
-////x,y :起点坐标
-////len :数字的位数
-////size:字体大小
+/**
+ * @brief 显示数字
+ * @param x x坐标
+ * @param y y坐标
+ * @param num 要显示的数字
+ * @param len 数字的位数
+ * @param size1 字体大小
+ */
 void OLED_ShowNum(uint8_t x, uint8_t y, uint32_t num, uint8_t len, uint8_t size1)
 {
 	uint8_t t, temp;
@@ -313,10 +366,14 @@ void OLED_ShowNum(uint8_t x, uint8_t y, uint32_t num, uint8_t len, uint8_t size1
 	OLED_Refresh();
 }
 
-// 显示汉字
-// x,y:起点坐标
-// num:汉字对应的序号
-// 取模方式 列行式
+/**
+ * @brief 显示汉字
+ * @param x x坐标
+ * @param y y坐标
+ * @param num 汉字序号
+ * @param size1 字体大小
+ * @note 取模方式 列行式
+ */
 void OLED_ShowChinese(uint8_t x, uint8_t y, uint8_t num, uint8_t size1)
 {
 	uint8_t i, m, n = 0, temp, chr1;
@@ -367,8 +424,12 @@ void OLED_ShowChinese(uint8_t x, uint8_t y, uint8_t num, uint8_t size1)
 	}
 }
 
-// num 显示汉字的个数
-// space 每一遍显示的间隔
+/**
+ * @brief 滚动显示汉字
+ * @param num 显示汉字的个数
+ * @param space 每一遍显示的间隔
+ * @note 该函数为死循环
+ */
 void OLED_ScrollDisplay(uint8_t num, uint8_t space)
 {
 	uint8_t i, n, t = 0, m = 0, r;
@@ -410,7 +471,11 @@ void OLED_ScrollDisplay(uint8_t num, uint8_t space)
 	}
 }
 
-// 配置写入数据的起始位置
+/**
+ * @brief 设置写入数据的起始位置
+ * @param x x坐标
+ * @param y y坐标
+ */
 void OLED_WR_BP(uint8_t x, uint8_t y)
 {
 	OLED_WR_Byte(0xb0 + y, OLED_CMD); // 设置行起始地址
@@ -418,6 +483,15 @@ void OLED_WR_BP(uint8_t x, uint8_t y)
 	OLED_WR_Byte((x & 0x0f), OLED_CMD);
 }
 
+/**
+ * @brief 显示浮点数
+ * @param x x坐标
+ * @param y y坐标
+ * @param num 要显示的浮点数
+ * @param z_len 整数部分长度
+ * @param f_len 小数部分长度
+ * @param size2 字体大小
+ */
 void OLED_Showdecimal(uint8_t x, uint8_t y, float num, uint8_t z_len, uint8_t f_len, uint8_t size2)
 {
 	uint8_t t, temp, i = 0; // i为负数标志位
@@ -464,9 +538,14 @@ void OLED_Showdecimal(uint8_t x, uint8_t y, float num, uint8_t z_len, uint8_t f_
 	OLED_Refresh();
 }
 
-// x0,y0：起点坐标
-// x1,y1：终点坐标
-// BMP[]：要写入的图片数组
+/**
+ * @brief 显示图片
+ * @param x0 起点x坐标
+ * @param y0 起点y坐标
+ * @param x1 终点x坐标
+ * @param y1 终点y坐标
+ * @param BMP 图片数组
+ */
 void OLED_ShowPicture(uint8_t x0, uint8_t y0, uint8_t x1, uint8_t y1, uint8_t BMP[])
 {
 	uint32_t j = 0;
@@ -485,15 +564,21 @@ void OLED_ShowPicture(uint8_t x0, uint8_t y0, uint8_t x1, uint8_t y1, uint8_t BM
 		}
 	}
 }
-//
-//
+
+/**
+ * @brief 直接显示字符串
+ * @param str 字符串
+ */
 void OLED_Printf(uint8_t str[])
 {
 	OLED_Clear();
 	OLED_ShowString(2, 2, str, 12);
 	OLED_Refresh();
 }
-// OLED的初始化
+
+/**
+ * @brief OLED初始化
+ */
 void OLED_Init(void)
 {
 
