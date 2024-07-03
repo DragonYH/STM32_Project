@@ -48,4 +48,5 @@
 "./User/Src/oled.o"
 "./User/Src/pid.o"
 "./User/Src/pll.o"
-"./User/Src/user.o"
+"./User/Src/user_exit.o"
+"./User/Src/user_global.o"

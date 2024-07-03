@@ -1,5 +1,5 @@
-#ifndef __USER_H
-#define __USER_H
+#ifndef __USER_GLOBAL_H
+#define __USER_GLOBAL_H
 
 #include "ina228.h"
 

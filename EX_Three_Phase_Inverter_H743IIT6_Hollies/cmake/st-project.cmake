@@ -84,9 +84,13 @@ target_link_options(
 target_sources(
     ${TARGET_NAME} PRIVATE
     "User\\Src\\ad7606.c"
+    "User\\Src\\iir.c"
     "User\\Src\\ina228.c"
     "User\\Src\\oled.c"
-    "User\\Src\\user.c"
+    "User\\Src\\pid.c"
+    "User\\Src\\pll.c"
+    "User\\Src\\user_exit.c"
+    "User\\Src\\user_global.c"
     "Core\\Src\\freertos.c"
     "Core\\Src\\gpio.c"
     "Core\\Src\\i2c.c"

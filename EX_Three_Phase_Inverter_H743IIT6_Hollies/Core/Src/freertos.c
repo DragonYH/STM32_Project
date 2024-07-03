@@ -27,7 +27,7 @@
 /* USER CODE BEGIN Includes */
 #include "oled.h"
 #include "stdio.h"
-#include "user.h"
+#include "user_global.h"
 #include "ad7606.h"
 #include "spi.h"
 #include "tim.h"
@@ -178,21 +178,21 @@ void StartOledShow(void *argument)
   /* Infinite loop */
   for (;;)
   {
-    sprintf((char *)text, "0: %.3f", adcValue[0]);
+    sprintf((char *)text, "0: %6.3f", adcValue[0]);
     OLED_ShowString(0, 0, text, 12);
-    sprintf((char *)text, "1: %.3f", adcValue[1]);
+    sprintf((char *)text, "1: %6.3f", adcValue[1]);
     OLED_ShowString(64, 0, text, 12);
-    sprintf((char *)text, "2: %.3f", adcValue[2]);
+    sprintf((char *)text, "2: %6.3f", adcValue[2]);
     OLED_ShowString(0, 12, text, 12);
-    sprintf((char *)text, "3: %.3f", adcValue[3]);
+    sprintf((char *)text, "3: %6.3f", adcValue[3]);
     OLED_ShowString(64, 12, text, 12);
-    sprintf((char *)text, "4: %.3f", adcValue[4]);
+    sprintf((char *)text, "4: %6.3f", adcValue[4]);
     OLED_ShowString(0, 24, text, 12);
-    sprintf((char *)text, "5: %.3f", adcValue[5]);
+    sprintf((char *)text, "5: %6.3f", adcValue[5]);
     OLED_ShowString(64, 24, text, 12);
-    sprintf((char *)text, "6: %.3f", U);
+    sprintf((char *)text, "6: %6.3f", U);
     OLED_ShowString(0, 36, text, 12);
-    sprintf((char *)text, "7: %.3f", I);
+    sprintf((char *)text, "7: %6.3f", I);
     OLED_ShowString(64, 36, text, 12);
     // 获取当前堆栈剩余空间
     sprintf((char *)text, "stack free: %ld", uxTaskGetStackHighWaterMark(NULL));
@@ -225,12 +225,5 @@ void StartDcSamp(void *argument)
 
 /* Private application code --------------------------------------------------*/
 /* USER CODE BEGIN Application */
-// GPIO触发中断
-void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
-{
-  if (GPIO_Pin == AD7606_BUSY_Pin)
-  {
-    ad7606_GetValue(&hspi2, 8, adcValue);
-  }
-}
+
 /* USER CODE END Application */

@@ -1,9 +1,8 @@
-#include "user.h"
+#include "user_global.h"
 /* AD7606采样数值存储 */
 float adcValue[8] = {0};
 /* ina228配置 */
 static INA228_State INA228_0_state = {
-
     /* 配置和设置 */
     .configRegister = (INA228_config_register_rst_NormalOperation |
                        INA228_config_register_rstacc_NormalOperation |
@@ -36,7 +35,6 @@ static INA228_State INA228_0_state = {
     /* 传感器的I2C总线句柄和地址 */
     .hi2c = &hi2c1,
     .devAddr = 0x80U,
-
 };
 const INA228_Handle INA228_0 = &INA228_0_state;
 float U = 0;
