@@ -38,4 +38,4 @@ static INA228_State INA228_0_state = {
 };
 const INA228_Handle INA228_0 = &INA228_0_state;
 float U = 0;
-float C = 0;
+float I = 0;

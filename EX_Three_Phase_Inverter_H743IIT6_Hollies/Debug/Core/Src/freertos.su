@@ -2,4 +2,4 @@
 ../Core/Src/freertos.c:146:6:StartStateLED	16	static
 ../Core/Src/freertos.c:171:6:StartOledShow	16	static
 ../Core/Src/freertos.c:210:6:StartDcSamp	16	static
-../Core/Src/freertos.c:226:6:HAL_GPIO_EXTI_Callback	16	static
+../Core/Src/freertos.c:229:6:HAL_GPIO_EXTI_Callback	16	static

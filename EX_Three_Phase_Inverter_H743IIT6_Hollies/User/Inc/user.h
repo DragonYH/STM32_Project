@@ -6,6 +6,6 @@
 extern float adcValue[8];
 extern const INA228_Handle INA228_0;
 extern float U;
-extern float C;
+extern float I;
 
 #endif

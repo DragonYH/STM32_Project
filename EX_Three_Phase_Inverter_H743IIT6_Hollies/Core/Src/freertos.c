@@ -57,23 +57,23 @@ uint8_t text[32] = {0};
 /* Definitions for stateLED */
 osThreadId_t stateLEDHandle;
 const osThreadAttr_t stateLED_attributes = {
-    .name = "stateLED",
-    .stack_size = 128 * 4,
-    .priority = (osPriority_t)osPriorityNormal,
+  .name = "stateLED",
+  .stack_size = 128 * 4,
+  .priority = (osPriority_t) osPriorityNormal,
 };
 /* Definitions for oledShow */
 osThreadId_t oledShowHandle;
 const osThreadAttr_t oledShow_attributes = {
-    .name = "oledShow",
-    .stack_size = 512 * 4,
-    .priority = (osPriority_t)osPriorityNormal,
+  .name = "oledShow",
+  .stack_size = 512 * 4,
+  .priority = (osPriority_t) osPriorityNormal,
 };
 /* Definitions for dcSamp */
 osThreadId_t dcSampHandle;
 const osThreadAttr_t dcSamp_attributes = {
-    .name = "dcSamp",
-    .stack_size = 128 * 4,
-    .priority = (osPriority_t)osPriorityLow,
+  .name = "dcSamp",
+  .stack_size = 256 * 4,
+  .priority = (osPriority_t) osPriorityLow,
 };
 
 /* Private function prototypes -----------------------------------------------*/
@@ -88,12 +88,11 @@ void StartDcSamp(void *argument);
 void MX_FREERTOS_Init(void); /* (MISRA C 2004 rule 8.1) */
 
 /**
- * @brief  FreeRTOS initialization
- * @param  None
- * @retval None
- */
-void MX_FREERTOS_Init(void)
-{
+  * @brief  FreeRTOS initialization
+  * @param  None
+  * @retval None
+  */
+void MX_FREERTOS_Init(void) {
   /* USER CODE BEGIN Init */
   OLED_Init();
   ad7606_Init();
@@ -134,6 +133,7 @@ void MX_FREERTOS_Init(void)
   /* USER CODE BEGIN RTOS_EVENTS */
   /* add events, ... */
   /* USER CODE END RTOS_EVENTS */
+
 }
 
 /* USER CODE BEGIN Header_StartStateLED */
@@ -189,11 +189,11 @@ void StartOledShow(void *argument)
     OLED_ShowString(64, 24, text, 12);
     sprintf((char *)text, "6: %.3f", U);
     OLED_ShowString(0, 36, text, 12);
-    sprintf((char *)text, "7: %.3f", C);
+    sprintf((char *)text, "7: %.3f", I);
     OLED_ShowString(64, 36, text, 12);
-    // 获取当前堆栈剩余空间
-    sprintf((char *)text, "stack free: %ld", uxTaskGetStackHighWaterMark(NULL));
-    OLED_ShowString(0, 48, text, 12);
+    // // 获取当前堆栈剩余空间
+    // sprintf((char *)text, "stack free: %ld", uxTaskGetStackHighWaterMark(NULL));
+    // OLED_ShowString(0, 48, text, 12);
     OLED_Refresh();
     osDelay(100);
   }
@@ -214,7 +214,10 @@ void StartDcSamp(void *argument)
   for (;;)
   {
     U = INA228_getVBUS_V(INA228_0);
-    C = INA228_getCURRENT_A(INA228_0);
+    I = INA228_getCURRENT_A(INA228_0);
+    // 获取当前堆栈剩余空间
+    sprintf((char *)text, "stack free: %ld", uxTaskGetStackHighWaterMark(NULL));
+    OLED_ShowString(0, 48, text, 12);
     osDelay(10);
   }
   /* USER CODE END StartDcSamp */
@@ -231,3 +234,4 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
   }
 }
 /* USER CODE END Application */
+
