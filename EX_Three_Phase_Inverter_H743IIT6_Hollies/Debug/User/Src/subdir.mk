@@ -6,20 +6,29 @@
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS += \
 ../User/Src/ad7606.c \
+../User/Src/iir.c \
 ../User/Src/ina228.c \
 ../User/Src/oled.c \
+../User/Src/pid.c \
+../User/Src/pll.c \
 ../User/Src/user.c 
 
 OBJS += \
 ./User/Src/ad7606.o \
+./User/Src/iir.o \
 ./User/Src/ina228.o \
 ./User/Src/oled.o \
+./User/Src/pid.o \
+./User/Src/pll.o \
 ./User/Src/user.o 
 
 C_DEPS += \
 ./User/Src/ad7606.d \
+./User/Src/iir.d \
 ./User/Src/ina228.d \
 ./User/Src/oled.d \
+./User/Src/pid.d \
+./User/Src/pll.d \
 ./User/Src/user.d 
 
 
@@ -30,7 +39,7 @@ User/Src/%.o User/Src/%.su User/Src/%.cyclo: ../User/Src/%.c User/Src/subdir.mk
 clean: clean-User-2f-Src
 
 clean-User-2f-Src:
-	-$(RM) ./User/Src/ad7606.cyclo ./User/Src/ad7606.d ./User/Src/ad7606.o ./User/Src/ad7606.su ./User/Src/ina228.cyclo ./User/Src/ina228.d ./User/Src/ina228.o ./User/Src/ina228.su ./User/Src/oled.cyclo ./User/Src/oled.d ./User/Src/oled.o ./User/Src/oled.su ./User/Src/user.cyclo ./User/Src/user.d ./User/Src/user.o ./User/Src/user.su
+	-$(RM) ./User/Src/ad7606.cyclo ./User/Src/ad7606.d ./User/Src/ad7606.o ./User/Src/ad7606.su ./User/Src/iir.cyclo ./User/Src/iir.d ./User/Src/iir.o ./User/Src/iir.su ./User/Src/ina228.cyclo ./User/Src/ina228.d ./User/Src/ina228.o ./User/Src/ina228.su ./User/Src/oled.cyclo ./User/Src/oled.d ./User/Src/oled.o ./User/Src/oled.su ./User/Src/pid.cyclo ./User/Src/pid.d ./User/Src/pid.o ./User/Src/pid.su ./User/Src/pll.cyclo ./User/Src/pll.d ./User/Src/pll.o ./User/Src/pll.su ./User/Src/user.cyclo ./User/Src/user.d ./User/Src/user.o ./User/Src/user.su
 
 .PHONY: clean-User-2f-Src
 
