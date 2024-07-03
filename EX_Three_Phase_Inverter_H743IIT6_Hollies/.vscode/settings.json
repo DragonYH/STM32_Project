@@ -1,4 +1,14 @@
 {
   "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools",
-  "cmake.configureOnOpen": true
+  "cmake.configureOnOpen": true,
+  "files.associations": {
+    "*.nsp": "json",
+    "*.yml": "yaml",
+    "*.toml": "yaml",
+    "stm32h7xx_hal.h": "c",
+    "stm32h7xx_hal_conf.h": "c",
+    "cmsis_os.h": "c",
+    "freertos.h": "c",
+    "memorymap.h": "c"
+  }
 }
