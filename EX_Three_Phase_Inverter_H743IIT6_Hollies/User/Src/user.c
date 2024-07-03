@@ -15,7 +15,8 @@ static INA228_State INA228_0_state = {
                           INA228_adc_config_register_vshct_150us |
                           INA228_adc_config_register_vtct_150us |
                           INA228_adc_config_register_avg_64),
-    .shuntCalRegister = 0x1000U,
+    // shuntCalRegister = 13107.2 * 1e6 * 预计最大电流 / 524288 * 采样电阻
+    .shuntCalRegister = (uint16_t)(13107.2f * 1e6 * 5.f / 524288.f * 0.02f),
     .shuntTempcoRegister = 0x0000U, /* TEMPCO is 0 ppm/°C */
     .diagAlrtRegister = (INA228_diag_alrt_register_alatch_Transparent |
                          INA228_diag_alrt_register_cnvr_DisableconversionreadyflagonALERTpin |
@@ -29,7 +30,8 @@ static INA228_State INA228_0_state = {
     .pwrLimitRegister = 0xFFFFU,
 
     .adcrange = INA228_config_register_adcrange_16384mV,
-    .currentlsb = 0,
+    // currentlsb = 预计最大电流 / 524288
+    .currentlsb = 5.f / 524288.f,
 
     /* 传感器的I2C总线句柄和地址 */
     .hi2c = &hi2c1,

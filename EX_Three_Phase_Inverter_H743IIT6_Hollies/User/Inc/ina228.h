@@ -208,7 +208,6 @@ typedef struct INA228_State
   I2C_HandleTypeDef *hi2c; // I2C总线句柄
   uint8_t devAddr;         // 传感器在I2C总线上的地址
 
-  uint16_t osWait; // 单次转换时间（毫秒）
 } INA228_State;
 
 /*
