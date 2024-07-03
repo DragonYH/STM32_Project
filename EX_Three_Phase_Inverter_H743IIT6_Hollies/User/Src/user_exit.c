@@ -3,7 +3,7 @@
 #include "spi.h"
 #include "user_global.h"
 #include "tim.h"
-#include "stm32h743xx.h"
+// #include "stm32h743xx.h"
 
 /**
  * @brief  GPIO触发中断
@@ -24,8 +24,4 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
     {
         HAL_IncTick();
     }
-    // if (htim->Instance == TIM2)
-    // {
-    //     ad7606_Start(&htim2, 8);
-    // }
 }
