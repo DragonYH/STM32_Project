@@ -31,6 +31,8 @@
 #include "ad7606.h"
 #include "spi.h"
 #include "tim.h"
+#include "gpio.h"
+#include "ina228.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -66,6 +68,13 @@ const osThreadAttr_t oledShow_attributes = {
     .stack_size = 512 * 4,
     .priority = (osPriority_t)osPriorityNormal,
 };
+/* Definitions for dcSamp */
+osThreadId_t dcSampHandle;
+const osThreadAttr_t dcSamp_attributes = {
+    .name = "dcSamp",
+    .stack_size = 128 * 4,
+    .priority = (osPriority_t)osPriorityLow,
+};
 
 /* Private function prototypes -----------------------------------------------*/
 /* USER CODE BEGIN FunctionPrototypes */
@@ -74,6 +83,7 @@ const osThreadAttr_t oledShow_attributes = {
 
 void StartStateLED(void *argument);
 void StartOledShow(void *argument);
+void StartDcSamp(void *argument);
 
 void MX_FREERTOS_Init(void); /* (MISRA C 2004 rule 8.1) */
 
@@ -87,6 +97,7 @@ void MX_FREERTOS_Init(void)
   /* USER CODE BEGIN Init */
   OLED_Init();
   ad7606_Init();
+  INA228_config(INA228_0);
   ad7606_Start(&htim2, TIM_CHANNEL_1);
   /* USER CODE END Init */
 
@@ -112,6 +123,9 @@ void MX_FREERTOS_Init(void)
 
   /* creation of oledShow */
   oledShowHandle = osThreadNew(StartOledShow, NULL, &oledShow_attributes);
+
+  /* creation of dcSamp */
+  dcSampHandle = osThreadNew(StartDcSamp, NULL, &dcSamp_attributes);
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
@@ -173,9 +187,9 @@ void StartOledShow(void *argument)
     OLED_ShowString(0, 24, text, 12);
     sprintf((char *)text, "5: %.3f", adcValue[5]);
     OLED_ShowString(64, 24, text, 12);
-    sprintf((char *)text, "6: %.3f", adcValue[6]);
+    sprintf((char *)text, "6: %.3f", U);
     OLED_ShowString(0, 36, text, 12);
-    sprintf((char *)text, "7: %.3f", adcValue[7]);
+    sprintf((char *)text, "7: %.3f", C);
     OLED_ShowString(64, 36, text, 12);
     // 获取当前堆栈剩余空间
     sprintf((char *)text, "stack free: %ld", uxTaskGetStackHighWaterMark(NULL));
@@ -184,6 +198,26 @@ void StartOledShow(void *argument)
     osDelay(100);
   }
   /* USER CODE END StartOledShow */
+}
+
+/* USER CODE BEGIN Header_StartDcSamp */
+/**
+ * @brief Function implementing the dcSamp thread.
+ * @param argument: Not used
+ * @retval None
+ */
+/* USER CODE END Header_StartDcSamp */
+void StartDcSamp(void *argument)
+{
+  /* USER CODE BEGIN StartDcSamp */
+  /* Infinite loop */
+  for (;;)
+  {
+    U = INA228_getVBUS_V(INA228_0);
+    C = INA228_getCURRENT_A(INA228_0);
+    osDelay(10);
+  }
+  /* USER CODE END StartDcSamp */
 }
 
 /* Private application code --------------------------------------------------*/

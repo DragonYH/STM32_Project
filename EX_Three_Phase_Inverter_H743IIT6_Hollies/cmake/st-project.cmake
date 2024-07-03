@@ -80,10 +80,12 @@ target_link_options(
 target_sources(
     ${TARGET_NAME} PRIVATE
     "User\\Src\\ad7606.c"
+    "User\\Src\\ina228.c"
     "User\\Src\\oled.c"
     "User\\Src\\user.c"
     "Core\\Src\\freertos.c"
     "Core\\Src\\gpio.c"
+    "Core\\Src\\i2c.c"
     "Core\\Src\\main.c"
     "Core\\Src\\memorymap.c"
     "Core\\Src\\spi.c"
