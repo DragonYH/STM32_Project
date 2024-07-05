@@ -1,15 +1,15 @@
 Archive member included to satisfy reference by file (symbol)
 
 D:\User\Document\STM32_Project\EX_Three_Phase_Inverter_H743IIT6_Hollies\Drivers\CMSIS\DSP\Lib\GCC\libarm_cortexM7lfdp_math.a(arm_sin_f32.o)
-                              ./User/Src/pll.o (arm_sin_f32)
+                              ./User/Src/three_phrase_pll.o (arm_sin_f32)
 D:\User\Document\STM32_Project\EX_Three_Phase_Inverter_H743IIT6_Hollies\Drivers\CMSIS\DSP\Lib\GCC\libarm_cortexM7lfdp_math.a(arm_cos_f32.o)
-                              ./User/Src/pll.o (arm_cos_f32)
+                              ./User/Src/three_phrase_pll.o (arm_cos_f32)
 D:\User\Document\STM32_Project\EX_Three_Phase_Inverter_H743IIT6_Hollies\Drivers\CMSIS\DSP\Lib\GCC\libarm_cortexM7lfdp_math.a(arm_common_tables.o)
                               D:\User\Document\STM32_Project\EX_Three_Phase_Inverter_H743IIT6_Hollies\Drivers\CMSIS\DSP\Lib\GCC\libarm_cortexM7lfdp_math.a(arm_sin_f32.o) (sinTable_f32)
 C:/ST/STM32CubeIDE_1.14.1/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.12.3.rel1.win32_1.0.200.202406191623/tools/bin/../lib/gcc/arm-none-eabi/12.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+dp/hard\libc_nano.a(libc_a-exit.o)
                               C:/ST/STM32CubeIDE_1.14.1/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.12.3.rel1.win32_1.0.200.202406191623/tools/bin/../lib/gcc/arm-none-eabi/12.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+dp/hard/crt0.o (exit)
 C:/ST/STM32CubeIDE_1.14.1/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.12.3.rel1.win32_1.0.200.202406191623/tools/bin/../lib/gcc/arm-none-eabi/12.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+dp/hard\libc_nano.a(libc_a-malloc.o)
-                              ./User/Src/pll.o (malloc)
+                              ./User/Src/three_phrase_pll.o (malloc)
 C:/ST/STM32CubeIDE_1.14.1/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.12.3.rel1.win32_1.0.200.202406191623/tools/bin/../lib/gcc/arm-none-eabi/12.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+dp/hard\libc_nano.a(libc_a-mallocr.o)
                               C:/ST/STM32CubeIDE_1.14.1/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.12.3.rel1.win32_1.0.200.202406191623/tools/bin/../lib/gcc/arm-none-eabi/12.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+dp/hard\libc_nano.a(libc_a-malloc.o) (_malloc_r)
 C:/ST/STM32CubeIDE_1.14.1/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.12.3.rel1.win32_1.0.200.202406191623/tools/bin/../lib/gcc/arm-none-eabi/12.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+dp/hard\libc_nano.a(libc_a-mlock.o)
@@ -109,11 +109,11 @@ C:/ST/STM32CubeIDE_1.14.1/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.external
 C:/ST/STM32CubeIDE_1.14.1/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.12.3.rel1.win32_1.0.200.202406191623/tools/bin/../lib/gcc/arm-none-eabi/12.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+dp/hard\libc_nano.a(libc_a-isattyr.o)
                               C:/ST/STM32CubeIDE_1.14.1/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.12.3.rel1.win32_1.0.200.202406191623/tools/bin/../lib/gcc/arm-none-eabi/12.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+dp/hard\libc_nano.a(libc_a-makebuf.o) (_isatty_r)
 C:/ST/STM32CubeIDE_1.14.1/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.12.3.rel1.win32_1.0.200.202406191623/tools/bin/../lib/gcc/arm-none-eabi/12.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+dp/hard\libm.a(libm_a-w_fmod.o)
-                              ./User/Src/pll.o (fmod)
+                              ./User/Src/three_phrase_pll.o (fmod)
 C:/ST/STM32CubeIDE_1.14.1/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.12.3.rel1.win32_1.0.200.202406191623/tools/bin/../lib/gcc/arm-none-eabi/12.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+dp/hard\libm.a(libm_a-w_sqrt.o)
-                              ./User/Src/pll.o (sqrt)
+                              ./User/Src/three_phrase_pll.o (sqrt)
 C:/ST/STM32CubeIDE_1.14.1/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.12.3.rel1.win32_1.0.200.202406191623/tools/bin/../lib/gcc/arm-none-eabi/12.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+dp/hard\libm.a(libm_a-wf_acos.o)
-                              ./User/Src/pll.o (acosf)
+                              ./User/Src/three_phrase_pll.o (acosf)
 C:/ST/STM32CubeIDE_1.14.1/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.12.3.rel1.win32_1.0.200.202406191623/tools/bin/../lib/gcc/arm-none-eabi/12.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+dp/hard\libm.a(libm_a-sf_fabs.o)
                               C:/ST/STM32CubeIDE_1.14.1/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.12.3.rel1.win32_1.0.200.202406191623/tools/bin/../lib/gcc/arm-none-eabi/12.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+dp/hard\libm.a(libm_a-wf_acos.o) (fabsf)
 C:/ST/STM32CubeIDE_1.14.1/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.12.3.rel1.win32_1.0.200.202406191623/tools/bin/../lib/gcc/arm-none-eabi/12.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+dp/hard\libm.a(libm_a-sf_nan.o)
@@ -7108,188 +7108,205 @@ Discarded input sections
  .debug_frame   0x00000000       0x60 ./User/Src/pid.o
  .ARM.attributes
                 0x00000000       0x32 ./User/Src/pid.o
- .group         0x00000000        0xc ./User/Src/pll.o
- .group         0x00000000        0xc ./User/Src/pll.o
- .group         0x00000000        0xc ./User/Src/pll.o
- .group         0x00000000        0xc ./User/Src/pll.o
- .group         0x00000000        0xc ./User/Src/pll.o
- .group         0x00000000        0xc ./User/Src/pll.o
- .group         0x00000000        0xc ./User/Src/pll.o
- .group         0x00000000        0xc ./User/Src/pll.o
- .group         0x00000000        0xc ./User/Src/pll.o
- .group         0x00000000        0xc ./User/Src/pll.o
- .group         0x00000000        0xc ./User/Src/pll.o
- .group         0x00000000        0xc ./User/Src/pll.o
- .group         0x00000000        0xc ./User/Src/pll.o
- .group         0x00000000        0xc ./User/Src/pll.o
- .group         0x00000000        0xc ./User/Src/pll.o
- .group         0x00000000        0xc ./User/Src/pll.o
- .group         0x00000000        0xc ./User/Src/pll.o
- .group         0x00000000        0xc ./User/Src/pll.o
- .group         0x00000000        0xc ./User/Src/pll.o
- .group         0x00000000        0xc ./User/Src/pll.o
- .group         0x00000000        0xc ./User/Src/pll.o
- .group         0x00000000        0xc ./User/Src/pll.o
- .group         0x00000000        0xc ./User/Src/pll.o
- .group         0x00000000        0xc ./User/Src/pll.o
- .group         0x00000000        0xc ./User/Src/pll.o
- .group         0x00000000        0xc ./User/Src/pll.o
- .group         0x00000000        0xc ./User/Src/pll.o
- .group         0x00000000        0xc ./User/Src/pll.o
- .group         0x00000000        0xc ./User/Src/pll.o
- .group         0x00000000        0xc ./User/Src/pll.o
- .group         0x00000000        0xc ./User/Src/pll.o
- .group         0x00000000        0xc ./User/Src/pll.o
- .group         0x00000000        0xc ./User/Src/pll.o
- .group         0x00000000        0xc ./User/Src/pll.o
- .group         0x00000000        0xc ./User/Src/pll.o
- .group         0x00000000        0xc ./User/Src/pll.o
- .group         0x00000000        0xc ./User/Src/pll.o
- .group         0x00000000        0xc ./User/Src/pll.o
- .group         0x00000000        0xc ./User/Src/pll.o
- .group         0x00000000        0xc ./User/Src/pll.o
- .group         0x00000000        0xc ./User/Src/pll.o
- .group         0x00000000        0xc ./User/Src/pll.o
- .group         0x00000000        0xc ./User/Src/pll.o
- .group         0x00000000        0xc ./User/Src/pll.o
- .group         0x00000000        0xc ./User/Src/pll.o
- .group         0x00000000        0xc ./User/Src/pll.o
- .group         0x00000000        0xc ./User/Src/pll.o
- .group         0x00000000        0xc ./User/Src/pll.o
- .group         0x00000000        0xc ./User/Src/pll.o
- .group         0x00000000        0xc ./User/Src/pll.o
- .group         0x00000000        0xc ./User/Src/pll.o
- .group         0x00000000        0xc ./User/Src/pll.o
- .group         0x00000000        0xc ./User/Src/pll.o
- .group         0x00000000        0xc ./User/Src/pll.o
- .group         0x00000000        0xc ./User/Src/pll.o
- .group         0x00000000        0xc ./User/Src/pll.o
- .group         0x00000000        0xc ./User/Src/pll.o
- .group         0x00000000        0xc ./User/Src/pll.o
- .group         0x00000000        0xc ./User/Src/pll.o
- .group         0x00000000        0xc ./User/Src/pll.o
- .group         0x00000000        0xc ./User/Src/pll.o
- .group         0x00000000        0xc ./User/Src/pll.o
- .group         0x00000000        0xc ./User/Src/pll.o
- .group         0x00000000        0xc ./User/Src/pll.o
- .group         0x00000000        0xc ./User/Src/pll.o
- .group         0x00000000        0xc ./User/Src/pll.o
- .group         0x00000000        0xc ./User/Src/pll.o
- .group         0x00000000        0xc ./User/Src/pll.o
- .group         0x00000000        0xc ./User/Src/pll.o
- .group         0x00000000        0xc ./User/Src/pll.o
- .group         0x00000000        0xc ./User/Src/pll.o
- .group         0x00000000        0xc ./User/Src/pll.o
- .group         0x00000000        0xc ./User/Src/pll.o
- .group         0x00000000        0xc ./User/Src/pll.o
- .text          0x00000000        0x0 ./User/Src/pll.o
- .data          0x00000000        0x0 ./User/Src/pll.o
- .bss           0x00000000        0x0 ./User/Src/pll.o
- .text.pll_Init_V
-                0x00000000      0x2cc ./User/Src/pll.o
- .text.pll_Init_I
-                0x00000000      0x29c ./User/Src/pll.o
- .text.pll_Control_V
-                0x00000000      0x140 ./User/Src/pll.o
- .text.pll_Control_I
-                0x00000000      0x2f4 ./User/Src/pll.o
- .text.pll_Sogi
-                0x00000000      0x102 ./User/Src/pll.o
- .text.pll_Free_V
-                0x00000000       0x2a ./User/Src/pll.o
- .text.pll_Free_I
-                0x00000000       0x34 ./User/Src/pll.o
- .bss.PFTheta.2
-                0x00000000        0x4 ./User/Src/pll.o
- .bss.Uabd.1    0x00000000        0x4 ./User/Src/pll.o
- .bss.Uabq.0    0x00000000        0x4 ./User/Src/pll.o
- .debug_info    0x00000000      0x777 ./User/Src/pll.o
- .debug_abbrev  0x00000000      0x215 ./User/Src/pll.o
+ .group         0x00000000        0xc ./User/Src/svpwm.o
+ .text          0x00000000        0x0 ./User/Src/svpwm.o
+ .data          0x00000000        0x0 ./User/Src/svpwm.o
+ .bss           0x00000000        0x0 ./User/Src/svpwm.o
+ .debug_info    0x00000000       0x22 ./User/Src/svpwm.o
+ .debug_abbrev  0x00000000       0x12 ./User/Src/svpwm.o
  .debug_aranges
-                0x00000000       0x50 ./User/Src/pll.o
- .debug_rnglists
-                0x00000000       0x3c ./User/Src/pll.o
- .debug_macro   0x00000000      0x388 ./User/Src/pll.o
- .debug_macro   0x00000000      0xad2 ./User/Src/pll.o
- .debug_macro   0x00000000       0x16 ./User/Src/pll.o
- .debug_macro   0x00000000      0x238 ./User/Src/pll.o
- .debug_macro   0x00000000       0x2e ./User/Src/pll.o
- .debug_macro   0x00000000       0x3b ./User/Src/pll.o
- .debug_macro   0x00000000       0x22 ./User/Src/pll.o
- .debug_macro   0x00000000       0x8e ./User/Src/pll.o
- .debug_macro   0x00000000       0x51 ./User/Src/pll.o
- .debug_macro   0x00000000      0x103 ./User/Src/pll.o
- .debug_macro   0x00000000       0x6a ./User/Src/pll.o
- .debug_macro   0x00000000      0x1df ./User/Src/pll.o
- .debug_macro   0x00000000       0x1c ./User/Src/pll.o
- .debug_macro   0x00000000       0x22 ./User/Src/pll.o
- .debug_macro   0x00000000       0xfb ./User/Src/pll.o
- .debug_macro   0x00000000     0x1305 ./User/Src/pll.o
- .debug_macro   0x00000000      0x11f ./User/Src/pll.o
- .debug_macro   0x00000000       0x27 ./User/Src/pll.o
- .debug_macro   0x00000000    0x258f9 ./User/Src/pll.o
- .debug_macro   0x00000000       0x6d ./User/Src/pll.o
- .debug_macro   0x00000000     0x3d79 ./User/Src/pll.o
- .debug_macro   0x00000000      0x189 ./User/Src/pll.o
- .debug_macro   0x00000000       0x61 ./User/Src/pll.o
- .debug_macro   0x00000000       0x29 ./User/Src/pll.o
- .debug_macro   0x00000000       0x43 ./User/Src/pll.o
- .debug_macro   0x00000000       0x34 ./User/Src/pll.o
- .debug_macro   0x00000000       0x16 ./User/Src/pll.o
- .debug_macro   0x00000000       0x43 ./User/Src/pll.o
- .debug_macro   0x00000000       0x34 ./User/Src/pll.o
- .debug_macro   0x00000000       0x10 ./User/Src/pll.o
- .debug_macro   0x00000000       0x58 ./User/Src/pll.o
- .debug_macro   0x00000000       0x8e ./User/Src/pll.o
- .debug_macro   0x00000000       0x1c ./User/Src/pll.o
- .debug_macro   0x00000000      0x177 ./User/Src/pll.o
- .debug_macro   0x00000000      0x369 ./User/Src/pll.o
- .debug_macro   0x00000000      0x19b ./User/Src/pll.o
- .debug_macro   0x00000000       0x5d ./User/Src/pll.o
- .debug_macro   0x00000000     0x2382 ./User/Src/pll.o
- .debug_macro   0x00000000     0x102c ./User/Src/pll.o
- .debug_macro   0x00000000      0x154 ./User/Src/pll.o
- .debug_macro   0x00000000      0x114 ./User/Src/pll.o
- .debug_macro   0x00000000      0x3b6 ./User/Src/pll.o
- .debug_macro   0x00000000       0xac ./User/Src/pll.o
- .debug_macro   0x00000000      0x72d ./User/Src/pll.o
- .debug_macro   0x00000000      0x228 ./User/Src/pll.o
- .debug_macro   0x00000000       0x66 ./User/Src/pll.o
- .debug_macro   0x00000000      0x3bb ./User/Src/pll.o
- .debug_macro   0x00000000      0x3e4 ./User/Src/pll.o
- .debug_macro   0x00000000      0x275 ./User/Src/pll.o
- .debug_macro   0x00000000      0x3ca ./User/Src/pll.o
- .debug_macro   0x00000000      0x408 ./User/Src/pll.o
- .debug_macro   0x00000000       0x51 ./User/Src/pll.o
- .debug_macro   0x00000000       0x4a ./User/Src/pll.o
- .debug_macro   0x00000000      0x22c ./User/Src/pll.o
- .debug_macro   0x00000000       0x67 ./User/Src/pll.o
- .debug_macro   0x00000000       0xa5 ./User/Src/pll.o
- .debug_macro   0x00000000      0x1c4 ./User/Src/pll.o
- .debug_macro   0x00000000      0x25e ./User/Src/pll.o
- .debug_macro   0x00000000       0x35 ./User/Src/pll.o
- .debug_macro   0x00000000      0x5e4 ./User/Src/pll.o
- .debug_macro   0x00000000       0xc1 ./User/Src/pll.o
- .debug_macro   0x00000000      0xafa ./User/Src/pll.o
- .debug_macro   0x00000000      0x29f ./User/Src/pll.o
- .debug_macro   0x00000000      0x5a0 ./User/Src/pll.o
- .debug_macro   0x00000000       0x6a ./User/Src/pll.o
- .debug_macro   0x00000000       0x16 ./User/Src/pll.o
- .debug_macro   0x00000000       0x35 ./User/Src/pll.o
- .debug_macro   0x00000000       0x20 ./User/Src/pll.o
- .debug_macro   0x00000000      0x201 ./User/Src/pll.o
- .debug_macro   0x00000000       0xc8 ./User/Src/pll.o
- .debug_macro   0x00000000       0x16 ./User/Src/pll.o
- .debug_macro   0x00000000       0x16 ./User/Src/pll.o
- .debug_macro   0x00000000       0x29 ./User/Src/pll.o
- .debug_macro   0x00000000       0x10 ./User/Src/pll.o
- .debug_macro   0x00000000       0x3c ./User/Src/pll.o
- .debug_line    0x00000000      0xf7b ./User/Src/pll.o
- .debug_str     0x00000000   0x15adc0 ./User/Src/pll.o
- .comment       0x00000000       0x44 ./User/Src/pll.o
- .debug_frame   0x00000000      0x14c ./User/Src/pll.o
+                0x00000000       0x18 ./User/Src/svpwm.o
+ .debug_macro   0x00000000       0x11 ./User/Src/svpwm.o
+ .debug_macro   0x00000000      0xad2 ./User/Src/svpwm.o
+ .debug_line    0x00000000       0x34 ./User/Src/svpwm.o
+ .debug_str     0x00000000     0x2e61 ./User/Src/svpwm.o
+ .comment       0x00000000       0x44 ./User/Src/svpwm.o
  .ARM.attributes
-                0x00000000       0x32 ./User/Src/pll.o
+                0x00000000       0x32 ./User/Src/svpwm.o
+ .group         0x00000000        0xc ./User/Src/three_phrase_pll.o
+ .group         0x00000000        0xc ./User/Src/three_phrase_pll.o
+ .group         0x00000000        0xc ./User/Src/three_phrase_pll.o
+ .group         0x00000000        0xc ./User/Src/three_phrase_pll.o
+ .group         0x00000000        0xc ./User/Src/three_phrase_pll.o
+ .group         0x00000000        0xc ./User/Src/three_phrase_pll.o
+ .group         0x00000000        0xc ./User/Src/three_phrase_pll.o
+ .group         0x00000000        0xc ./User/Src/three_phrase_pll.o
+ .group         0x00000000        0xc ./User/Src/three_phrase_pll.o
+ .group         0x00000000        0xc ./User/Src/three_phrase_pll.o
+ .group         0x00000000        0xc ./User/Src/three_phrase_pll.o
+ .group         0x00000000        0xc ./User/Src/three_phrase_pll.o
+ .group         0x00000000        0xc ./User/Src/three_phrase_pll.o
+ .group         0x00000000        0xc ./User/Src/three_phrase_pll.o
+ .group         0x00000000        0xc ./User/Src/three_phrase_pll.o
+ .group         0x00000000        0xc ./User/Src/three_phrase_pll.o
+ .group         0x00000000        0xc ./User/Src/three_phrase_pll.o
+ .group         0x00000000        0xc ./User/Src/three_phrase_pll.o
+ .group         0x00000000        0xc ./User/Src/three_phrase_pll.o
+ .group         0x00000000        0xc ./User/Src/three_phrase_pll.o
+ .group         0x00000000        0xc ./User/Src/three_phrase_pll.o
+ .group         0x00000000        0xc ./User/Src/three_phrase_pll.o
+ .group         0x00000000        0xc ./User/Src/three_phrase_pll.o
+ .group         0x00000000        0xc ./User/Src/three_phrase_pll.o
+ .group         0x00000000        0xc ./User/Src/three_phrase_pll.o
+ .group         0x00000000        0xc ./User/Src/three_phrase_pll.o
+ .group         0x00000000        0xc ./User/Src/three_phrase_pll.o
+ .group         0x00000000        0xc ./User/Src/three_phrase_pll.o
+ .group         0x00000000        0xc ./User/Src/three_phrase_pll.o
+ .group         0x00000000        0xc ./User/Src/three_phrase_pll.o
+ .group         0x00000000        0xc ./User/Src/three_phrase_pll.o
+ .group         0x00000000        0xc ./User/Src/three_phrase_pll.o
+ .group         0x00000000        0xc ./User/Src/three_phrase_pll.o
+ .group         0x00000000        0xc ./User/Src/three_phrase_pll.o
+ .group         0x00000000        0xc ./User/Src/three_phrase_pll.o
+ .group         0x00000000        0xc ./User/Src/three_phrase_pll.o
+ .group         0x00000000        0xc ./User/Src/three_phrase_pll.o
+ .group         0x00000000        0xc ./User/Src/three_phrase_pll.o
+ .group         0x00000000        0xc ./User/Src/three_phrase_pll.o
+ .group         0x00000000        0xc ./User/Src/three_phrase_pll.o
+ .group         0x00000000        0xc ./User/Src/three_phrase_pll.o
+ .group         0x00000000        0xc ./User/Src/three_phrase_pll.o
+ .group         0x00000000        0xc ./User/Src/three_phrase_pll.o
+ .group         0x00000000        0xc ./User/Src/three_phrase_pll.o
+ .group         0x00000000        0xc ./User/Src/three_phrase_pll.o
+ .group         0x00000000        0xc ./User/Src/three_phrase_pll.o
+ .group         0x00000000        0xc ./User/Src/three_phrase_pll.o
+ .group         0x00000000        0xc ./User/Src/three_phrase_pll.o
+ .group         0x00000000        0xc ./User/Src/three_phrase_pll.o
+ .group         0x00000000        0xc ./User/Src/three_phrase_pll.o
+ .group         0x00000000        0xc ./User/Src/three_phrase_pll.o
+ .group         0x00000000        0xc ./User/Src/three_phrase_pll.o
+ .group         0x00000000        0xc ./User/Src/three_phrase_pll.o
+ .group         0x00000000        0xc ./User/Src/three_phrase_pll.o
+ .group         0x00000000        0xc ./User/Src/three_phrase_pll.o
+ .group         0x00000000        0xc ./User/Src/three_phrase_pll.o
+ .group         0x00000000        0xc ./User/Src/three_phrase_pll.o
+ .group         0x00000000        0xc ./User/Src/three_phrase_pll.o
+ .group         0x00000000        0xc ./User/Src/three_phrase_pll.o
+ .group         0x00000000        0xc ./User/Src/three_phrase_pll.o
+ .group         0x00000000        0xc ./User/Src/three_phrase_pll.o
+ .group         0x00000000        0xc ./User/Src/three_phrase_pll.o
+ .group         0x00000000        0xc ./User/Src/three_phrase_pll.o
+ .group         0x00000000        0xc ./User/Src/three_phrase_pll.o
+ .group         0x00000000        0xc ./User/Src/three_phrase_pll.o
+ .group         0x00000000        0xc ./User/Src/three_phrase_pll.o
+ .group         0x00000000        0xc ./User/Src/three_phrase_pll.o
+ .group         0x00000000        0xc ./User/Src/three_phrase_pll.o
+ .group         0x00000000        0xc ./User/Src/three_phrase_pll.o
+ .group         0x00000000        0xc ./User/Src/three_phrase_pll.o
+ .group         0x00000000        0xc ./User/Src/three_phrase_pll.o
+ .group         0x00000000        0xc ./User/Src/three_phrase_pll.o
+ .group         0x00000000        0xc ./User/Src/three_phrase_pll.o
+ .group         0x00000000        0xc ./User/Src/three_phrase_pll.o
+ .text          0x00000000        0x0 ./User/Src/three_phrase_pll.o
+ .data          0x00000000        0x0 ./User/Src/three_phrase_pll.o
+ .bss           0x00000000        0x0 ./User/Src/three_phrase_pll.o
+ .text.pll_Init_V
+                0x00000000      0x140 ./User/Src/three_phrase_pll.o
+ .text.pll_Init_I
+                0x00000000      0x110 ./User/Src/three_phrase_pll.o
+ .text.pll_Control_V
+                0x00000000      0x144 ./User/Src/three_phrase_pll.o
+ .text.pll_Control_I
+                0x00000000      0x308 ./User/Src/three_phrase_pll.o
+ .text.pll_Clarke
+                0x00000000       0x64 ./User/Src/three_phrase_pll.o
+ .text.pll_Inv_Clarke
+                0x00000000       0x78 ./User/Src/three_phrase_pll.o
+ .text.pll_Free_V
+                0x00000000       0x2a ./User/Src/three_phrase_pll.o
+ .text.pll_Free_I
+                0x00000000       0x34 ./User/Src/three_phrase_pll.o
+ .bss.PFTheta.2
+                0x00000000        0x4 ./User/Src/three_phrase_pll.o
+ .bss.Uabd.1    0x00000000        0x4 ./User/Src/three_phrase_pll.o
+ .bss.Uabq.0    0x00000000        0x4 ./User/Src/three_phrase_pll.o
+ .debug_info    0x00000000      0x711 ./User/Src/three_phrase_pll.o
+ .debug_abbrev  0x00000000      0x217 ./User/Src/three_phrase_pll.o
+ .debug_aranges
+                0x00000000       0x58 ./User/Src/three_phrase_pll.o
+ .debug_rnglists
+                0x00000000       0x41 ./User/Src/three_phrase_pll.o
+ .debug_macro   0x00000000      0x382 ./User/Src/three_phrase_pll.o
+ .debug_macro   0x00000000      0xad2 ./User/Src/three_phrase_pll.o
+ .debug_macro   0x00000000       0x16 ./User/Src/three_phrase_pll.o
+ .debug_macro   0x00000000      0x238 ./User/Src/three_phrase_pll.o
+ .debug_macro   0x00000000       0x2e ./User/Src/three_phrase_pll.o
+ .debug_macro   0x00000000       0x3b ./User/Src/three_phrase_pll.o
+ .debug_macro   0x00000000       0x22 ./User/Src/three_phrase_pll.o
+ .debug_macro   0x00000000       0x8e ./User/Src/three_phrase_pll.o
+ .debug_macro   0x00000000       0x51 ./User/Src/three_phrase_pll.o
+ .debug_macro   0x00000000      0x103 ./User/Src/three_phrase_pll.o
+ .debug_macro   0x00000000       0x6a ./User/Src/three_phrase_pll.o
+ .debug_macro   0x00000000      0x1df ./User/Src/three_phrase_pll.o
+ .debug_macro   0x00000000       0x1c ./User/Src/three_phrase_pll.o
+ .debug_macro   0x00000000       0x22 ./User/Src/three_phrase_pll.o
+ .debug_macro   0x00000000       0xfb ./User/Src/three_phrase_pll.o
+ .debug_macro   0x00000000     0x1305 ./User/Src/three_phrase_pll.o
+ .debug_macro   0x00000000      0x11f ./User/Src/three_phrase_pll.o
+ .debug_macro   0x00000000       0x27 ./User/Src/three_phrase_pll.o
+ .debug_macro   0x00000000    0x258f9 ./User/Src/three_phrase_pll.o
+ .debug_macro   0x00000000       0x6d ./User/Src/three_phrase_pll.o
+ .debug_macro   0x00000000     0x3d79 ./User/Src/three_phrase_pll.o
+ .debug_macro   0x00000000      0x189 ./User/Src/three_phrase_pll.o
+ .debug_macro   0x00000000       0x61 ./User/Src/three_phrase_pll.o
+ .debug_macro   0x00000000       0x29 ./User/Src/three_phrase_pll.o
+ .debug_macro   0x00000000       0x43 ./User/Src/three_phrase_pll.o
+ .debug_macro   0x00000000       0x34 ./User/Src/three_phrase_pll.o
+ .debug_macro   0x00000000       0x16 ./User/Src/three_phrase_pll.o
+ .debug_macro   0x00000000       0x43 ./User/Src/three_phrase_pll.o
+ .debug_macro   0x00000000       0x34 ./User/Src/three_phrase_pll.o
+ .debug_macro   0x00000000       0x10 ./User/Src/three_phrase_pll.o
+ .debug_macro   0x00000000       0x58 ./User/Src/three_phrase_pll.o
+ .debug_macro   0x00000000       0x8e ./User/Src/three_phrase_pll.o
+ .debug_macro   0x00000000       0x1c ./User/Src/three_phrase_pll.o
+ .debug_macro   0x00000000      0x177 ./User/Src/three_phrase_pll.o
+ .debug_macro   0x00000000      0x369 ./User/Src/three_phrase_pll.o
+ .debug_macro   0x00000000      0x19b ./User/Src/three_phrase_pll.o
+ .debug_macro   0x00000000       0x5d ./User/Src/three_phrase_pll.o
+ .debug_macro   0x00000000     0x2382 ./User/Src/three_phrase_pll.o
+ .debug_macro   0x00000000     0x102c ./User/Src/three_phrase_pll.o
+ .debug_macro   0x00000000      0x154 ./User/Src/three_phrase_pll.o
+ .debug_macro   0x00000000      0x114 ./User/Src/three_phrase_pll.o
+ .debug_macro   0x00000000      0x3b6 ./User/Src/three_phrase_pll.o
+ .debug_macro   0x00000000       0xac ./User/Src/three_phrase_pll.o
+ .debug_macro   0x00000000      0x72d ./User/Src/three_phrase_pll.o
+ .debug_macro   0x00000000      0x228 ./User/Src/three_phrase_pll.o
+ .debug_macro   0x00000000       0x66 ./User/Src/three_phrase_pll.o
+ .debug_macro   0x00000000      0x3bb ./User/Src/three_phrase_pll.o
+ .debug_macro   0x00000000      0x3e4 ./User/Src/three_phrase_pll.o
+ .debug_macro   0x00000000      0x275 ./User/Src/three_phrase_pll.o
+ .debug_macro   0x00000000      0x3ca ./User/Src/three_phrase_pll.o
+ .debug_macro   0x00000000      0x408 ./User/Src/three_phrase_pll.o
+ .debug_macro   0x00000000       0x51 ./User/Src/three_phrase_pll.o
+ .debug_macro   0x00000000       0x4a ./User/Src/three_phrase_pll.o
+ .debug_macro   0x00000000      0x22c ./User/Src/three_phrase_pll.o
+ .debug_macro   0x00000000       0x67 ./User/Src/three_phrase_pll.o
+ .debug_macro   0x00000000       0xa5 ./User/Src/three_phrase_pll.o
+ .debug_macro   0x00000000      0x1c4 ./User/Src/three_phrase_pll.o
+ .debug_macro   0x00000000      0x25e ./User/Src/three_phrase_pll.o
+ .debug_macro   0x00000000       0x35 ./User/Src/three_phrase_pll.o
+ .debug_macro   0x00000000      0x5e4 ./User/Src/three_phrase_pll.o
+ .debug_macro   0x00000000       0xc1 ./User/Src/three_phrase_pll.o
+ .debug_macro   0x00000000      0xafa ./User/Src/three_phrase_pll.o
+ .debug_macro   0x00000000      0x29f ./User/Src/three_phrase_pll.o
+ .debug_macro   0x00000000      0x5a0 ./User/Src/three_phrase_pll.o
+ .debug_macro   0x00000000       0x6a ./User/Src/three_phrase_pll.o
+ .debug_macro   0x00000000       0x16 ./User/Src/three_phrase_pll.o
+ .debug_macro   0x00000000       0x35 ./User/Src/three_phrase_pll.o
+ .debug_macro   0x00000000       0x20 ./User/Src/three_phrase_pll.o
+ .debug_macro   0x00000000      0x201 ./User/Src/three_phrase_pll.o
+ .debug_macro   0x00000000       0xc8 ./User/Src/three_phrase_pll.o
+ .debug_macro   0x00000000       0x16 ./User/Src/three_phrase_pll.o
+ .debug_macro   0x00000000       0x16 ./User/Src/three_phrase_pll.o
+ .debug_macro   0x00000000       0x29 ./User/Src/three_phrase_pll.o
+ .debug_macro   0x00000000       0x10 ./User/Src/three_phrase_pll.o
+ .debug_macro   0x00000000       0x3c ./User/Src/three_phrase_pll.o
+ .debug_line    0x00000000      0xd55 ./User/Src/three_phrase_pll.o
+ .debug_str     0x00000000   0x15ae35 ./User/Src/three_phrase_pll.o
+ .comment       0x00000000       0x44 ./User/Src/three_phrase_pll.o
+ .debug_frame   0x00000000      0x174 ./User/Src/three_phrase_pll.o
+ .ARM.attributes
+                0x00000000       0x32 ./User/Src/three_phrase_pll.o
  .group         0x00000000        0xc ./User/Src/user_exit.o
  .group         0x00000000        0xc ./User/Src/user_exit.o
  .group         0x00000000        0xc ./User/Src/user_exit.o
@@ -8194,7 +8211,8 @@ LOAD ./User/Src/iir.o
 LOAD ./User/Src/ina228.o
 LOAD ./User/Src/oled.o
 LOAD ./User/Src/pid.o
-LOAD ./User/Src/pll.o
+LOAD ./User/Src/svpwm.o
+LOAD ./User/Src/three_phrase_pll.o
 LOAD ./User/Src/user_exit.o
 LOAD ./User/Src/user_global.o
 LOAD D:\User\Document\STM32_Project\EX_Three_Phase_Inverter_H743IIT6_Hollies\Drivers\CMSIS\DSP\Lib\GCC\libarm_cortexM7lfdp_math.a
@@ -9945,7 +9963,7 @@ LOAD C:/ST/STM32CubeIDE_1.14.1/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.ext
  .debug_rnglists
                 0x00001613       0x19 ./User/Src/user_exit.o
 
-.debug_macro    0x00000000    0x3c648
+.debug_macro    0x00000000    0x3c644
  .debug_macro   0x00000000      0x45f ./Core/Src/freertos.o
  .debug_macro   0x0000045f      0xad2 ./Core/Src/freertos.o
  .debug_macro   0x00000f31      0x189 ./Core/Src/freertos.o
@@ -10106,8 +10124,8 @@ LOAD C:/ST/STM32CubeIDE_1.14.1/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.ext
  .debug_macro   0x0003ba03       0x1c ./User/Src/ad7606.o
  .debug_macro   0x0003ba1f      0x2eb ./User/Src/ina228.o
  .debug_macro   0x0003bd0a      0x355 ./User/Src/oled.o
- .debug_macro   0x0003c05f      0x30a ./User/Src/user_exit.o
- .debug_macro   0x0003c369      0x2df ./User/Src/user_global.o
+ .debug_macro   0x0003c05f      0x306 ./User/Src/user_exit.o
+ .debug_macro   0x0003c365      0x2df ./User/Src/user_global.o
 
 .debug_line     0x00000000    0x2665f
  .debug_line    0x00000000      0xc97 ./Core/Src/freertos.o

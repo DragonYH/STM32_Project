@@ -47,6 +47,7 @@
 "./User/Src/ina228.o"
 "./User/Src/oled.o"
 "./User/Src/pid.o"
-"./User/Src/pll.o"
+"./User/Src/svpwm.o"
+"./User/Src/three_phrase_pll.o"
 "./User/Src/user_exit.o"
 "./User/Src/user_global.o"

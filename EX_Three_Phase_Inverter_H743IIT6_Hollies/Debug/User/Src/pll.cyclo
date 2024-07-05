@@ -1,7 +1,0 @@
-../User/Src/pll.c:14:6:pll_Init_V	1
-../User/Src/pll.c:68:6:pll_Init_I	1
-../User/Src/pll.c:128:6:pll_Control_V	1
-../User/Src/pll.c:157:6:pll_Control_I	4
-../User/Src/pll.c:227:6:pll_Sogi	1
-../User/Src/pll.c:243:6:pll_Free_V	1
-../User/Src/pll.c:253:6:pll_Free_I	1

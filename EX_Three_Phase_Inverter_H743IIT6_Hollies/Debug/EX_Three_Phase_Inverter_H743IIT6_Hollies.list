@@ -31,17 +31,17 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, READONLY, DEBUGGING, OCTETS
  13 .debug_rnglists 0000162c  00000000  00000000  0003c818  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 14 .debug_macro  0003c648  00000000  00000000  0003de44  2**0
+ 14 .debug_macro  0003c644  00000000  00000000  0003de44  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 15 .debug_line   0002665f  00000000  00000000  0007a48c  2**0
+ 15 .debug_line   0002665f  00000000  00000000  0007a488  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 16 .debug_str    0016f9ad  00000000  00000000  000a0aeb  2**0
+ 16 .debug_str    0016f9ad  00000000  00000000  000a0ae7  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 17 .comment      00000043  00000000  00000000  00210498  2**0
+ 17 .comment      00000043  00000000  00000000  00210494  2**0
                   CONTENTS, READONLY
- 18 .debug_frame  000087b0  00000000  00000000  002104dc  2**2
+ 18 .debug_frame  000087b0  00000000  00000000  002104d8  2**2
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 19 .debug_line_str 00000076  00000000  00000000  00218c8c  2**0
+ 19 .debug_line_str 00000076  00000000  00000000  00218c88  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
 
 Disassembly of section .text:
@@ -28007,10 +28007,6 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
         HAL_IncTick();
  800a67e:	f7f7 f853 	bl	8001728 <HAL_IncTick>
     }
-    // if (htim->Instance == TIM2)
-    // {
-    //     ad7606_Start(&htim2, 8);
-    // }
 }
  800a682:	bf00      	nop
  800a684:	3708      	adds	r7, #8

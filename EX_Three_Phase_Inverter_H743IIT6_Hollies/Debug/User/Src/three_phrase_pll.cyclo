@@ -1,0 +1,8 @@
+../User/Src/three_phrase_pll.c:14:6:pll_Init_V	1
+../User/Src/three_phrase_pll.c:42:6:pll_Init_I	1
+../User/Src/three_phrase_pll.c:67:6:pll_Control_V	1
+../User/Src/three_phrase_pll.c:86:6:pll_Control_I	4
+../User/Src/three_phrase_pll.c:124:6:pll_Clarke	1
+../User/Src/three_phrase_pll.c:133:6:pll_Inv_Clarke	1
+../User/Src/three_phrase_pll.c:143:6:pll_Free_V	1
+../User/Src/three_phrase_pll.c:153:6:pll_Free_I	1
