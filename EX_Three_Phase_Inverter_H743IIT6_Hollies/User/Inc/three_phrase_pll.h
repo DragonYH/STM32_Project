@@ -11,7 +11,6 @@ typedef struct pll_Signal_Basic
     // 基本变量
     float input_a; // a相输入
     float input_b; // b相输入
-    float input_c; // c相输入
     float rms;     // 电压有效值
     // clarke变换相关变量
     float clarke_alpha; // alpha分量
@@ -42,12 +41,12 @@ typedef struct pll_Signal_I
     // 基本变量
     pll_Signal_Basic *basic;
     // park逆变换相关变量
-    float park_inv_a; // 逆变换后的alpha
-    float park_inv_b; // 逆变换后的beta
-    // clarke逆变换相关变量
-    float clarke_inv_a; // 逆变换后的a相
-    float clarke_inv_b; // 逆变换后的b相
-    float clarke_inv_c; // 逆变换后的c相
+    float park_inv_alpha; // 逆变换后的alpha
+    float park_inv_beta;  // 逆变换后的beta
+    // clarke逆变换/输出 相关变量
+    float output_a; // 逆变换后的a相
+    float output_b; // 逆变换后的b相
+    float output_c; // 逆变换后的c相
     // 控制参数
     uint8_t CorL; // 0:感性 1:容性
     float L;      // 电感

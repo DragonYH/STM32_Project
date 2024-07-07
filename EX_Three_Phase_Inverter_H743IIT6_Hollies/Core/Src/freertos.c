@@ -34,6 +34,7 @@
 #include "gpio.h"
 #include "ina228.h"
 #include "arm_math.h"
+#include "three_phrase_pll.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -58,23 +59,23 @@ uint8_t text[32] = {0};
 /* Definitions for stateLED */
 osThreadId_t stateLEDHandle;
 const osThreadAttr_t stateLED_attributes = {
-  .name = "stateLED",
-  .stack_size = 128 * 4,
-  .priority = (osPriority_t) osPriorityNormal,
+    .name = "stateLED",
+    .stack_size = 128 * 4,
+    .priority = (osPriority_t)osPriorityNormal,
 };
 /* Definitions for oledShow */
 osThreadId_t oledShowHandle;
 const osThreadAttr_t oledShow_attributes = {
-  .name = "oledShow",
-  .stack_size = 512 * 4,
-  .priority = (osPriority_t) osPriorityNormal,
+    .name = "oledShow",
+    .stack_size = 512 * 4,
+    .priority = (osPriority_t)osPriorityNormal,
 };
 /* Definitions for dcSamp */
 osThreadId_t dcSampHandle;
 const osThreadAttr_t dcSamp_attributes = {
-  .name = "dcSamp",
-  .stack_size = 256 * 4,
-  .priority = (osPriority_t) osPriorityLow,
+    .name = "dcSamp",
+    .stack_size = 256 * 4,
+    .priority = (osPriority_t)osPriorityLow,
 };
 
 /* Private function prototypes -----------------------------------------------*/
@@ -89,15 +90,18 @@ void StartDcSamp(void *argument);
 void MX_FREERTOS_Init(void); /* (MISRA C 2004 rule 8.1) */
 
 /**
-  * @brief  FreeRTOS initialization
-  * @param  None
-  * @retval None
-  */
-void MX_FREERTOS_Init(void) {
+ * @brief  FreeRTOS initialization
+ * @param  None
+ * @retval None
+ */
+void MX_FREERTOS_Init(void)
+{
   /* USER CODE BEGIN Init */
   OLED_Init();
   ad7606_Init();
   INA228_config(INA228_0);
+  pll_Init_V(&signal_V, 50, 20000, 20);
+  pll_Init_I(&signal_I, 50, 20000);
   ad7606_Start(&htim2, TIM_CHANNEL_1);
   /* USER CODE END Init */
 
@@ -134,7 +138,6 @@ void MX_FREERTOS_Init(void) {
   /* USER CODE BEGIN RTOS_EVENTS */
   /* add events, ... */
   /* USER CODE END RTOS_EVENTS */
-
 }
 
 /* USER CODE BEGIN Header_StartStateLED */
@@ -227,4 +230,3 @@ void StartDcSamp(void *argument)
 /* USER CODE BEGIN Application */
 
 /* USER CODE END Application */
-

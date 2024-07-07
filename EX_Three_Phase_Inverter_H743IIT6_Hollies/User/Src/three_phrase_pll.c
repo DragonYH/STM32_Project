@@ -21,7 +21,6 @@ void pll_Init_V(pll_Signal_V **signal, float f, uint16_t F, float Umax)
     // 初始化赋值
     (*signal)->basic->input_a = 0.f;
     (*signal)->basic->input_b = 0.f;
-    (*signal)->basic->input_c = 0.f;
 
     (*signal)->theta = 0.f;
     (*signal)->basic->omiga0 = 2 * PI * f; // f典型值50
@@ -49,7 +48,6 @@ void pll_Init_I(pll_Signal_I **signal, float f, uint16_t F)
     // 初始化赋值
     (*signal)->basic->input_a = 0.f;
     (*signal)->basic->input_b = 0.f;
-    (*signal)->basic->input_c = 0.f;
 
     (*signal)->basic->omiga0 = 2.f * PI * f; // f典型值50
     (*signal)->basic->Ts = 1.f / F;          // F典型值20000
@@ -67,7 +65,7 @@ void pll_Init_I(pll_Signal_I **signal, float f, uint16_t F)
 void pll_Control_V(pll_Signal_V *signal_V)
 {
     // 先对信号进行clarke变换
-    pll_Clarke(signal_V->basic);
+    arm_clarke_f32(signal_V->basic->input_a, signal_V->basic->input_b, &signal_V->basic->clarke_alpha, &signal_V->basic->clarke_beta);
     // 再对信号sogi变换后的信号进行park变换
     arm_park_f32(signal_V->basic->clarke_alpha, signal_V->basic->clarke_beta, &signal_V->basic->park_d, &signal_V->basic->park_q, arm_sin_f32(signal_V->theta), arm_cos_f32(signal_V->theta));
     // 将park变换后的q送入PI控制器  输入值为设定值和采样值的误差
@@ -89,7 +87,7 @@ void pll_Control_I(pll_Signal_I *signal_I, pll_Signal_V *signal_V, float Iset, f
     static float Uabq;
     static float PFTheta;
     // 先对信号进行clarke变换
-    pll_Clarke(signal_I->basic);
+    arm_clarke_f32(signal_I->basic->input_a, signal_I->basic->input_b, &signal_I->basic->clarke_alpha, &signal_I->basic->clarke_beta);
     // 在电压的系上得出电流的dq值
     arm_park_f32(signal_I->basic->clarke_alpha, signal_I->basic->clarke_beta, &signal_I->basic->park_d, &signal_I->basic->park_q, arm_sin_f32(signal_V->theta), arm_cos_f32(signal_V->theta));
     // PI控制
@@ -107,34 +105,11 @@ void pll_Control_I(pll_Signal_I *signal_I, pll_Signal_V *signal_V, float Iset, f
     Uabd = signal_V->basic->park_d - signal_I->pid_d->out + signal_I->basic->park_q * signal_I->basic->omiga0 * signal_I->L;
     Uabq = signal_V->basic->park_q - signal_I->pid_q->out - signal_I->basic->park_d * signal_I->basic->omiga0 * signal_I->L;
     // park逆变换
-    arm_inv_park_f32(Uabd, Uabq, &signal_I->park_inv_a, &signal_I->park_inv_b, arm_sin_f32(signal_V->theta), arm_cos_f32(signal_V->theta));
-    // 输出限幅
-    if (signal_I->park_inv_a > 200.f)
-        signal_I->park_inv_a = 200.f;
-    else if (signal_I->park_inv_a < -200.f)
-        signal_I->park_inv_a = -200.f;
+    arm_inv_park_f32(Uabd, Uabq, &signal_I->park_inv_alpha, &signal_I->park_inv_beta, arm_sin_f32(signal_V->theta), arm_cos_f32(signal_V->theta));
     // clarke逆变换
-    pll_Inv_Clarke(signal_I);
-}
-/**
- * @brief clarke变换
- * @param signal_V 电压信号指针
- * @note 等幅值变换
- */
-void pll_Clarke(pll_Signal_Basic *basic)
-{
-    basic->clarke_alpha = (2.f * basic->input_a - basic->input_b - basic->input_c) / 3.f;
-    basic->clarke_beta = (basic->input_b - basic->input_c) * 0.57735f;
-}
-/**
- * @brief clarke逆变换
- * @param signal_V 电压信号指针
- */
-void pll_Inv_Clarke(pll_Signal_I *signal_I)
-{
-    signal_I->clarke_inv_a = signal_I->basic->clarke_alpha;
-    signal_I->clarke_inv_b = -0.5f * signal_I->basic->clarke_alpha + 0.866025f * signal_I->basic->clarke_beta;
-    signal_I->clarke_inv_c = -0.5f * signal_I->basic->clarke_alpha - 0.866025f * signal_I->basic->clarke_beta;
+    arm_inv_clarke_f32(signal_I->park_inv_alpha, signal_I->park_inv_beta, &signal_I->output_a, &signal_I->output_b);
+    // 根据a+b+c=0得出c相
+    signal_I->output_c = -signal_I->output_a - signal_I->output_b;
 }
 /**
  * @brief 释放内存
