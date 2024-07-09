@@ -1,4 +1,5 @@
-../Core/Src/freertos.c:98:6:MX_FREERTOS_Init	8	static
-../Core/Src/freertos.c:155:6:StartStateLED	16	static
-../Core/Src/freertos.c:182:6:StartOledShow	24	static
-../Core/Src/freertos.c:211:6:StartDcSamp	16	static
+../Core/Src/freertos.c:109:6:MX_FREERTOS_Init	8	static
+../Core/Src/freertos.c:169:6:StartStateLED	16	static
+../Core/Src/freertos.c:198:6:StartOledShow	16	static
+../Core/Src/freertos.c:227:6:StartDcSamp	16	static
+../Core/Src/freertos.c:247:6:StartUsartDebug	16	static

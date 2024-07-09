@@ -15,6 +15,13 @@
     "tim.h": "c",
     "three_phrase_pll.h": "c",
     "user_global.h": "c",
-    "main.h": "c"
+    "main.h": "c",
+    "stdio.h": "c",
+    "usb_device.h": "c",
+    "usbd_cdc_if.h": "c",
+    "usbd_cdc.h": "c",
+    "usbd_ioreq.h": "c",
+    "usbd_def.h": "c",
+    "usbd_conf.h": "c"
   }
 }

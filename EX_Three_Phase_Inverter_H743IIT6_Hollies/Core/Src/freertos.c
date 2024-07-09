@@ -36,6 +36,8 @@
 #include "arm_math.h"
 #include "three_phrase_pll.h"
 #include "dac.h"
+#include "usb_device.h"
+#include "usbd_cdc_if.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -76,7 +78,14 @@ osThreadId_t dcSampHandle;
 const osThreadAttr_t dcSamp_attributes = {
     .name = "dcSamp",
     .stack_size = 256 * 4,
-    .priority = (osPriority_t)osPriorityLow,
+    .priority = (osPriority_t)osPriorityHigh,
+};
+/* Definitions for usartDebug */
+osThreadId_t usartDebugHandle;
+const osThreadAttr_t usartDebug_attributes = {
+    .name = "usartDebug",
+    .stack_size = 256 * 4,
+    .priority = (osPriority_t)osPriorityNormal,
 };
 
 /* Private function prototypes -----------------------------------------------*/
@@ -87,7 +96,9 @@ const osThreadAttr_t dcSamp_attributes = {
 void StartStateLED(void *argument);
 void StartOledShow(void *argument);
 void StartDcSamp(void *argument);
+void StartUsartDebug(void *argument);
 
+extern void MX_USB_DEVICE_Init(void);
 void MX_FREERTOS_Init(void); /* (MISRA C 2004 rule 8.1) */
 
 /**
@@ -136,6 +147,9 @@ void MX_FREERTOS_Init(void)
   /* creation of dcSamp */
   dcSampHandle = osThreadNew(StartDcSamp, NULL, &dcSamp_attributes);
 
+  /* creation of usartDebug */
+  usartDebugHandle = osThreadNew(StartUsartDebug, NULL, &usartDebug_attributes);
+
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
   /* USER CODE END RTOS_THREADS */
@@ -154,6 +168,8 @@ void MX_FREERTOS_Init(void)
 /* USER CODE END Header_StartStateLED */
 void StartStateLED(void *argument)
 {
+  /* init code for USB_DEVICE */
+  MX_USB_DEVICE_Init();
   /* USER CODE BEGIN StartStateLED */
   /* Infinite loop */
   for (;;)
@@ -219,6 +235,25 @@ void StartDcSamp(void *argument)
     osDelay(10);
   }
   /* USER CODE END StartDcSamp */
+}
+
+/* USER CODE BEGIN Header_StartUsartDebug */
+/**
+ * @brief Function implementing the usartDebug thread.
+ * @param argument: Not used
+ * @retval None
+ */
+/* USER CODE END Header_StartUsartDebug */
+void StartUsartDebug(void *argument)
+{
+  /* USER CODE BEGIN StartUsartDebug */
+  /* Infinite loop */
+  for (;;)
+  {
+    CDC_Transmit_FS((uint8_t *)"Hello World!\r\n", 14);
+    osDelay(100);
+  }
+  /* USER CODE END StartUsartDebug */
 }
 
 /* Private application code --------------------------------------------------*/

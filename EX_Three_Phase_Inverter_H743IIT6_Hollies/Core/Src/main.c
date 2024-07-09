@@ -24,6 +24,7 @@
 #include "memorymap.h"
 #include "spi.h"
 #include "tim.h"
+#include "usb_device.h"
 #include "gpio.h"
 
 /* Private includes ----------------------------------------------------------*/
@@ -116,7 +117,7 @@ int main(void)
   MX_TIM1_Init();
   MX_DAC1_Init();
   /* USER CODE BEGIN 2 */
-
+  MX_USB_DEVICE_Init();
   /* USER CODE END 2 */
 
   /* Init scheduler */
