@@ -11,16 +11,19 @@ void svpwm_Control(pll_Signal_V *signal, float Udc)
 {
     // 电压标幺化
     float Ts = signal->basic->Ts;
-    float Ubase = Udc / 1.7320508f;
-    float Ualpha = signal->basic->clarke_alpha / Ubase;
-    float Ubeta = signal->basic->clarke_beta / Ubase;
+    float Ubase = Udc / 1.7320508f;                     // 基础电压
+    float Ualpha = signal->basic->clarke_alpha / Ubase; // 标幺化Clarke变换后的α轴电压
+    float Ubeta = signal->basic->clarke_beta / Ubase;   // 标幺化Clarke变换后的β轴电压
+
     // 计算中间变量
     float Ualpha_ = 1.7320508f * Ualpha * Ts;
     float Ubeta_ = Ubeta * Ts;
+
     // 计算XYZ
     float X = Ubeta_;
     float Y = 0.5f * Ualpha_ + 0.5f * Ubeta_;
     float Z = 0.5f * Ubeta_ - 0.5f * Ualpha_;
+
     // 通过XYZ做扇区判断
     uint8_t sector = 0;
     if (Y < 0)
@@ -31,14 +34,7 @@ void svpwm_Control(pll_Signal_V *signal, float Udc)
         }
         else
         {
-            if (X < 0)
-            {
-                sector = 4;
-            }
-            else
-            {
-                sector = 3;
-            }
+            sector = (X < 0) ? 4 : 3;
         }
     }
     else
@@ -49,16 +45,10 @@ void svpwm_Control(pll_Signal_V *signal, float Udc)
         }
         else
         {
-            if (X < 0)
-            {
-                sector = 6;
-            }
-            else
-            {
-                sector = 1;
-            }
+            sector = (X < 0) ? 6 : 1;
         }
     }
+
     // 计算每一周期对应扇区各相的占用时间
     float Ta = 0, Tb = 0, Tc = 0;
     switch (sector)
@@ -94,25 +84,28 @@ void svpwm_Control(pll_Signal_V *signal, float Udc)
         Tb = Tc + X;
         break;
     }
+
     // 计算占空比并更新TIM寄存器
-    uint32_t ccr_a = (uint32_t)(Ta / Ts * 5999);
-    uint32_t ccr_b = (uint32_t)(Tb / Ts * 5999);
-    uint32_t ccr_c = (uint32_t)(Tc / Ts * 5999);
+    uint32_t ccr[3] = {
+        (uint32_t)(Ta / Ts * 5999),
+        (uint32_t)(Tb / Ts * 5999),
+        (uint32_t)(Tc / Ts * 5999)};
 
-    if (ccr_a > 5999)
-        ccr_a = 5999;
-    else if (ccr_a < 0)
-        ccr_a = 0;
-    if (ccr_b > 5999)
-        ccr_b = 5999;
-    else if (ccr_b < 0)
-        ccr_b = 0;
-    if (ccr_c > 5999)
-        ccr_c = 5999;
-    else if (ccr_c < 0)
-        ccr_c = 0;
+    // 限制占空比在0到5999之间
+    for (int i = 0; i < 3; ++i)
+    {
+        if (ccr[i] > 5999)
+        {
+            ccr[i] = 5999;
+        }
+        else if (ccr[i] < 0)
+        {
+            ccr[i] = 0;
+        }
+    }
 
-    TIM1->CCR1 = ccr_a;
-    TIM1->CCR2 = ccr_b;
-    TIM1->CCR3 = ccr_c;
+    // 更新TIM寄存器
+    TIM1->CCR1 = ccr[0];
+    TIM1->CCR2 = ccr[1];
+    TIM1->CCR3 = ccr[2];
 }
