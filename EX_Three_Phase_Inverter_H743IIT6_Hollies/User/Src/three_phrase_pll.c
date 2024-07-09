@@ -106,10 +106,6 @@ void pll_Control_I(pll_Signal_I *signal_I, pll_Signal_V *signal_V, float Iset, f
     Uabq = signal_V->basic->park_q - signal_I->pid_q->out - signal_I->basic->park_d * signal_I->basic->omiga0 * signal_I->L;
     // park逆变换
     arm_inv_park_f32(Uabd, Uabq, &signal_I->park_inv_alpha, &signal_I->park_inv_beta, arm_sin_f32(signal_V->theta), arm_cos_f32(signal_V->theta));
-    // // clarke逆变换
-    // arm_inv_clarke_f32(signal_I->park_inv_alpha, signal_I->park_inv_beta, &signal_I->output_a, &signal_I->output_b);
-    // // 根据a+b+c=0得出c相
-    // signal_I->output_c = -signal_I->output_a - signal_I->output_b;
 }
 /**
  * @brief 释放内存
