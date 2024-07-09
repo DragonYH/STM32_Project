@@ -57,7 +57,7 @@
 
 /* Private variables ---------------------------------------------------------*/
 /* USER CODE BEGIN Variables */
-uint8_t text[32] = {0};
+
 /* USER CODE END Variables */
 /* Definitions for stateLED */
 osThreadId_t stateLEDHandle;
@@ -198,7 +198,7 @@ void StartStateLED(void *argument)
 void StartOledShow(void *argument)
 {
   /* USER CODE BEGIN StartOledShow */
-
+  static uint8_t text[32] = {0};
   /* Infinite loop */
   for (;;)
   {
@@ -208,9 +208,6 @@ void StartOledShow(void *argument)
     OLED_ShowString(0, 12, text, 12);
     sprintf((char *)text, "cnt: %ld", __HAL_TIM_GET_COMPARE(&htim1, TIM_CHANNEL_1));
     OLED_ShowString(0, 24, text, 12);
-    // 获取当前堆栈剩余空间
-    sprintf((char *)text, "stack free: %ld", uxTaskGetStackHighWaterMark(NULL));
-    OLED_ShowString(0, 48, text, 12);
     OLED_Refresh();
     osDelay(100);
   }
@@ -247,11 +244,23 @@ void StartDcSamp(void *argument)
 void StartUsartDebug(void *argument)
 {
   /* USER CODE BEGIN StartUsartDebug */
+  static uint8_t text[32] = {0};
+  osThreadId_t currentTaskId[] = {stateLEDHandle, oledShowHandle, dcSampHandle, usartDebugHandle};
+  osThreadAttr_t currentTaskAttr[] = {stateLED_attributes, oledShow_attributes, dcSamp_attributes, usartDebug_attributes};
+  static int i = 0;
   /* Infinite loop */
   for (;;)
   {
-    CDC_Transmit_FS((uint8_t *)"Hello World!\r\n", 14);
-    osDelay(100);
+    // 输出各任务堆栈使用情况
+    sprintf((char *)text, "%d.%-10s: %4ld / %4ld \r\n", i, pcTaskGetTaskName(currentTaskId[i]), uxTaskGetStackHighWaterMark(currentTaskId[i]), currentTaskAttr[i].stack_size);
+    CDC_Transmit_FS(text, 32);
+    memset(text, 0, 32);
+    i++;
+    if (i >= 4)
+    {
+      i = 0;
+    }
+    osDelay(500);
   }
   /* USER CODE END StartUsartDebug */
 }
