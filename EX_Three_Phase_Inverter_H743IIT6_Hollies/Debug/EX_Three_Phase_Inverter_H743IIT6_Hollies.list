@@ -659,43 +659,43 @@ void StartStateLED(void *argument)
   /* Infinite loop */
   for (;;)
   {
+    HAL_GPIO_TogglePin(GPIOI, GPIO_PIN_0);
+ 80007a8:	2101      	movs	r1, #1
+ 80007aa:	4813      	ldr	r0, [pc, #76]	@ (80007f8 <StartStateLED+0x5c>)
+ 80007ac:	f001 ffc1 	bl	8002732 <HAL_GPIO_TogglePin>
+    osDelay(100);
+ 80007b0:	2064      	movs	r0, #100	@ 0x64
+ 80007b2:	f00c fb29 	bl	800ce08 <osDelay>
+    HAL_GPIO_TogglePin(GPIOI, GPIO_PIN_0);
+ 80007b6:	2101      	movs	r1, #1
+ 80007b8:	480f      	ldr	r0, [pc, #60]	@ (80007f8 <StartStateLED+0x5c>)
+ 80007ba:	f001 ffba 	bl	8002732 <HAL_GPIO_TogglePin>
+    osDelay(200);
+ 80007be:	20c8      	movs	r0, #200	@ 0xc8
+ 80007c0:	f00c fb22 	bl	800ce08 <osDelay>
+    HAL_GPIO_TogglePin(GPIOI, GPIO_PIN_0);
+ 80007c4:	2101      	movs	r1, #1
+ 80007c6:	480c      	ldr	r0, [pc, #48]	@ (80007f8 <StartStateLED+0x5c>)
+ 80007c8:	f001 ffb3 	bl	8002732 <HAL_GPIO_TogglePin>
+    osDelay(100);
+ 80007cc:	2064      	movs	r0, #100	@ 0x64
+ 80007ce:	f00c fb1b 	bl	800ce08 <osDelay>
+    HAL_GPIO_TogglePin(GPIOI, GPIO_PIN_0);
+ 80007d2:	2101      	movs	r1, #1
+ 80007d4:	4808      	ldr	r0, [pc, #32]	@ (80007f8 <StartStateLED+0x5c>)
+ 80007d6:	f001 ffac 	bl	8002732 <HAL_GPIO_TogglePin>
+    osDelay(200);
+ 80007da:	20c8      	movs	r0, #200	@ 0xc8
+ 80007dc:	f00c fb14 	bl	800ce08 <osDelay>
     HAL_GPIO_WritePin(GPIOI, GPIO_PIN_1, GPIO_PIN_RESET);
- 80007a8:	2200      	movs	r2, #0
- 80007aa:	2102      	movs	r1, #2
- 80007ac:	4812      	ldr	r0, [pc, #72]	@ (80007f8 <StartStateLED+0x5c>)
- 80007ae:	f001 ffa7 	bl	8002700 <HAL_GPIO_WritePin>
+ 80007e0:	2200      	movs	r2, #0
+ 80007e2:	2102      	movs	r1, #2
+ 80007e4:	4804      	ldr	r0, [pc, #16]	@ (80007f8 <StartStateLED+0x5c>)
+ 80007e6:	f001 ff8b 	bl	8002700 <HAL_GPIO_WritePin>
     osDelay(1000);
- 80007b2:	f44f 707a 	mov.w	r0, #1000	@ 0x3e8
- 80007b6:	f00c fb27 	bl	800ce08 <osDelay>
-    HAL_GPIO_TogglePin(GPIOI, GPIO_PIN_0);
- 80007ba:	2101      	movs	r1, #1
- 80007bc:	480e      	ldr	r0, [pc, #56]	@ (80007f8 <StartStateLED+0x5c>)
- 80007be:	f001 ffb8 	bl	8002732 <HAL_GPIO_TogglePin>
-    osDelay(100);
- 80007c2:	2064      	movs	r0, #100	@ 0x64
- 80007c4:	f00c fb20 	bl	800ce08 <osDelay>
-    HAL_GPIO_TogglePin(GPIOI, GPIO_PIN_0);
- 80007c8:	2101      	movs	r1, #1
- 80007ca:	480b      	ldr	r0, [pc, #44]	@ (80007f8 <StartStateLED+0x5c>)
- 80007cc:	f001 ffb1 	bl	8002732 <HAL_GPIO_TogglePin>
-    osDelay(200);
- 80007d0:	20c8      	movs	r0, #200	@ 0xc8
- 80007d2:	f00c fb19 	bl	800ce08 <osDelay>
-    HAL_GPIO_TogglePin(GPIOI, GPIO_PIN_0);
- 80007d6:	2101      	movs	r1, #1
- 80007d8:	4807      	ldr	r0, [pc, #28]	@ (80007f8 <StartStateLED+0x5c>)
- 80007da:	f001 ffaa 	bl	8002732 <HAL_GPIO_TogglePin>
-    osDelay(100);
- 80007de:	2064      	movs	r0, #100	@ 0x64
- 80007e0:	f00c fb12 	bl	800ce08 <osDelay>
-    HAL_GPIO_TogglePin(GPIOI, GPIO_PIN_0);
- 80007e4:	2101      	movs	r1, #1
- 80007e6:	4804      	ldr	r0, [pc, #16]	@ (80007f8 <StartStateLED+0x5c>)
- 80007e8:	f001 ffa3 	bl	8002732 <HAL_GPIO_TogglePin>
-    osDelay(200);
- 80007ec:	20c8      	movs	r0, #200	@ 0xc8
+ 80007ea:	f44f 707a 	mov.w	r0, #1000	@ 0x3e8
  80007ee:	f00c fb0b 	bl	800ce08 <osDelay>
-    HAL_GPIO_WritePin(GPIOI, GPIO_PIN_1, GPIO_PIN_RESET);
+    HAL_GPIO_TogglePin(GPIOI, GPIO_PIN_0);
  80007f2:	bf00      	nop
  80007f4:	e7d8      	b.n	80007a8 <StartStateLED+0xc>
  80007f6:	bf00      	nop
