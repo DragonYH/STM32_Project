@@ -1,4 +1,4 @@
 ../Core/Src/freertos.c:98:6:MX_FREERTOS_Init	8	static
 ../Core/Src/freertos.c:155:6:StartStateLED	16	static
-../Core/Src/freertos.c:182:6:StartOledShow	16	static
-../Core/Src/freertos.c:221:6:StartDcSamp	16	static
+../Core/Src/freertos.c:182:6:StartOledShow	24	static
+../Core/Src/freertos.c:211:6:StartDcSamp	16	static

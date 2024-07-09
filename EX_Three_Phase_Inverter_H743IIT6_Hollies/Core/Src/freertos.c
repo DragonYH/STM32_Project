@@ -60,23 +60,23 @@ uint8_t text[32] = {0};
 /* Definitions for stateLED */
 osThreadId_t stateLEDHandle;
 const osThreadAttr_t stateLED_attributes = {
-  .name = "stateLED",
-  .stack_size = 128 * 4,
-  .priority = (osPriority_t) osPriorityNormal,
+    .name = "stateLED",
+    .stack_size = 128 * 4,
+    .priority = (osPriority_t)osPriorityNormal,
 };
 /* Definitions for oledShow */
 osThreadId_t oledShowHandle;
 const osThreadAttr_t oledShow_attributes = {
-  .name = "oledShow",
-  .stack_size = 512 * 4,
-  .priority = (osPriority_t) osPriorityNormal,
+    .name = "oledShow",
+    .stack_size = 512 * 4,
+    .priority = (osPriority_t)osPriorityNormal,
 };
 /* Definitions for dcSamp */
 osThreadId_t dcSampHandle;
 const osThreadAttr_t dcSamp_attributes = {
-  .name = "dcSamp",
-  .stack_size = 256 * 4,
-  .priority = (osPriority_t) osPriorityLow,
+    .name = "dcSamp",
+    .stack_size = 256 * 4,
+    .priority = (osPriority_t)osPriorityLow,
 };
 
 /* Private function prototypes -----------------------------------------------*/
@@ -91,11 +91,12 @@ void StartDcSamp(void *argument);
 void MX_FREERTOS_Init(void); /* (MISRA C 2004 rule 8.1) */
 
 /**
-  * @brief  FreeRTOS initialization
-  * @param  None
-  * @retval None
-  */
-void MX_FREERTOS_Init(void) {
+ * @brief  FreeRTOS initialization
+ * @param  None
+ * @retval None
+ */
+void MX_FREERTOS_Init(void)
+{
   /* USER CODE BEGIN Init */
   OLED_Init();
   ad7606_Init();
@@ -142,7 +143,6 @@ void MX_FREERTOS_Init(void) {
   /* USER CODE BEGIN RTOS_EVENTS */
   /* add events, ... */
   /* USER CODE END RTOS_EVENTS */
-
 }
 
 /* USER CODE BEGIN Header_StartStateLED */
@@ -186,22 +186,12 @@ void StartOledShow(void *argument)
   /* Infinite loop */
   for (;;)
   {
-    // sprintf((char *)text, "0: %6.3f", adcValue[0]);
-    // OLED_ShowString(0, 0, text, 12);
-    sprintf((char *)text, "1: %6.3f", signal_V->basic->input_a);
-    OLED_ShowString(64, 0, text, 12);
-    sprintf((char *)text, "2: %6.3f", signal_V->basic->input_b);
+    sprintf((char *)text, "Ua: %6.3f Ub: %6.3f", signal_V->basic->input_a, signal_V->basic->input_b);
+    OLED_ShowString(0, 0, text, 12);
+    sprintf((char *)text, "Ia: %6.3f Ib: %6.3f", adcValue[3], adcValue[4]);
     OLED_ShowString(0, 12, text, 12);
-    sprintf((char *)text, "3: %6.3f", adcValue[3]);
-    OLED_ShowString(64, 12, text, 12);
-    sprintf((char *)text, "4: %6.3f", adcValue[4]);
+    sprintf((char *)text, "cnt: %ld", __HAL_TIM_GET_COMPARE(&htim1, TIM_CHANNEL_1));
     OLED_ShowString(0, 24, text, 12);
-    sprintf((char *)text, "5: %ld", __HAL_TIM_GET_COMPARE(&htim1, TIM_CHANNEL_1));
-    OLED_ShowString(64, 24, text, 12);
-    // sprintf((char *)text, "6: %6.3f", U);
-    // OLED_ShowString(0, 36, text, 12);
-    // sprintf((char *)text, "7: %6.3f", I);
-    // OLED_ShowString(64, 36, text, 12);
     // 获取当前堆栈剩余空间
     sprintf((char *)text, "stack free: %ld", uxTaskGetStackHighWaterMark(NULL));
     OLED_ShowString(0, 48, text, 12);
@@ -235,4 +225,3 @@ void StartDcSamp(void *argument)
 /* USER CODE BEGIN Application */
 
 /* USER CODE END Application */
-
