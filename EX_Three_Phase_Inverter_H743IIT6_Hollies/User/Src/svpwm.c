@@ -79,16 +79,16 @@ void svpwm_Control(pll_Signal_V *signal, float Udc)
 
     // 计算占空比并更新TIM寄存器
     uint32_t ccr[3] = {
-        (uint32_t)(Ta / Ts * 5999),
-        (uint32_t)(Tb / Ts * 5999),
-        (uint32_t)(Tc / Ts * 5999)};
+        (uint32_t)(Ta / Ts * TIM_PERIOD),
+        (uint32_t)(Tb / Ts * TIM_PERIOD),
+        (uint32_t)(Tc / Ts * TIM_PERIOD)};
 
     // 限制占空比在0到5999之间
     for (int i = 0; i < 3; ++i)
     {
-        if (ccr[i] > 5999)
+        if (ccr[i] > TIM_PERIOD)
         {
-            ccr[i] = 5999;
+            ccr[i] = TIM_PERIOD;
         }
         else if (ccr[i] < 0)
         {
