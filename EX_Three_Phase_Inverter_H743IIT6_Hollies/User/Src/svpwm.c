@@ -29,24 +29,16 @@ void svpwm_Control(pll_Signal_V *signal, float Udc)
     if (Y < 0)
     {
         if (Z < 0)
-        {
             sector = 5;
-        }
         else
-        {
             sector = (X < 0) ? 4 : 3;
-        }
     }
     else
     {
         if (Z > 0)
-        {
             sector = 2;
-        }
         else
-        {
             sector = (X < 0) ? 6 : 1;
-        }
     }
 
     // 计算每一周期对应扇区各相的占用时间
