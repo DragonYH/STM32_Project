@@ -19,6 +19,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "cmsis_os.h"
+#include "dac.h"
 #include "i2c.h"
 #include "memorymap.h"
 #include "spi.h"
@@ -112,6 +113,8 @@ int main(void)
   MX_SPI2_Init();
   MX_TIM2_Init();
   MX_I2C1_Init();
+  MX_TIM1_Init();
+  MX_DAC1_Init();
   /* USER CODE BEGIN 2 */
 
   /* USER CODE END 2 */

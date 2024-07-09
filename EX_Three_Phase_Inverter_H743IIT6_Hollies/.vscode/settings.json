@@ -10,6 +10,11 @@
     "cmsis_os.h": "c",
     "freertos.h": "c",
     "memorymap.h": "c",
-    "compare": "cpp"
+    "compare": "cpp",
+    "svpwm.h": "c",
+    "tim.h": "c",
+    "three_phrase_pll.h": "c",
+    "user_global.h": "c",
+    "main.h": "c"
   }
 }

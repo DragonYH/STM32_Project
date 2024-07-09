@@ -29,6 +29,8 @@ Core/Src/freertos.o: ../Core/Src/freertos.c \
  ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_mdma.h \
  ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_exti.h \
  ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_cortex.h \
+ ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_dac.h \
+ ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_dac_ex.h \
  ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_flash.h \
  ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_flash_ex.h \
  ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_hsem.h \
@@ -44,9 +46,11 @@ Core/Src/freertos.o: ../Core/Src/freertos.c \
  ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os2.h \
  ../User/Inc/oled.h ../Core/Inc/gpio.h ../Core/Inc/main.h \
  ../User/Inc/user_global.h ../User/Inc/ina228.h ../Core/Inc/i2c.h \
- ../User/Inc/ad7606.h ../Core/Inc/spi.h ../Core/Inc/tim.h \
- ../User/Inc/ina228.h ../Drivers/CMSIS/DSP/Include/arm_math.h \
- ../Drivers/CMSIS/Include/cmsis_compiler.h
+ ../User/Inc/three_phrase_pll.h ../User/Inc/pid.h ../User/Inc/iir.h \
+ ../Drivers/CMSIS/DSP/Include/arm_math.h \
+ ../Drivers/CMSIS/Include/cmsis_compiler.h ../User/Inc/ad7606.h \
+ ../Core/Inc/spi.h ../Core/Inc/tim.h ../User/Inc/ina228.h \
+ ../User/Inc/three_phrase_pll.h ../Core/Inc/dac.h
 ../Middlewares/Third_Party/FreeRTOS/Source/include/FreeRTOS.h:
 ../Core/Inc/FreeRTOSConfig.h:
 ../Middlewares/Third_Party/FreeRTOS/Source/include/projdefs.h:
@@ -78,6 +82,8 @@ Core/Src/freertos.o: ../Core/Src/freertos.c \
 ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_mdma.h:
 ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_exti.h:
 ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_cortex.h:
+../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_dac.h:
+../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_dac_ex.h:
 ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_flash.h:
 ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_flash_ex.h:
 ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_hsem.h:
@@ -97,9 +103,14 @@ Core/Src/freertos.o: ../Core/Src/freertos.c \
 ../User/Inc/user_global.h:
 ../User/Inc/ina228.h:
 ../Core/Inc/i2c.h:
+../User/Inc/three_phrase_pll.h:
+../User/Inc/pid.h:
+../User/Inc/iir.h:
+../Drivers/CMSIS/DSP/Include/arm_math.h:
+../Drivers/CMSIS/Include/cmsis_compiler.h:
 ../User/Inc/ad7606.h:
 ../Core/Inc/spi.h:
 ../Core/Inc/tim.h:
 ../User/Inc/ina228.h:
-../Drivers/CMSIS/DSP/Include/arm_math.h:
-../Drivers/CMSIS/Include/cmsis_compiler.h:
+../User/Inc/three_phrase_pll.h:
+../Core/Inc/dac.h:

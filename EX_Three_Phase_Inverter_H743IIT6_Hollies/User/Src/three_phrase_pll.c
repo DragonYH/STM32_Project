@@ -69,7 +69,7 @@ void pll_Control_V(pll_Signal_V *signal_V)
     // 再对信号sogi变换后的信号进行park变换
     arm_park_f32(signal_V->basic->clarke_alpha, signal_V->basic->clarke_beta, &signal_V->basic->park_d, &signal_V->basic->park_q, arm_sin_f32(signal_V->theta), arm_cos_f32(signal_V->theta));
     // 将park变换后的q送入PI控制器  输入值为设定值和采样值的误差
-    pid(signal_V->pid, signal_V->basic->park_q, 0);
+    pid(signal_V->pid, signal_V->basic->park_q, 0); // pid的输出值为旋转坐标系角速度
     // 更新theta
     signal_V->theta += (signal_V->pid->out + signal_V->basic->omiga0) * signal_V->basic->Ts;
     signal_V->theta = (float)fmod(signal_V->theta, 2 * PI);
@@ -106,10 +106,10 @@ void pll_Control_I(pll_Signal_I *signal_I, pll_Signal_V *signal_V, float Iset, f
     Uabq = signal_V->basic->park_q - signal_I->pid_q->out - signal_I->basic->park_d * signal_I->basic->omiga0 * signal_I->L;
     // park逆变换
     arm_inv_park_f32(Uabd, Uabq, &signal_I->park_inv_alpha, &signal_I->park_inv_beta, arm_sin_f32(signal_V->theta), arm_cos_f32(signal_V->theta));
-    // clarke逆变换
-    arm_inv_clarke_f32(signal_I->park_inv_alpha, signal_I->park_inv_beta, &signal_I->output_a, &signal_I->output_b);
-    // 根据a+b+c=0得出c相
-    signal_I->output_c = -signal_I->output_a - signal_I->output_b;
+    // // clarke逆变换
+    // arm_inv_clarke_f32(signal_I->park_inv_alpha, signal_I->park_inv_beta, &signal_I->output_a, &signal_I->output_b);
+    // // 根据a+b+c=0得出c相
+    // signal_I->output_c = -signal_I->output_a - signal_I->output_b;
 }
 /**
  * @brief 释放内存

@@ -20,6 +20,8 @@ User/Src/user_exit.o: ../User/Src/user_exit.c ../User/Inc/ad7606.h \
  ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_mdma.h \
  ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_exti.h \
  ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_cortex.h \
+ ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_dac.h \
+ ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_dac_ex.h \
  ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_flash.h \
  ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_flash_ex.h \
  ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_hsem.h \
@@ -32,7 +34,11 @@ User/Src/user_exit.o: ../User/Src/user_exit.c ../User/Inc/ad7606.h \
  ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_tim.h \
  ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_tim_ex.h \
  ../Core/Inc/spi.h ../Core/Inc/main.h ../User/Inc/user_global.h \
- ../User/Inc/ina228.h ../Core/Inc/i2c.h ../Core/Inc/tim.h
+ ../User/Inc/ina228.h ../Core/Inc/i2c.h ../User/Inc/three_phrase_pll.h \
+ ../User/Inc/pid.h ../User/Inc/iir.h \
+ ../Drivers/CMSIS/DSP/Include/arm_math.h \
+ ../Drivers/CMSIS/Include/cmsis_compiler.h ../Core/Inc/tim.h \
+ ../User/Inc/three_phrase_pll.h ../User/Inc/svpwm.h ../Core/Inc/dac.h
 ../User/Inc/ad7606.h:
 ../Core/Inc/main.h:
 ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal.h:
@@ -56,6 +62,8 @@ User/Src/user_exit.o: ../User/Src/user_exit.c ../User/Inc/ad7606.h \
 ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_mdma.h:
 ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_exti.h:
 ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_cortex.h:
+../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_dac.h:
+../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_dac_ex.h:
 ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_flash.h:
 ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_flash_ex.h:
 ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_hsem.h:
@@ -72,4 +80,12 @@ User/Src/user_exit.o: ../User/Src/user_exit.c ../User/Inc/ad7606.h \
 ../User/Inc/user_global.h:
 ../User/Inc/ina228.h:
 ../Core/Inc/i2c.h:
+../User/Inc/three_phrase_pll.h:
+../User/Inc/pid.h:
+../User/Inc/iir.h:
+../Drivers/CMSIS/DSP/Include/arm_math.h:
+../Drivers/CMSIS/Include/cmsis_compiler.h:
 ../Core/Inc/tim.h:
+../User/Inc/three_phrase_pll.h:
+../User/Inc/svpwm.h:
+../Core/Inc/dac.h:
