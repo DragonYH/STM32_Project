@@ -23,29 +23,29 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   ALLOC
   9 .ARM.attributes 0000002e  00000000  00000000  00013200  2**0
                   CONTENTS, READONLY
- 10 .debug_info   0002e2dc  00000000  00000000  0001322e  2**0
+ 10 .debug_info   0002e2e5  00000000  00000000  0001322e  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 11 .debug_abbrev 0000621e  00000000  00000000  0004150a  2**0
+ 11 .debug_abbrev 00006227  00000000  00000000  00041513  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 12 .debug_aranges 00001f78  00000000  00000000  00047728  2**3
+ 12 .debug_aranges 00001f78  00000000  00000000  00047740  2**3
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 13 .debug_rnglists 000017c6  00000000  00000000  000496a0  2**0
+ 13 .debug_rnglists 000017c6  00000000  00000000  000496b8  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 14 .debug_macro  0003dbde  00000000  00000000  0004ae66  2**0
+ 14 .debug_macro  0003dbde  00000000  00000000  0004ae7e  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 15 .debug_line   0002b474  00000000  00000000  00088a44  2**0
+ 15 .debug_line   0002b4a7  00000000  00000000  00088a5c  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 16 .debug_str    00172a30  00000000  00000000  000b3eb8  2**0
+ 16 .debug_str    00172a1e  00000000  00000000  000b3f03  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 17 .comment      000000b8  00000000  00000000  002268e8  2**0
+ 17 .comment      000000b8  00000000  00000000  00226921  2**0
                   CONTENTS, READONLY
- 18 .debug_frame  00009244  00000000  00000000  002269a0  2**2
+ 18 .debug_frame  00009244  00000000  00000000  002269dc  2**2
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 19 .debug_line_str 00000076  00000000  00000000  0022fbe4  2**0
+ 19 .debug_line_str 00000076  00000000  00000000  0022fc20  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 20 .debug_loc    000001f4  00000000  00000000  0022fc5a  2**0
+ 20 .debug_loc    000001f4  00000000  00000000  0022fc96  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 21 .debug_ranges 00000020  00000000  00000000  0022fe4e  2**0
+ 21 .debug_ranges 00000020  00000000  00000000  0022fe8a  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
 
 Disassembly of section .text:
@@ -30547,7 +30547,7 @@ void pid(PID *pid, float target, float sample)
 void svpwm_Control(pll_Signal_V *signal, float Udc)
 {
  800b538:	b480      	push	{r7}
- 800b53a:	b093      	sub	sp, #76	@ 0x4c
+ 800b53a:	b095      	sub	sp, #84	@ 0x54
  800b53c:	af00      	add	r7, sp, #0
  800b53e:	6078      	str	r0, [r7, #4]
  800b540:	ed87 0a00 	vstr	s0, [r7]
@@ -30556,390 +30556,379 @@ void svpwm_Control(pll_Signal_V *signal, float Udc)
  800b544:	687b      	ldr	r3, [r7, #4]
  800b546:	681b      	ldr	r3, [r3, #0]
  800b548:	6a1b      	ldr	r3, [r3, #32]
- 800b54a:	62bb      	str	r3, [r7, #40]	@ 0x28
-    float Ubase = Udc / 1.7320508f;
+ 800b54a:	63bb      	str	r3, [r7, #56]	@ 0x38
+    float Ubase = Udc / 1.7320508f;                     // 基础电压
  800b54c:	ed97 7a00 	vldr	s14, [r7]
- 800b550:	eddf 6ab3 	vldr	s13, [pc, #716]	@ 800b820 <svpwm_Control+0x2e8>
+ 800b550:	eddf 6adb 	vldr	s13, [pc, #876]	@ 800b8c0 <svpwm_Control+0x388>
  800b554:	eec7 7a26 	vdiv.f32	s15, s14, s13
- 800b558:	edc7 7a09 	vstr	s15, [r7, #36]	@ 0x24
-    float Ualpha = signal->basic->clarke_alpha / Ubase;
+ 800b558:	edc7 7a0d 	vstr	s15, [r7, #52]	@ 0x34
+    float Ualpha = signal->basic->clarke_alpha / Ubase; // 标幺化Clarke变换后的α轴电压
  800b55c:	687b      	ldr	r3, [r7, #4]
  800b55e:	681b      	ldr	r3, [r3, #0]
  800b560:	edd3 6a03 	vldr	s13, [r3, #12]
- 800b564:	ed97 7a09 	vldr	s14, [r7, #36]	@ 0x24
+ 800b564:	ed97 7a0d 	vldr	s14, [r7, #52]	@ 0x34
  800b568:	eec6 7a87 	vdiv.f32	s15, s13, s14
- 800b56c:	edc7 7a08 	vstr	s15, [r7, #32]
-    float Ubeta = signal->basic->clarke_beta / Ubase;
+ 800b56c:	edc7 7a0c 	vstr	s15, [r7, #48]	@ 0x30
+    float Ubeta = signal->basic->clarke_beta / Ubase;   // 标幺化Clarke变换后的β轴电压
  800b570:	687b      	ldr	r3, [r7, #4]
  800b572:	681b      	ldr	r3, [r3, #0]
  800b574:	edd3 6a04 	vldr	s13, [r3, #16]
- 800b578:	ed97 7a09 	vldr	s14, [r7, #36]	@ 0x24
+ 800b578:	ed97 7a0d 	vldr	s14, [r7, #52]	@ 0x34
  800b57c:	eec6 7a87 	vdiv.f32	s15, s13, s14
- 800b580:	edc7 7a07 	vstr	s15, [r7, #28]
+ 800b580:	edc7 7a0b 	vstr	s15, [r7, #44]	@ 0x2c
+
     // 计算中间变量
     float Ualpha_ = 1.7320508f * Ualpha * Ts;
- 800b584:	edd7 7a08 	vldr	s15, [r7, #32]
- 800b588:	ed9f 7aa5 	vldr	s14, [pc, #660]	@ 800b820 <svpwm_Control+0x2e8>
+ 800b584:	edd7 7a0c 	vldr	s15, [r7, #48]	@ 0x30
+ 800b588:	ed9f 7acd 	vldr	s14, [pc, #820]	@ 800b8c0 <svpwm_Control+0x388>
  800b58c:	ee67 7a87 	vmul.f32	s15, s15, s14
- 800b590:	ed97 7a0a 	vldr	s14, [r7, #40]	@ 0x28
+ 800b590:	ed97 7a0e 	vldr	s14, [r7, #56]	@ 0x38
  800b594:	ee67 7a27 	vmul.f32	s15, s14, s15
- 800b598:	edc7 7a06 	vstr	s15, [r7, #24]
+ 800b598:	edc7 7a0a 	vstr	s15, [r7, #40]	@ 0x28
     float Ubeta_ = Ubeta * Ts;
- 800b59c:	ed97 7a07 	vldr	s14, [r7, #28]
- 800b5a0:	edd7 7a0a 	vldr	s15, [r7, #40]	@ 0x28
+ 800b59c:	ed97 7a0b 	vldr	s14, [r7, #44]	@ 0x2c
+ 800b5a0:	edd7 7a0e 	vldr	s15, [r7, #56]	@ 0x38
  800b5a4:	ee67 7a27 	vmul.f32	s15, s14, s15
- 800b5a8:	edc7 7a05 	vstr	s15, [r7, #20]
+ 800b5a8:	edc7 7a09 	vstr	s15, [r7, #36]	@ 0x24
+
     // 计算XYZ
     float X = Ubeta_;
- 800b5ac:	697b      	ldr	r3, [r7, #20]
- 800b5ae:	613b      	str	r3, [r7, #16]
+ 800b5ac:	6a7b      	ldr	r3, [r7, #36]	@ 0x24
+ 800b5ae:	623b      	str	r3, [r7, #32]
     float Y = 0.5f * Ualpha_ + 0.5f * Ubeta_;
- 800b5b0:	edd7 7a06 	vldr	s15, [r7, #24]
+ 800b5b0:	edd7 7a0a 	vldr	s15, [r7, #40]	@ 0x28
  800b5b4:	eeb6 7a00 	vmov.f32	s14, #96	@ 0x3f000000  0.5
  800b5b8:	ee27 7a87 	vmul.f32	s14, s15, s14
- 800b5bc:	edd7 7a05 	vldr	s15, [r7, #20]
+ 800b5bc:	edd7 7a09 	vldr	s15, [r7, #36]	@ 0x24
  800b5c0:	eef6 6a00 	vmov.f32	s13, #96	@ 0x3f000000  0.5
  800b5c4:	ee67 7aa6 	vmul.f32	s15, s15, s13
  800b5c8:	ee77 7a27 	vadd.f32	s15, s14, s15
- 800b5cc:	edc7 7a03 	vstr	s15, [r7, #12]
+ 800b5cc:	edc7 7a07 	vstr	s15, [r7, #28]
     float Z = 0.5f * Ubeta_ - 0.5f * Ualpha_;
- 800b5d0:	edd7 7a05 	vldr	s15, [r7, #20]
+ 800b5d0:	edd7 7a09 	vldr	s15, [r7, #36]	@ 0x24
  800b5d4:	eeb6 7a00 	vmov.f32	s14, #96	@ 0x3f000000  0.5
  800b5d8:	ee27 7a87 	vmul.f32	s14, s15, s14
- 800b5dc:	edd7 7a06 	vldr	s15, [r7, #24]
+ 800b5dc:	edd7 7a0a 	vldr	s15, [r7, #40]	@ 0x28
  800b5e0:	eef6 6a00 	vmov.f32	s13, #96	@ 0x3f000000  0.5
  800b5e4:	ee67 7aa6 	vmul.f32	s15, s15, s13
  800b5e8:	ee77 7a67 	vsub.f32	s15, s14, s15
- 800b5ec:	edc7 7a02 	vstr	s15, [r7, #8]
+ 800b5ec:	edc7 7a06 	vstr	s15, [r7, #24]
+
     // 通过XYZ做扇区判断
     uint8_t sector = 0;
  800b5f0:	2300      	movs	r3, #0
- 800b5f2:	f887 3047 	strb.w	r3, [r7, #71]	@ 0x47
+ 800b5f2:	f887 304f 	strb.w	r3, [r7, #79]	@ 0x4f
     if (Y < 0)
- 800b5f6:	edd7 7a03 	vldr	s15, [r7, #12]
+ 800b5f6:	edd7 7a07 	vldr	s15, [r7, #28]
  800b5fa:	eef5 7ac0 	vcmpe.f32	s15, #0.0
  800b5fe:	eef1 fa10 	vmrs	APSR_nzcv, fpscr
- 800b602:	d519      	bpl.n	800b638 <svpwm_Control+0x100>
+ 800b602:	d517      	bpl.n	800b634 <svpwm_Control+0xfc>
     {
         if (Z < 0)
- 800b604:	edd7 7a02 	vldr	s15, [r7, #8]
+ 800b604:	edd7 7a06 	vldr	s15, [r7, #24]
  800b608:	eef5 7ac0 	vcmpe.f32	s15, #0.0
  800b60c:	eef1 fa10 	vmrs	APSR_nzcv, fpscr
  800b610:	d503      	bpl.n	800b61a <svpwm_Control+0xe2>
-        {
             sector = 5;
  800b612:	2305      	movs	r3, #5
- 800b614:	f887 3047 	strb.w	r3, [r7, #71]	@ 0x47
- 800b618:	e027      	b.n	800b66a <svpwm_Control+0x132>
-        }
+ 800b614:	f887 304f 	strb.w	r3, [r7, #79]	@ 0x4f
+ 800b618:	e023      	b.n	800b662 <svpwm_Control+0x12a>
         else
-        {
-            if (X < 0)
- 800b61a:	edd7 7a04 	vldr	s15, [r7, #16]
+            sector = (X < 0) ? 4 : 3;
+ 800b61a:	edd7 7a08 	vldr	s15, [r7, #32]
  800b61e:	eef5 7ac0 	vcmpe.f32	s15, #0.0
  800b622:	eef1 fa10 	vmrs	APSR_nzcv, fpscr
- 800b626:	d503      	bpl.n	800b630 <svpwm_Control+0xf8>
-            {
-                sector = 4;
+ 800b626:	d501      	bpl.n	800b62c <svpwm_Control+0xf4>
  800b628:	2304      	movs	r3, #4
- 800b62a:	f887 3047 	strb.w	r3, [r7, #71]	@ 0x47
- 800b62e:	e01c      	b.n	800b66a <svpwm_Control+0x132>
-            }
-            else
-            {
-                sector = 3;
- 800b630:	2303      	movs	r3, #3
- 800b632:	f887 3047 	strb.w	r3, [r7, #71]	@ 0x47
- 800b636:	e018      	b.n	800b66a <svpwm_Control+0x132>
-            }
-        }
+ 800b62a:	e000      	b.n	800b62e <svpwm_Control+0xf6>
+ 800b62c:	2303      	movs	r3, #3
+ 800b62e:	f887 304f 	strb.w	r3, [r7, #79]	@ 0x4f
+ 800b632:	e016      	b.n	800b662 <svpwm_Control+0x12a>
     }
     else
     {
         if (Z > 0)
- 800b638:	edd7 7a02 	vldr	s15, [r7, #8]
- 800b63c:	eef5 7ac0 	vcmpe.f32	s15, #0.0
- 800b640:	eef1 fa10 	vmrs	APSR_nzcv, fpscr
- 800b644:	dd03      	ble.n	800b64e <svpwm_Control+0x116>
-        {
+ 800b634:	edd7 7a06 	vldr	s15, [r7, #24]
+ 800b638:	eef5 7ac0 	vcmpe.f32	s15, #0.0
+ 800b63c:	eef1 fa10 	vmrs	APSR_nzcv, fpscr
+ 800b640:	dd03      	ble.n	800b64a <svpwm_Control+0x112>
             sector = 2;
- 800b646:	2302      	movs	r3, #2
- 800b648:	f887 3047 	strb.w	r3, [r7, #71]	@ 0x47
- 800b64c:	e00d      	b.n	800b66a <svpwm_Control+0x132>
-        }
+ 800b642:	2302      	movs	r3, #2
+ 800b644:	f887 304f 	strb.w	r3, [r7, #79]	@ 0x4f
+ 800b648:	e00b      	b.n	800b662 <svpwm_Control+0x12a>
         else
-        {
-            if (X < 0)
- 800b64e:	edd7 7a04 	vldr	s15, [r7, #16]
- 800b652:	eef5 7ac0 	vcmpe.f32	s15, #0.0
- 800b656:	eef1 fa10 	vmrs	APSR_nzcv, fpscr
- 800b65a:	d503      	bpl.n	800b664 <svpwm_Control+0x12c>
-            {
-                sector = 6;
- 800b65c:	2306      	movs	r3, #6
- 800b65e:	f887 3047 	strb.w	r3, [r7, #71]	@ 0x47
- 800b662:	e002      	b.n	800b66a <svpwm_Control+0x132>
-            }
-            else
-            {
-                sector = 1;
- 800b664:	2301      	movs	r3, #1
- 800b666:	f887 3047 	strb.w	r3, [r7, #71]	@ 0x47
-            }
-        }
+            sector = (X < 0) ? 6 : 1;
+ 800b64a:	edd7 7a08 	vldr	s15, [r7, #32]
+ 800b64e:	eef5 7ac0 	vcmpe.f32	s15, #0.0
+ 800b652:	eef1 fa10 	vmrs	APSR_nzcv, fpscr
+ 800b656:	d501      	bpl.n	800b65c <svpwm_Control+0x124>
+ 800b658:	2306      	movs	r3, #6
+ 800b65a:	e000      	b.n	800b65e <svpwm_Control+0x126>
+ 800b65c:	2301      	movs	r3, #1
+ 800b65e:	f887 304f 	strb.w	r3, [r7, #79]	@ 0x4f
     }
+
     // 计算每一周期对应扇区各相的占用时间
     float Ta = 0, Tb = 0, Tc = 0;
- 800b66a:	f04f 0300 	mov.w	r3, #0
- 800b66e:	643b      	str	r3, [r7, #64]	@ 0x40
- 800b670:	f04f 0300 	mov.w	r3, #0
- 800b674:	63fb      	str	r3, [r7, #60]	@ 0x3c
- 800b676:	f04f 0300 	mov.w	r3, #0
- 800b67a:	63bb      	str	r3, [r7, #56]	@ 0x38
+ 800b662:	f04f 0300 	mov.w	r3, #0
+ 800b666:	64bb      	str	r3, [r7, #72]	@ 0x48
+ 800b668:	f04f 0300 	mov.w	r3, #0
+ 800b66c:	647b      	str	r3, [r7, #68]	@ 0x44
+ 800b66e:	f04f 0300 	mov.w	r3, #0
+ 800b672:	643b      	str	r3, [r7, #64]	@ 0x40
     switch (sector)
- 800b67c:	f897 3047 	ldrb.w	r3, [r7, #71]	@ 0x47
- 800b680:	3b01      	subs	r3, #1
- 800b682:	2b05      	cmp	r3, #5
- 800b684:	f200 80f5 	bhi.w	800b872 <svpwm_Control+0x33a>
- 800b688:	a201      	add	r2, pc, #4	@ (adr r2, 800b690 <svpwm_Control+0x158>)
- 800b68a:	f852 f023 	ldr.w	pc, [r2, r3, lsl #2]
- 800b68e:	bf00      	nop
- 800b690:	0800b6a9 	.word	0x0800b6a9
- 800b694:	0800b6f3 	.word	0x0800b6f3
- 800b698:	0800b73d 	.word	0x0800b73d
- 800b69c:	0800b787 	.word	0x0800b787
- 800b6a0:	0800b7d1 	.word	0x0800b7d1
- 800b6a4:	0800b829 	.word	0x0800b829
+ 800b674:	f897 304f 	ldrb.w	r3, [r7, #79]	@ 0x4f
+ 800b678:	3b01      	subs	r3, #1
+ 800b67a:	2b05      	cmp	r3, #5
+ 800b67c:	f200 80f0 	bhi.w	800b860 <svpwm_Control+0x328>
+ 800b680:	a201      	add	r2, pc, #4	@ (adr r2, 800b688 <svpwm_Control+0x150>)
+ 800b682:	f852 f023 	ldr.w	pc, [r2, r3, lsl #2]
+ 800b686:	bf00      	nop
+ 800b688:	0800b6a1 	.word	0x0800b6a1
+ 800b68c:	0800b6eb 	.word	0x0800b6eb
+ 800b690:	0800b735 	.word	0x0800b735
+ 800b694:	0800b77f 	.word	0x0800b77f
+ 800b698:	0800b7c9 	.word	0x0800b7c9
+ 800b69c:	0800b817 	.word	0x0800b817
     {
     case 1:
         Ta = Ts / 2.f + (-Z + X) / 2.f;
- 800b6a8:	edd7 7a0a 	vldr	s15, [r7, #40]	@ 0x28
- 800b6ac:	eef0 6a00 	vmov.f32	s13, #0	@ 0x40000000  2.0
- 800b6b0:	ee87 7aa6 	vdiv.f32	s14, s15, s13
- 800b6b4:	edd7 6a04 	vldr	s13, [r7, #16]
- 800b6b8:	edd7 7a02 	vldr	s15, [r7, #8]
- 800b6bc:	ee76 6ae7 	vsub.f32	s13, s13, s15
- 800b6c0:	eeb0 6a00 	vmov.f32	s12, #0	@ 0x40000000  2.0
- 800b6c4:	eec6 7a86 	vdiv.f32	s15, s13, s12
- 800b6c8:	ee77 7a27 	vadd.f32	s15, s14, s15
- 800b6cc:	edc7 7a10 	vstr	s15, [r7, #64]	@ 0x40
+ 800b6a0:	edd7 7a0e 	vldr	s15, [r7, #56]	@ 0x38
+ 800b6a4:	eef0 6a00 	vmov.f32	s13, #0	@ 0x40000000  2.0
+ 800b6a8:	ee87 7aa6 	vdiv.f32	s14, s15, s13
+ 800b6ac:	edd7 6a08 	vldr	s13, [r7, #32]
+ 800b6b0:	edd7 7a06 	vldr	s15, [r7, #24]
+ 800b6b4:	ee76 6ae7 	vsub.f32	s13, s13, s15
+ 800b6b8:	eeb0 6a00 	vmov.f32	s12, #0	@ 0x40000000  2.0
+ 800b6bc:	eec6 7a86 	vdiv.f32	s15, s13, s12
+ 800b6c0:	ee77 7a27 	vadd.f32	s15, s14, s15
+ 800b6c4:	edc7 7a12 	vstr	s15, [r7, #72]	@ 0x48
         Tb = Ta + Z;
- 800b6d0:	ed97 7a10 	vldr	s14, [r7, #64]	@ 0x40
- 800b6d4:	edd7 7a02 	vldr	s15, [r7, #8]
- 800b6d8:	ee77 7a27 	vadd.f32	s15, s14, s15
- 800b6dc:	edc7 7a0f 	vstr	s15, [r7, #60]	@ 0x3c
+ 800b6c8:	ed97 7a12 	vldr	s14, [r7, #72]	@ 0x48
+ 800b6cc:	edd7 7a06 	vldr	s15, [r7, #24]
+ 800b6d0:	ee77 7a27 	vadd.f32	s15, s14, s15
+ 800b6d4:	edc7 7a11 	vstr	s15, [r7, #68]	@ 0x44
         Tc = Tb - X;
- 800b6e0:	ed97 7a0f 	vldr	s14, [r7, #60]	@ 0x3c
- 800b6e4:	edd7 7a04 	vldr	s15, [r7, #16]
- 800b6e8:	ee77 7a67 	vsub.f32	s15, s14, s15
- 800b6ec:	edc7 7a0e 	vstr	s15, [r7, #56]	@ 0x38
+ 800b6d8:	ed97 7a11 	vldr	s14, [r7, #68]	@ 0x44
+ 800b6dc:	edd7 7a08 	vldr	s15, [r7, #32]
+ 800b6e0:	ee77 7a67 	vsub.f32	s15, s14, s15
+ 800b6e4:	edc7 7a10 	vstr	s15, [r7, #64]	@ 0x40
         break;
- 800b6f0:	e0bf      	b.n	800b872 <svpwm_Control+0x33a>
+ 800b6e8:	e0ba      	b.n	800b860 <svpwm_Control+0x328>
     case 2:
         Tb = Ts / 2.f + (Z + Y) / 2.f;
- 800b6f2:	edd7 7a0a 	vldr	s15, [r7, #40]	@ 0x28
- 800b6f6:	eef0 6a00 	vmov.f32	s13, #0	@ 0x40000000  2.0
- 800b6fa:	ee87 7aa6 	vdiv.f32	s14, s15, s13
- 800b6fe:	edd7 6a02 	vldr	s13, [r7, #8]
- 800b702:	edd7 7a03 	vldr	s15, [r7, #12]
- 800b706:	ee76 6aa7 	vadd.f32	s13, s13, s15
- 800b70a:	eeb0 6a00 	vmov.f32	s12, #0	@ 0x40000000  2.0
- 800b70e:	eec6 7a86 	vdiv.f32	s15, s13, s12
- 800b712:	ee77 7a27 	vadd.f32	s15, s14, s15
- 800b716:	edc7 7a0f 	vstr	s15, [r7, #60]	@ 0x3c
+ 800b6ea:	edd7 7a0e 	vldr	s15, [r7, #56]	@ 0x38
+ 800b6ee:	eef0 6a00 	vmov.f32	s13, #0	@ 0x40000000  2.0
+ 800b6f2:	ee87 7aa6 	vdiv.f32	s14, s15, s13
+ 800b6f6:	edd7 6a06 	vldr	s13, [r7, #24]
+ 800b6fa:	edd7 7a07 	vldr	s15, [r7, #28]
+ 800b6fe:	ee76 6aa7 	vadd.f32	s13, s13, s15
+ 800b702:	eeb0 6a00 	vmov.f32	s12, #0	@ 0x40000000  2.0
+ 800b706:	eec6 7a86 	vdiv.f32	s15, s13, s12
+ 800b70a:	ee77 7a27 	vadd.f32	s15, s14, s15
+ 800b70e:	edc7 7a11 	vstr	s15, [r7, #68]	@ 0x44
         Ta = Tb - Z;
- 800b71a:	ed97 7a0f 	vldr	s14, [r7, #60]	@ 0x3c
- 800b71e:	edd7 7a02 	vldr	s15, [r7, #8]
- 800b722:	ee77 7a67 	vsub.f32	s15, s14, s15
- 800b726:	edc7 7a10 	vstr	s15, [r7, #64]	@ 0x40
+ 800b712:	ed97 7a11 	vldr	s14, [r7, #68]	@ 0x44
+ 800b716:	edd7 7a06 	vldr	s15, [r7, #24]
+ 800b71a:	ee77 7a67 	vsub.f32	s15, s14, s15
+ 800b71e:	edc7 7a12 	vstr	s15, [r7, #72]	@ 0x48
         Tc = Ta - Y;
- 800b72a:	ed97 7a10 	vldr	s14, [r7, #64]	@ 0x40
- 800b72e:	edd7 7a03 	vldr	s15, [r7, #12]
- 800b732:	ee77 7a67 	vsub.f32	s15, s14, s15
- 800b736:	edc7 7a0e 	vstr	s15, [r7, #56]	@ 0x38
+ 800b722:	ed97 7a12 	vldr	s14, [r7, #72]	@ 0x48
+ 800b726:	edd7 7a07 	vldr	s15, [r7, #28]
+ 800b72a:	ee77 7a67 	vsub.f32	s15, s14, s15
+ 800b72e:	edc7 7a10 	vstr	s15, [r7, #64]	@ 0x40
         break;
- 800b73a:	e09a      	b.n	800b872 <svpwm_Control+0x33a>
+ 800b732:	e095      	b.n	800b860 <svpwm_Control+0x328>
     case 3:
         Tb = Ts / 2.f + (X - Y) / 2.f;
- 800b73c:	edd7 7a0a 	vldr	s15, [r7, #40]	@ 0x28
- 800b740:	eef0 6a00 	vmov.f32	s13, #0	@ 0x40000000  2.0
- 800b744:	ee87 7aa6 	vdiv.f32	s14, s15, s13
- 800b748:	edd7 6a04 	vldr	s13, [r7, #16]
- 800b74c:	edd7 7a03 	vldr	s15, [r7, #12]
- 800b750:	ee76 6ae7 	vsub.f32	s13, s13, s15
- 800b754:	eeb0 6a00 	vmov.f32	s12, #0	@ 0x40000000  2.0
- 800b758:	eec6 7a86 	vdiv.f32	s15, s13, s12
- 800b75c:	ee77 7a27 	vadd.f32	s15, s14, s15
- 800b760:	edc7 7a0f 	vstr	s15, [r7, #60]	@ 0x3c
+ 800b734:	edd7 7a0e 	vldr	s15, [r7, #56]	@ 0x38
+ 800b738:	eef0 6a00 	vmov.f32	s13, #0	@ 0x40000000  2.0
+ 800b73c:	ee87 7aa6 	vdiv.f32	s14, s15, s13
+ 800b740:	edd7 6a08 	vldr	s13, [r7, #32]
+ 800b744:	edd7 7a07 	vldr	s15, [r7, #28]
+ 800b748:	ee76 6ae7 	vsub.f32	s13, s13, s15
+ 800b74c:	eeb0 6a00 	vmov.f32	s12, #0	@ 0x40000000  2.0
+ 800b750:	eec6 7a86 	vdiv.f32	s15, s13, s12
+ 800b754:	ee77 7a27 	vadd.f32	s15, s14, s15
+ 800b758:	edc7 7a11 	vstr	s15, [r7, #68]	@ 0x44
         Tc = Tb - X;
- 800b764:	ed97 7a0f 	vldr	s14, [r7, #60]	@ 0x3c
- 800b768:	edd7 7a04 	vldr	s15, [r7, #16]
- 800b76c:	ee77 7a67 	vsub.f32	s15, s14, s15
- 800b770:	edc7 7a0e 	vstr	s15, [r7, #56]	@ 0x38
+ 800b75c:	ed97 7a11 	vldr	s14, [r7, #68]	@ 0x44
+ 800b760:	edd7 7a08 	vldr	s15, [r7, #32]
+ 800b764:	ee77 7a67 	vsub.f32	s15, s14, s15
+ 800b768:	edc7 7a10 	vstr	s15, [r7, #64]	@ 0x40
         Ta = Tc + Y;
- 800b774:	ed97 7a0e 	vldr	s14, [r7, #56]	@ 0x38
- 800b778:	edd7 7a03 	vldr	s15, [r7, #12]
- 800b77c:	ee77 7a27 	vadd.f32	s15, s14, s15
- 800b780:	edc7 7a10 	vstr	s15, [r7, #64]	@ 0x40
+ 800b76c:	ed97 7a10 	vldr	s14, [r7, #64]	@ 0x40
+ 800b770:	edd7 7a07 	vldr	s15, [r7, #28]
+ 800b774:	ee77 7a27 	vadd.f32	s15, s14, s15
+ 800b778:	edc7 7a12 	vstr	s15, [r7, #72]	@ 0x48
         break;
- 800b784:	e075      	b.n	800b872 <svpwm_Control+0x33a>
+ 800b77c:	e070      	b.n	800b860 <svpwm_Control+0x328>
     case 4:
         Tc = Ts / 2.f + (-X + Z) / 2.f;
- 800b786:	edd7 7a0a 	vldr	s15, [r7, #40]	@ 0x28
- 800b78a:	eef0 6a00 	vmov.f32	s13, #0	@ 0x40000000  2.0
- 800b78e:	ee87 7aa6 	vdiv.f32	s14, s15, s13
- 800b792:	edd7 6a02 	vldr	s13, [r7, #8]
- 800b796:	edd7 7a04 	vldr	s15, [r7, #16]
- 800b79a:	ee76 6ae7 	vsub.f32	s13, s13, s15
- 800b79e:	eeb0 6a00 	vmov.f32	s12, #0	@ 0x40000000  2.0
- 800b7a2:	eec6 7a86 	vdiv.f32	s15, s13, s12
- 800b7a6:	ee77 7a27 	vadd.f32	s15, s14, s15
- 800b7aa:	edc7 7a0e 	vstr	s15, [r7, #56]	@ 0x38
+ 800b77e:	edd7 7a0e 	vldr	s15, [r7, #56]	@ 0x38
+ 800b782:	eef0 6a00 	vmov.f32	s13, #0	@ 0x40000000  2.0
+ 800b786:	ee87 7aa6 	vdiv.f32	s14, s15, s13
+ 800b78a:	edd7 6a06 	vldr	s13, [r7, #24]
+ 800b78e:	edd7 7a08 	vldr	s15, [r7, #32]
+ 800b792:	ee76 6ae7 	vsub.f32	s13, s13, s15
+ 800b796:	eeb0 6a00 	vmov.f32	s12, #0	@ 0x40000000  2.0
+ 800b79a:	eec6 7a86 	vdiv.f32	s15, s13, s12
+ 800b79e:	ee77 7a27 	vadd.f32	s15, s14, s15
+ 800b7a2:	edc7 7a10 	vstr	s15, [r7, #64]	@ 0x40
         Tb = Tc + X;
- 800b7ae:	ed97 7a0e 	vldr	s14, [r7, #56]	@ 0x38
- 800b7b2:	edd7 7a04 	vldr	s15, [r7, #16]
- 800b7b6:	ee77 7a27 	vadd.f32	s15, s14, s15
- 800b7ba:	edc7 7a0f 	vstr	s15, [r7, #60]	@ 0x3c
+ 800b7a6:	ed97 7a10 	vldr	s14, [r7, #64]	@ 0x40
+ 800b7aa:	edd7 7a08 	vldr	s15, [r7, #32]
+ 800b7ae:	ee77 7a27 	vadd.f32	s15, s14, s15
+ 800b7b2:	edc7 7a11 	vstr	s15, [r7, #68]	@ 0x44
         Ta = Tb - Z;
- 800b7be:	ed97 7a0f 	vldr	s14, [r7, #60]	@ 0x3c
- 800b7c2:	edd7 7a02 	vldr	s15, [r7, #8]
- 800b7c6:	ee77 7a67 	vsub.f32	s15, s14, s15
- 800b7ca:	edc7 7a10 	vstr	s15, [r7, #64]	@ 0x40
+ 800b7b6:	ed97 7a11 	vldr	s14, [r7, #68]	@ 0x44
+ 800b7ba:	edd7 7a06 	vldr	s15, [r7, #24]
+ 800b7be:	ee77 7a67 	vsub.f32	s15, s14, s15
+ 800b7c2:	edc7 7a12 	vstr	s15, [r7, #72]	@ 0x48
         break;
- 800b7ce:	e050      	b.n	800b872 <svpwm_Control+0x33a>
+ 800b7c6:	e04b      	b.n	800b860 <svpwm_Control+0x328>
     case 5:
         Tc = Ts / 2.f + (-Y - Z) / 2.f;
- 800b7d0:	edd7 7a0a 	vldr	s15, [r7, #40]	@ 0x28
- 800b7d4:	eef0 6a00 	vmov.f32	s13, #0	@ 0x40000000  2.0
- 800b7d8:	ee87 7aa6 	vdiv.f32	s14, s15, s13
- 800b7dc:	edd7 7a03 	vldr	s15, [r7, #12]
- 800b7e0:	eef1 6a67 	vneg.f32	s13, s15
- 800b7e4:	edd7 7a02 	vldr	s15, [r7, #8]
- 800b7e8:	ee76 6ae7 	vsub.f32	s13, s13, s15
- 800b7ec:	eeb0 6a00 	vmov.f32	s12, #0	@ 0x40000000  2.0
- 800b7f0:	eec6 7a86 	vdiv.f32	s15, s13, s12
- 800b7f4:	ee77 7a27 	vadd.f32	s15, s14, s15
- 800b7f8:	edc7 7a0e 	vstr	s15, [r7, #56]	@ 0x38
+ 800b7c8:	edd7 7a0e 	vldr	s15, [r7, #56]	@ 0x38
+ 800b7cc:	eef0 6a00 	vmov.f32	s13, #0	@ 0x40000000  2.0
+ 800b7d0:	ee87 7aa6 	vdiv.f32	s14, s15, s13
+ 800b7d4:	edd7 7a07 	vldr	s15, [r7, #28]
+ 800b7d8:	eef1 6a67 	vneg.f32	s13, s15
+ 800b7dc:	edd7 7a06 	vldr	s15, [r7, #24]
+ 800b7e0:	ee76 6ae7 	vsub.f32	s13, s13, s15
+ 800b7e4:	eeb0 6a00 	vmov.f32	s12, #0	@ 0x40000000  2.0
+ 800b7e8:	eec6 7a86 	vdiv.f32	s15, s13, s12
+ 800b7ec:	ee77 7a27 	vadd.f32	s15, s14, s15
+ 800b7f0:	edc7 7a10 	vstr	s15, [r7, #64]	@ 0x40
         Ta = Tc + Y;
- 800b7fc:	ed97 7a0e 	vldr	s14, [r7, #56]	@ 0x38
- 800b800:	edd7 7a03 	vldr	s15, [r7, #12]
- 800b804:	ee77 7a27 	vadd.f32	s15, s14, s15
- 800b808:	edc7 7a10 	vstr	s15, [r7, #64]	@ 0x40
+ 800b7f4:	ed97 7a10 	vldr	s14, [r7, #64]	@ 0x40
+ 800b7f8:	edd7 7a07 	vldr	s15, [r7, #28]
+ 800b7fc:	ee77 7a27 	vadd.f32	s15, s14, s15
+ 800b800:	edc7 7a12 	vstr	s15, [r7, #72]	@ 0x48
         Tb = Ta + Z;
- 800b80c:	ed97 7a10 	vldr	s14, [r7, #64]	@ 0x40
- 800b810:	edd7 7a02 	vldr	s15, [r7, #8]
- 800b814:	ee77 7a27 	vadd.f32	s15, s14, s15
- 800b818:	edc7 7a0f 	vstr	s15, [r7, #60]	@ 0x3c
+ 800b804:	ed97 7a12 	vldr	s14, [r7, #72]	@ 0x48
+ 800b808:	edd7 7a06 	vldr	s15, [r7, #24]
+ 800b80c:	ee77 7a27 	vadd.f32	s15, s14, s15
+ 800b810:	edc7 7a11 	vstr	s15, [r7, #68]	@ 0x44
         break;
- 800b81c:	e029      	b.n	800b872 <svpwm_Control+0x33a>
- 800b81e:	bf00      	nop
- 800b820:	3fddb3d7 	.word	0x3fddb3d7
- 800b824:	45bb7800 	.word	0x45bb7800
+ 800b814:	e024      	b.n	800b860 <svpwm_Control+0x328>
     case 6:
         Ta = Ts / 2.f + (Y - X) / 2.f;
- 800b828:	edd7 7a0a 	vldr	s15, [r7, #40]	@ 0x28
- 800b82c:	eef0 6a00 	vmov.f32	s13, #0	@ 0x40000000  2.0
- 800b830:	ee87 7aa6 	vdiv.f32	s14, s15, s13
- 800b834:	edd7 6a03 	vldr	s13, [r7, #12]
- 800b838:	edd7 7a04 	vldr	s15, [r7, #16]
- 800b83c:	ee76 6ae7 	vsub.f32	s13, s13, s15
- 800b840:	eeb0 6a00 	vmov.f32	s12, #0	@ 0x40000000  2.0
- 800b844:	eec6 7a86 	vdiv.f32	s15, s13, s12
- 800b848:	ee77 7a27 	vadd.f32	s15, s14, s15
- 800b84c:	edc7 7a10 	vstr	s15, [r7, #64]	@ 0x40
+ 800b816:	edd7 7a0e 	vldr	s15, [r7, #56]	@ 0x38
+ 800b81a:	eef0 6a00 	vmov.f32	s13, #0	@ 0x40000000  2.0
+ 800b81e:	ee87 7aa6 	vdiv.f32	s14, s15, s13
+ 800b822:	edd7 6a07 	vldr	s13, [r7, #28]
+ 800b826:	edd7 7a08 	vldr	s15, [r7, #32]
+ 800b82a:	ee76 6ae7 	vsub.f32	s13, s13, s15
+ 800b82e:	eeb0 6a00 	vmov.f32	s12, #0	@ 0x40000000  2.0
+ 800b832:	eec6 7a86 	vdiv.f32	s15, s13, s12
+ 800b836:	ee77 7a27 	vadd.f32	s15, s14, s15
+ 800b83a:	edc7 7a12 	vstr	s15, [r7, #72]	@ 0x48
         Tc = Ta - Y;
- 800b850:	ed97 7a10 	vldr	s14, [r7, #64]	@ 0x40
- 800b854:	edd7 7a03 	vldr	s15, [r7, #12]
- 800b858:	ee77 7a67 	vsub.f32	s15, s14, s15
- 800b85c:	edc7 7a0e 	vstr	s15, [r7, #56]	@ 0x38
+ 800b83e:	ed97 7a12 	vldr	s14, [r7, #72]	@ 0x48
+ 800b842:	edd7 7a07 	vldr	s15, [r7, #28]
+ 800b846:	ee77 7a67 	vsub.f32	s15, s14, s15
+ 800b84a:	edc7 7a10 	vstr	s15, [r7, #64]	@ 0x40
         Tb = Tc + X;
- 800b860:	ed97 7a0e 	vldr	s14, [r7, #56]	@ 0x38
- 800b864:	edd7 7a04 	vldr	s15, [r7, #16]
- 800b868:	ee77 7a27 	vadd.f32	s15, s14, s15
- 800b86c:	edc7 7a0f 	vstr	s15, [r7, #60]	@ 0x3c
+ 800b84e:	ed97 7a10 	vldr	s14, [r7, #64]	@ 0x40
+ 800b852:	edd7 7a08 	vldr	s15, [r7, #32]
+ 800b856:	ee77 7a27 	vadd.f32	s15, s14, s15
+ 800b85a:	edc7 7a11 	vstr	s15, [r7, #68]	@ 0x44
         break;
- 800b870:	bf00      	nop
+ 800b85e:	bf00      	nop
     }
+
     // 计算占空比并更新TIM寄存器
-    uint32_t ccr_a = (uint32_t)(Ta / Ts * 5999);
- 800b872:	edd7 6a10 	vldr	s13, [r7, #64]	@ 0x40
- 800b876:	ed97 7a0a 	vldr	s14, [r7, #40]	@ 0x28
- 800b87a:	eec6 7a87 	vdiv.f32	s15, s13, s14
- 800b87e:	ed1f 7a17 	vldr	s14, [pc, #-92]	@ 800b824 <svpwm_Control+0x2ec>
- 800b882:	ee67 7a87 	vmul.f32	s15, s15, s14
- 800b886:	eefc 7ae7 	vcvt.u32.f32	s15, s15
- 800b88a:	ee17 3a90 	vmov	r3, s15
- 800b88e:	637b      	str	r3, [r7, #52]	@ 0x34
-    uint32_t ccr_b = (uint32_t)(Tb / Ts * 5999);
- 800b890:	edd7 6a0f 	vldr	s13, [r7, #60]	@ 0x3c
- 800b894:	ed97 7a0a 	vldr	s14, [r7, #40]	@ 0x28
- 800b898:	eec6 7a87 	vdiv.f32	s15, s13, s14
- 800b89c:	ed1f 7a1f 	vldr	s14, [pc, #-124]	@ 800b824 <svpwm_Control+0x2ec>
- 800b8a0:	ee67 7a87 	vmul.f32	s15, s15, s14
- 800b8a4:	eefc 7ae7 	vcvt.u32.f32	s15, s15
- 800b8a8:	ee17 3a90 	vmov	r3, s15
- 800b8ac:	633b      	str	r3, [r7, #48]	@ 0x30
-    uint32_t ccr_c = (uint32_t)(Tc / Ts * 5999);
- 800b8ae:	edd7 6a0e 	vldr	s13, [r7, #56]	@ 0x38
- 800b8b2:	ed97 7a0a 	vldr	s14, [r7, #40]	@ 0x28
- 800b8b6:	eec6 7a87 	vdiv.f32	s15, s13, s14
- 800b8ba:	ed1f 7a26 	vldr	s14, [pc, #-152]	@ 800b824 <svpwm_Control+0x2ec>
- 800b8be:	ee67 7a87 	vmul.f32	s15, s15, s14
- 800b8c2:	eefc 7ae7 	vcvt.u32.f32	s15, s15
- 800b8c6:	ee17 3a90 	vmov	r3, s15
- 800b8ca:	62fb      	str	r3, [r7, #44]	@ 0x2c
+    uint32_t ccr[3] = {
+        (uint32_t)(Ta / Ts * 5999),
+ 800b860:	edd7 6a12 	vldr	s13, [r7, #72]	@ 0x48
+ 800b864:	ed97 7a0e 	vldr	s14, [r7, #56]	@ 0x38
+ 800b868:	eec6 7a87 	vdiv.f32	s15, s13, s14
+ 800b86c:	ed9f 7a15 	vldr	s14, [pc, #84]	@ 800b8c4 <svpwm_Control+0x38c>
+ 800b870:	ee67 7a87 	vmul.f32	s15, s15, s14
+ 800b874:	eefc 7ae7 	vcvt.u32.f32	s15, s15
+ 800b878:	ee17 3a90 	vmov	r3, s15
+    uint32_t ccr[3] = {
+ 800b87c:	60fb      	str	r3, [r7, #12]
+        (uint32_t)(Tb / Ts * 5999),
+ 800b87e:	edd7 6a11 	vldr	s13, [r7, #68]	@ 0x44
+ 800b882:	ed97 7a0e 	vldr	s14, [r7, #56]	@ 0x38
+ 800b886:	eec6 7a87 	vdiv.f32	s15, s13, s14
+ 800b88a:	ed9f 7a0e 	vldr	s14, [pc, #56]	@ 800b8c4 <svpwm_Control+0x38c>
+ 800b88e:	ee67 7a87 	vmul.f32	s15, s15, s14
+ 800b892:	eefc 7ae7 	vcvt.u32.f32	s15, s15
+ 800b896:	ee17 3a90 	vmov	r3, s15
+    uint32_t ccr[3] = {
+ 800b89a:	613b      	str	r3, [r7, #16]
+        (uint32_t)(Tc / Ts * 5999)};
+ 800b89c:	edd7 6a10 	vldr	s13, [r7, #64]	@ 0x40
+ 800b8a0:	ed97 7a0e 	vldr	s14, [r7, #56]	@ 0x38
+ 800b8a4:	eec6 7a87 	vdiv.f32	s15, s13, s14
+ 800b8a8:	ed9f 7a06 	vldr	s14, [pc, #24]	@ 800b8c4 <svpwm_Control+0x38c>
+ 800b8ac:	ee67 7a87 	vmul.f32	s15, s15, s14
+ 800b8b0:	eefc 7ae7 	vcvt.u32.f32	s15, s15
+ 800b8b4:	ee17 3a90 	vmov	r3, s15
+    uint32_t ccr[3] = {
+ 800b8b8:	617b      	str	r3, [r7, #20]
 
-    if (ccr_a > 5999)
- 800b8cc:	6b7b      	ldr	r3, [r7, #52]	@ 0x34
- 800b8ce:	f241 726f 	movw	r2, #5999	@ 0x176f
- 800b8d2:	4293      	cmp	r3, r2
- 800b8d4:	d902      	bls.n	800b8dc <svpwm_Control+0x3a4>
-        ccr_a = 5999;
- 800b8d6:	f241 736f 	movw	r3, #5999	@ 0x176f
- 800b8da:	637b      	str	r3, [r7, #52]	@ 0x34
-    else if (ccr_a < 0)
-        ccr_a = 0;
-    if (ccr_b > 5999)
- 800b8dc:	6b3b      	ldr	r3, [r7, #48]	@ 0x30
- 800b8de:	f241 726f 	movw	r2, #5999	@ 0x176f
- 800b8e2:	4293      	cmp	r3, r2
- 800b8e4:	d902      	bls.n	800b8ec <svpwm_Control+0x3b4>
-        ccr_b = 5999;
- 800b8e6:	f241 736f 	movw	r3, #5999	@ 0x176f
- 800b8ea:	633b      	str	r3, [r7, #48]	@ 0x30
-    else if (ccr_b < 0)
-        ccr_b = 0;
-    if (ccr_c > 5999)
- 800b8ec:	6afb      	ldr	r3, [r7, #44]	@ 0x2c
- 800b8ee:	f241 726f 	movw	r2, #5999	@ 0x176f
- 800b8f2:	4293      	cmp	r3, r2
- 800b8f4:	d902      	bls.n	800b8fc <svpwm_Control+0x3c4>
-        ccr_c = 5999;
- 800b8f6:	f241 736f 	movw	r3, #5999	@ 0x176f
- 800b8fa:	62fb      	str	r3, [r7, #44]	@ 0x2c
-    else if (ccr_c < 0)
-        ccr_c = 0;
+    // 限制占空比在0到5999之间
+    for (int i = 0; i < 3; ++i)
+ 800b8ba:	2300      	movs	r3, #0
+ 800b8bc:	63fb      	str	r3, [r7, #60]	@ 0x3c
+ 800b8be:	e018      	b.n	800b8f2 <svpwm_Control+0x3ba>
+ 800b8c0:	3fddb3d7 	.word	0x3fddb3d7
+ 800b8c4:	45bb7800 	.word	0x45bb7800
+    {
+        if (ccr[i] > 5999)
+ 800b8c8:	6bfb      	ldr	r3, [r7, #60]	@ 0x3c
+ 800b8ca:	009b      	lsls	r3, r3, #2
+ 800b8cc:	3350      	adds	r3, #80	@ 0x50
+ 800b8ce:	443b      	add	r3, r7
+ 800b8d0:	f853 3c44 	ldr.w	r3, [r3, #-68]
+ 800b8d4:	f241 726f 	movw	r2, #5999	@ 0x176f
+ 800b8d8:	4293      	cmp	r3, r2
+ 800b8da:	d907      	bls.n	800b8ec <svpwm_Control+0x3b4>
+        {
+            ccr[i] = 5999;
+ 800b8dc:	6bfb      	ldr	r3, [r7, #60]	@ 0x3c
+ 800b8de:	009b      	lsls	r3, r3, #2
+ 800b8e0:	3350      	adds	r3, #80	@ 0x50
+ 800b8e2:	443b      	add	r3, r7
+ 800b8e4:	f241 726f 	movw	r2, #5999	@ 0x176f
+ 800b8e8:	f843 2c44 	str.w	r2, [r3, #-68]
+    for (int i = 0; i < 3; ++i)
+ 800b8ec:	6bfb      	ldr	r3, [r7, #60]	@ 0x3c
+ 800b8ee:	3301      	adds	r3, #1
+ 800b8f0:	63fb      	str	r3, [r7, #60]	@ 0x3c
+ 800b8f2:	6bfb      	ldr	r3, [r7, #60]	@ 0x3c
+ 800b8f4:	2b02      	cmp	r3, #2
+ 800b8f6:	dde7      	ble.n	800b8c8 <svpwm_Control+0x390>
+            ccr[i] = 0;
+        }
+    }
 
-    TIM1->CCR1 = ccr_a;
- 800b8fc:	4a07      	ldr	r2, [pc, #28]	@ (800b91c <svpwm_Control+0x3e4>)
- 800b8fe:	6b7b      	ldr	r3, [r7, #52]	@ 0x34
- 800b900:	6353      	str	r3, [r2, #52]	@ 0x34
-    TIM1->CCR2 = ccr_b;
- 800b902:	4a06      	ldr	r2, [pc, #24]	@ (800b91c <svpwm_Control+0x3e4>)
- 800b904:	6b3b      	ldr	r3, [r7, #48]	@ 0x30
- 800b906:	6393      	str	r3, [r2, #56]	@ 0x38
-    TIM1->CCR3 = ccr_c;
- 800b908:	4a04      	ldr	r2, [pc, #16]	@ (800b91c <svpwm_Control+0x3e4>)
- 800b90a:	6afb      	ldr	r3, [r7, #44]	@ 0x2c
- 800b90c:	63d3      	str	r3, [r2, #60]	@ 0x3c
+    // 更新TIM寄存器
+    TIM1->CCR1 = ccr[0];
+ 800b8f8:	4a07      	ldr	r2, [pc, #28]	@ (800b918 <svpwm_Control+0x3e0>)
+ 800b8fa:	68fb      	ldr	r3, [r7, #12]
+ 800b8fc:	6353      	str	r3, [r2, #52]	@ 0x34
+    TIM1->CCR2 = ccr[1];
+ 800b8fe:	4a06      	ldr	r2, [pc, #24]	@ (800b918 <svpwm_Control+0x3e0>)
+ 800b900:	693b      	ldr	r3, [r7, #16]
+ 800b902:	6393      	str	r3, [r2, #56]	@ 0x38
+    TIM1->CCR3 = ccr[2];
+ 800b904:	4a04      	ldr	r2, [pc, #16]	@ (800b918 <svpwm_Control+0x3e0>)
+ 800b906:	697b      	ldr	r3, [r7, #20]
+ 800b908:	63d3      	str	r3, [r2, #60]	@ 0x3c
 }
- 800b90e:	bf00      	nop
- 800b910:	374c      	adds	r7, #76	@ 0x4c
- 800b912:	46bd      	mov	sp, r7
- 800b914:	f85d 7b04 	ldr.w	r7, [sp], #4
- 800b918:	4770      	bx	lr
- 800b91a:	bf00      	nop
- 800b91c:	40010000 	.word	0x40010000
+ 800b90a:	bf00      	nop
+ 800b90c:	3754      	adds	r7, #84	@ 0x54
+ 800b90e:	46bd      	mov	sp, r7
+ 800b910:	f85d 7b04 	ldr.w	r7, [sp], #4
+ 800b914:	4770      	bx	lr
+ 800b916:	bf00      	nop
+ 800b918:	40010000 	.word	0x40010000
+ 800b91c:	00000000 	.word	0x00000000
 
 0800b920 <pll_Init_V>:
  * @param f 信号频率(典型值:50)
@@ -31637,10 +31626,6 @@ void pll_Control_I(pll_Signal_I *signal_I, pll_Signal_V *signal_V, float Iset, f
  800bfbc:	edc3 7a00 	vstr	s15, [r3]
   }
  800bfc0:	bf00      	nop
-    // // clarke逆变换
-    // arm_inv_clarke_f32(signal_I->park_inv_alpha, signal_I->park_inv_beta, &signal_I->output_a, &signal_I->output_b);
-    // // 根据a+b+c=0得出c相
-    // signal_I->output_c = -signal_I->output_a - signal_I->output_b;
 }
  800bfc2:	bf00      	nop
  800bfc4:	3750      	adds	r7, #80	@ 0x50

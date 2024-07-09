@@ -9677,8 +9677,9 @@ LOAD C:/ST/STM32CubeIDE_1.14.1/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.ext
                 0x0800b44e                pid
  *fill*         0x0800b536        0x2 
  .text.svpwm_Control
-                0x0800b538      0x3e8 ./User/Src/svpwm.o
+                0x0800b538      0x3e4 ./User/Src/svpwm.o
                 0x0800b538                svpwm_Control
+ *fill*         0x0800b91c        0x4 
  .text.pll_Init_V
                 0x0800b920      0x130 ./User/Src/three_phrase_pll.o
                 0x0800b920                pll_Init_V
@@ -10527,7 +10528,7 @@ LOAD C:/ST/STM32CubeIDE_1.14.1/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.ext
 LOAD C:/ST/STM32CubeIDE_1.14.1/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.12.3.rel1.win32_1.0.200.202406191623/tools/bin/../lib/gcc/arm-none-eabi/12.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+dp/hard\libm.a
 LOAD C:/ST/STM32CubeIDE_1.14.1/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.12.3.rel1.win32_1.0.200.202406191623/tools/bin/../lib/gcc/arm-none-eabi/12.3.1/thumb/v7e-m+dp/hard\libgcc.a
 
-.debug_info     0x00000000    0x2e2dc
+.debug_info     0x00000000    0x2e2e5
  .debug_info    0x00000000      0xffe ./Core/Src/dac.o
  .debug_info    0x00000ffe     0x15f6 ./Core/Src/freertos.o
  .debug_info    0x000025f4      0xa25 ./Core/Src/gpio.o
@@ -10566,15 +10567,15 @@ LOAD C:/ST/STM32CubeIDE_1.14.1/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.ext
  .debug_info    0x000255f1      0xc9b ./User/Src/ina228.o
  .debug_info    0x0002628c     0x116e ./User/Src/oled.o
  .debug_info    0x000273fa      0x150 ./User/Src/pid.o
- .debug_info    0x0002754a      0x497 ./User/Src/svpwm.o
- .debug_info    0x000279e1      0x761 ./User/Src/three_phrase_pll.o
- .debug_info    0x00028142     0x1069 ./User/Src/user_exit.o
- .debug_info    0x000291ab      0xa89 ./User/Src/user_global.o
- .debug_info    0x00029c34     0x1612 D:\User\Document\STM32_Project\EX_Three_Phase_Inverter_H743IIT6_Hollies\Drivers\CMSIS\DSP\Lib\GCC\libarm_cortexM7lfdp_math.a(arm_sin_f32.o)
- .debug_info    0x0002b246     0x1612 D:\User\Document\STM32_Project\EX_Three_Phase_Inverter_H743IIT6_Hollies\Drivers\CMSIS\DSP\Lib\GCC\libarm_cortexM7lfdp_math.a(arm_cos_f32.o)
- .debug_info    0x0002c858     0x1a84 D:\User\Document\STM32_Project\EX_Three_Phase_Inverter_H743IIT6_Hollies\Drivers\CMSIS\DSP\Lib\GCC\libarm_cortexM7lfdp_math.a(arm_common_tables.o)
+ .debug_info    0x0002754a      0x4a0 ./User/Src/svpwm.o
+ .debug_info    0x000279ea      0x761 ./User/Src/three_phrase_pll.o
+ .debug_info    0x0002814b     0x1069 ./User/Src/user_exit.o
+ .debug_info    0x000291b4      0xa89 ./User/Src/user_global.o
+ .debug_info    0x00029c3d     0x1612 D:\User\Document\STM32_Project\EX_Three_Phase_Inverter_H743IIT6_Hollies\Drivers\CMSIS\DSP\Lib\GCC\libarm_cortexM7lfdp_math.a(arm_sin_f32.o)
+ .debug_info    0x0002b24f     0x1612 D:\User\Document\STM32_Project\EX_Three_Phase_Inverter_H743IIT6_Hollies\Drivers\CMSIS\DSP\Lib\GCC\libarm_cortexM7lfdp_math.a(arm_cos_f32.o)
+ .debug_info    0x0002c861     0x1a84 D:\User\Document\STM32_Project\EX_Three_Phase_Inverter_H743IIT6_Hollies\Drivers\CMSIS\DSP\Lib\GCC\libarm_cortexM7lfdp_math.a(arm_common_tables.o)
 
-.debug_abbrev   0x00000000     0x621e
+.debug_abbrev   0x00000000     0x6227
  .debug_abbrev  0x00000000      0x231 ./Core/Src/dac.o
  .debug_abbrev  0x00000231      0x266 ./Core/Src/freertos.o
  .debug_abbrev  0x00000497      0x18d ./Core/Src/gpio.o
@@ -10613,13 +10614,13 @@ LOAD C:/ST/STM32CubeIDE_1.14.1/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.ext
  .debug_abbrev  0x00004f65      0x231 ./User/Src/ina228.o
  .debug_abbrev  0x00005196      0x2d3 ./User/Src/oled.o
  .debug_abbrev  0x00005469       0xc7 ./User/Src/pid.o
- .debug_abbrev  0x00005530      0x157 ./User/Src/svpwm.o
- .debug_abbrev  0x00005687      0x1ff ./User/Src/three_phrase_pll.o
- .debug_abbrev  0x00005886      0x1e0 ./User/Src/user_exit.o
- .debug_abbrev  0x00005a66      0x183 ./User/Src/user_global.o
- .debug_abbrev  0x00005be9      0x22c D:\User\Document\STM32_Project\EX_Three_Phase_Inverter_H743IIT6_Hollies\Drivers\CMSIS\DSP\Lib\GCC\libarm_cortexM7lfdp_math.a(arm_sin_f32.o)
- .debug_abbrev  0x00005e15      0x22c D:\User\Document\STM32_Project\EX_Three_Phase_Inverter_H743IIT6_Hollies\Drivers\CMSIS\DSP\Lib\GCC\libarm_cortexM7lfdp_math.a(arm_cos_f32.o)
- .debug_abbrev  0x00006041      0x1dd D:\User\Document\STM32_Project\EX_Three_Phase_Inverter_H743IIT6_Hollies\Drivers\CMSIS\DSP\Lib\GCC\libarm_cortexM7lfdp_math.a(arm_common_tables.o)
+ .debug_abbrev  0x00005530      0x160 ./User/Src/svpwm.o
+ .debug_abbrev  0x00005690      0x1ff ./User/Src/three_phrase_pll.o
+ .debug_abbrev  0x0000588f      0x1e0 ./User/Src/user_exit.o
+ .debug_abbrev  0x00005a6f      0x183 ./User/Src/user_global.o
+ .debug_abbrev  0x00005bf2      0x22c D:\User\Document\STM32_Project\EX_Three_Phase_Inverter_H743IIT6_Hollies\Drivers\CMSIS\DSP\Lib\GCC\libarm_cortexM7lfdp_math.a(arm_sin_f32.o)
+ .debug_abbrev  0x00005e1e      0x22c D:\User\Document\STM32_Project\EX_Three_Phase_Inverter_H743IIT6_Hollies\Drivers\CMSIS\DSP\Lib\GCC\libarm_cortexM7lfdp_math.a(arm_cos_f32.o)
+ .debug_abbrev  0x0000604a      0x1dd D:\User\Document\STM32_Project\EX_Three_Phase_Inverter_H743IIT6_Hollies\Drivers\CMSIS\DSP\Lib\GCC\libarm_cortexM7lfdp_math.a(arm_common_tables.o)
 
 .debug_aranges  0x00000000     0x1f78
  .debug_aranges
@@ -10974,7 +10975,7 @@ LOAD C:/ST/STM32CubeIDE_1.14.1/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.ext
  .debug_macro   0x0003d86a       0x10 ./User/Src/user_exit.o
  .debug_macro   0x0003d87a      0x364 ./User/Src/user_global.o
 
-.debug_line     0x00000000    0x2b474
+.debug_line     0x00000000    0x2b4a7
  .debug_line    0x00000000      0x97b ./Core/Src/dac.o
  .debug_line    0x0000097b      0xcdc ./Core/Src/freertos.o
  .debug_line    0x00001657      0x969 ./Core/Src/gpio.o
@@ -11013,15 +11014,15 @@ LOAD C:/ST/STM32CubeIDE_1.14.1/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.ext
  .debug_line    0x000262db      0xbaa ./User/Src/ina228.o
  .debug_line    0x00026e85     0x10fe ./User/Src/oled.o
  .debug_line    0x00027f83       0xf0 ./User/Src/pid.o
- .debug_line    0x00028073      0xac4 ./User/Src/svpwm.o
- .debug_line    0x00028b37      0xd36 ./User/Src/three_phrase_pll.o
- .debug_line    0x0002986d      0xa62 ./User/Src/user_exit.o
- .debug_line    0x0002a2cf      0x9b7 ./User/Src/user_global.o
- .debug_line    0x0002ac86      0x2d1 D:\User\Document\STM32_Project\EX_Three_Phase_Inverter_H743IIT6_Hollies\Drivers\CMSIS\DSP\Lib\GCC\libarm_cortexM7lfdp_math.a(arm_sin_f32.o)
- .debug_line    0x0002af57      0x2da D:\User\Document\STM32_Project\EX_Three_Phase_Inverter_H743IIT6_Hollies\Drivers\CMSIS\DSP\Lib\GCC\libarm_cortexM7lfdp_math.a(arm_cos_f32.o)
- .debug_line    0x0002b231      0x243 D:\User\Document\STM32_Project\EX_Three_Phase_Inverter_H743IIT6_Hollies\Drivers\CMSIS\DSP\Lib\GCC\libarm_cortexM7lfdp_math.a(arm_common_tables.o)
+ .debug_line    0x00028073      0xaf7 ./User/Src/svpwm.o
+ .debug_line    0x00028b6a      0xd36 ./User/Src/three_phrase_pll.o
+ .debug_line    0x000298a0      0xa62 ./User/Src/user_exit.o
+ .debug_line    0x0002a302      0x9b7 ./User/Src/user_global.o
+ .debug_line    0x0002acb9      0x2d1 D:\User\Document\STM32_Project\EX_Three_Phase_Inverter_H743IIT6_Hollies\Drivers\CMSIS\DSP\Lib\GCC\libarm_cortexM7lfdp_math.a(arm_sin_f32.o)
+ .debug_line    0x0002af8a      0x2da D:\User\Document\STM32_Project\EX_Three_Phase_Inverter_H743IIT6_Hollies\Drivers\CMSIS\DSP\Lib\GCC\libarm_cortexM7lfdp_math.a(arm_cos_f32.o)
+ .debug_line    0x0002b264      0x243 D:\User\Document\STM32_Project\EX_Three_Phase_Inverter_H743IIT6_Hollies\Drivers\CMSIS\DSP\Lib\GCC\libarm_cortexM7lfdp_math.a(arm_common_tables.o)
 
-.debug_str      0x00000000   0x172a30
+.debug_str      0x00000000   0x172a1e
  .debug_str     0x00000000   0x15c45f ./Core/Src/dac.o
                              0x15c972 (size before relaxing)
  .debug_str     0x0015c45f     0x83b5 ./Core/Src/freertos.o
@@ -11098,19 +11099,19 @@ LOAD C:/ST/STM32CubeIDE_1.14.1/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.ext
                              0x15ca70 (size before relaxing)
  .debug_str     0x00171b87       0x29 ./User/Src/pid.o
                                0x2e93 (size before relaxing)
- .debug_str     0x00171bb0       0x7f ./User/Src/svpwm.o
-                             0x15c64f (size before relaxing)
- .debug_str     0x00171c2f      0x17e ./User/Src/three_phrase_pll.o
+ .debug_str     0x00171bb0       0x6d ./User/Src/svpwm.o
+                             0x15c63d (size before relaxing)
+ .debug_str     0x00171c1d      0x17e ./User/Src/three_phrase_pll.o
                              0x15c85e (size before relaxing)
- .debug_str     0x00171dad       0x18 ./User/Src/user_exit.o
+ .debug_str     0x00171d9b       0x18 ./User/Src/user_exit.o
                              0x15e933 (size before relaxing)
- .debug_str     0x00171dc5       0x29 ./User/Src/user_global.o
+ .debug_str     0x00171db3       0x29 ./User/Src/user_global.o
                              0x15e359 (size before relaxing)
- .debug_str     0x00171dee      0xbe7 D:\User\Document\STM32_Project\EX_Three_Phase_Inverter_H743IIT6_Hollies\Drivers\CMSIS\DSP\Lib\GCC\libarm_cortexM7lfdp_math.a(arm_sin_f32.o)
+ .debug_str     0x00171ddc      0xbe7 D:\User\Document\STM32_Project\EX_Three_Phase_Inverter_H743IIT6_Hollies\Drivers\CMSIS\DSP\Lib\GCC\libarm_cortexM7lfdp_math.a(arm_sin_f32.o)
                                 0xd42 (size before relaxing)
- .debug_str     0x001729d5       0x2d D:\User\Document\STM32_Project\EX_Three_Phase_Inverter_H743IIT6_Hollies\Drivers\CMSIS\DSP\Lib\GCC\libarm_cortexM7lfdp_math.a(arm_cos_f32.o)
+ .debug_str     0x001729c3       0x2d D:\User\Document\STM32_Project\EX_Three_Phase_Inverter_H743IIT6_Hollies\Drivers\CMSIS\DSP\Lib\GCC\libarm_cortexM7lfdp_math.a(arm_cos_f32.o)
                                 0xd42 (size before relaxing)
- .debug_str     0x00172a02       0x2e D:\User\Document\STM32_Project\EX_Three_Phase_Inverter_H743IIT6_Hollies\Drivers\CMSIS\DSP\Lib\GCC\libarm_cortexM7lfdp_math.a(arm_common_tables.o)
+ .debug_str     0x001729f0       0x2e D:\User\Document\STM32_Project\EX_Three_Phase_Inverter_H743IIT6_Hollies\Drivers\CMSIS\DSP\Lib\GCC\libarm_cortexM7lfdp_math.a(arm_common_tables.o)
                                 0xd1d (size before relaxing)
 
 .comment        0x00000000       0xb8

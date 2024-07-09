@@ -2,5 +2,5 @@
 ../User/Src/three_phrase_pll.c:41:6:pll_Init_I	32	static
 ../User/Src/three_phrase_pll.c:65:6:pll_Control_V	80	static
 ../User/Src/three_phrase_pll.c:84:6:pll_Control_I	112	static
-../User/Src/three_phrase_pll.c:118:6:pll_Free_V	16	static
-../User/Src/three_phrase_pll.c:128:6:pll_Free_I	16	static
+../User/Src/three_phrase_pll.c:114:6:pll_Free_V	16	static
+../User/Src/three_phrase_pll.c:124:6:pll_Free_I	16	static
