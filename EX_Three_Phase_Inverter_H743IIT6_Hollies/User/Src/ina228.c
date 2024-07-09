@@ -122,11 +122,11 @@ float INA228_getVSHUNT_mV(INA228_Handle sensor)
 	// 转换为毫伏
 	if (sensor->adcrange == INA228_config_register_adcrange_4096mV)
 	{
-		data = (data * 78.125) / 1000000;
+		data = (data * 78.125f) / 1000000;
 	}
 	else
 	{
-		data = (data * 312.5) / 1000000;
+		data = (data * 312.5f) / 1000000;
 	}
 
 	return data;
@@ -156,7 +156,7 @@ float INA228_getVBUS_V(INA228_Handle sensor)
 	}
 
 	// Convert to V
-	data = (data * 195.3125) / 1000000;
+	data = (data * 195.3125f) / 1000000;
 
 	return data;
 }
@@ -182,7 +182,7 @@ float INA228_getDIETEMP_C(INA228_Handle sensor)
 	}
 
 	// 转换为摄氏度
-	data = (data * 7.8125) / 1000;
+	data = (data * 7.8125f) / 1000;
 
 	return data;
 }
@@ -197,7 +197,7 @@ float INA228_getDIETEMP_F(INA228_Handle sensor)
 	float data = INA228_getDIETEMP_C(sensor);
 
 	// 转换为华氏度
-	data = (data * (9 / 5)) + 32;
+	data = (data * (9.f / 5.f)) + 32.f;
 
 	return data;
 }
@@ -266,7 +266,7 @@ float INA228_getPOWER_W(INA228_Handle sensor)
 {
 	float data = INA228_getPOWER_signedLSB(sensor);
 
-	data = data * sensor->currentlsb * 3.2;
+	data = data * sensor->currentlsb * 3.2f;
 
 	return data;
 }
@@ -295,7 +295,7 @@ double INA228_getENERGY_J(INA228_Handle sensor)
 {
 	double data = INA228_getENERGY_signedLSB(sensor);
 
-	data = data * sensor->currentlsb * 51.2;
+	data = data * sensor->currentlsb * 51.2f;
 
 	return data;
 }
