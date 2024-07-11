@@ -4,7 +4,6 @@
 #include "ina228.h"
 #include "three_phrase_pll.h"
 
-extern float adcValue[8];
 extern const INA228_Handle INA228_0;
 extern float U;
 extern float I;

@@ -21,6 +21,11 @@ void pll_Init_V(pll_Signal_V **signal, float f, uint16_t F, float Umax)
     // 初始化赋值
     (*signal)->basic->input_a = 0.f;
     (*signal)->basic->input_b = 0.f;
+    (*signal)->basic->input_c = 0.f;
+
+    (*signal)->basic->rms_a = 0.f;
+    (*signal)->basic->rms_b = 0.f;
+    (*signal)->basic->rms_c = 0.f;
 
     (*signal)->theta = 0.f;
     (*signal)->basic->omiga0 = 2 * PI * f; // f典型值50
@@ -48,6 +53,11 @@ void pll_Init_I(pll_Signal_I **signal, float f, uint16_t F)
     // 初始化赋值
     (*signal)->basic->input_a = 0.f;
     (*signal)->basic->input_b = 0.f;
+    (*signal)->basic->input_c = 0.f;
+
+    (*signal)->basic->rms_a = 0.f;
+    (*signal)->basic->rms_b = 0.f;
+    (*signal)->basic->rms_c = 0.f;
 
     (*signal)->basic->omiga0 = 2.f * PI * f; // f典型值50
     (*signal)->basic->Ts = 1.f / F;          // F典型值20000

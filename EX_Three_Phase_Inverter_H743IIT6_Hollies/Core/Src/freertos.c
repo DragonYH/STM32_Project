@@ -202,12 +202,25 @@ void StartOledShow(void *argument)
   /* Infinite loop */
   for (;;)
   {
-    sprintf((char *)text, "Ua: %6.3f Ub: %6.3f", signal_V->basic->input_a, signal_V->basic->input_b);
+    sprintf((char *)text, "Ua: %5.2f Ub: %5.2f", signal_V->basic->rms_a, signal_V->basic->rms_b);
     OLED_ShowString(0, 0, text, 12);
-    sprintf((char *)text, "Ia: %6.3f Ib: %6.3f", adcValue[3], adcValue[4]);
+    sprintf((char *)text, "Uc: %5.2f Ia: %5.2f", signal_V->basic->rms_c, signal_I->basic->rms_a);
     OLED_ShowString(0, 12, text, 12);
-    sprintf((char *)text, "cnt: %ld", __HAL_TIM_GET_COMPARE(&htim1, TIM_CHANNEL_1));
+    sprintf((char *)text, "Ib: %5.2f Ic: %5.2f", signal_I->basic->rms_b, signal_I->basic->rms_c);
     OLED_ShowString(0, 24, text, 12);
+    sprintf((char *)text, "U: %5.2f I: %5.2f", U, I);
+    OLED_ShowString(0, 36, text, 12);
+    float n = (signal_V->basic->rms_a * signal_I->basic->rms_a + signal_V->basic->rms_b * signal_I->basic->rms_b + signal_V->basic->rms_c * signal_I->basic->rms_c) / (U * I) * 100.f;
+    if (n > 100.f)
+    {
+      n = 100.f;
+    }
+    else if (n < 0.f)
+    {
+      n = 0.f;
+    }
+    sprintf((char *)text, "cnt: %4ld n: %5.2f%%", __HAL_TIM_GET_COMPARE(&htim1, TIM_CHANNEL_1), n);
+    OLED_ShowString(0, 48, text, 12);
     OLED_Refresh();
     osDelay(100);
   }
@@ -245,21 +258,26 @@ void StartUsartDebug(void *argument)
 {
   /* USER CODE BEGIN StartUsartDebug */
   static uint8_t text[32] = {0};
-  osThreadId_t currentTaskId[] = {stateLEDHandle, oledShowHandle, dcSampHandle, usartDebugHandle};
-  osThreadAttr_t currentTaskAttr[] = {stateLED_attributes, oledShow_attributes, dcSamp_attributes, usartDebug_attributes};
-  static int i = 0;
+  // osThreadId_t currentTaskId[] = {stateLEDHandle, oledShowHandle, dcSampHandle, usartDebugHandle};
+  // osThreadAttr_t currentTaskAttr[] = {stateLED_attributes, oledShow_attributes, dcSamp_attributes, usartDebug_attributes};
+  // static int i = 0;
   /* Infinite loop */
   for (;;)
   {
     // 输出各任务堆栈使用情况
-    sprintf((char *)text, "%d.%-10s: %4ld / %4ld \r\n", i, pcTaskGetTaskName(currentTaskId[i]), uxTaskGetStackHighWaterMark(currentTaskId[i]), currentTaskAttr[i].stack_size);
+    // sprintf((char *)text, "%d.%-10s: %4ld / %4ld \r\n", i, pcTaskGetTaskName(currentTaskId[i]), uxTaskGetStackHighWaterMark(currentTaskId[i]), currentTaskAttr[i].stack_size);
+    // CDC_Transmit_FS(text, 32);
+    // memset(text, 0, 32);
+    // i++;
+    // if (i >= 4)
+    // {
+    //   i = 0;
+    // }
+    // osDelay(500);
+
+    sprintf((char *)text, "%5.2f %5.2f\n", signal_V->basic->rms_a, signal_V->basic->input_a);
     CDC_Transmit_FS(text, 32);
     memset(text, 0, 32);
-    i++;
-    if (i >= 4)
-    {
-      i = 0;
-    }
     osDelay(500);
   }
   /* USER CODE END StartUsartDebug */

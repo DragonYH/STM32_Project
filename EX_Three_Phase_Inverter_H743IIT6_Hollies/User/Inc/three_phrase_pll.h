@@ -11,7 +11,10 @@ typedef struct pll_Signal_Basic
     // 基本变量
     float input_a; // a相输入
     float input_b; // b相输入
-    float rms;     // 电压有效值
+    float input_c; // c相输入
+    float rms_a;   // a相有效值
+    float rms_b;   // b相有效值
+    float rms_c;   // c相有效值
     // clarke变换相关变量
     float clarke_alpha; // alpha分量
     float clarke_beta;  // beta分量

@@ -1,8 +1,5 @@
 #include "user_global.h"
 
-/* AD7606采样数值存储 */
-float adcValue[8] = {0};
-
 /* ina228配置 */
 static INA228_State INA228_0_state = {
     /* 配置和设置 */

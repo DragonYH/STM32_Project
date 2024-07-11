@@ -2,4 +2,4 @@
 ../Core/Src/main.c:149:6:SystemClock_Config	5
 ../Core/Src/main.c:214:6:PeriphCommonClock_Config	2
 ../Core/Src/main.c:242:6:MPU_Config	1
-../Core/Src/main.c:272:6:Error_Handler	1
+../Core/Src/main.c:280:6:Error_Handler	1
