@@ -24,9 +24,10 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
         signal_I->basic->input_b = adcValue[3] * 2.2258065f;
         signal_I->basic->input_c = adcValue[5] * 2.2258065f;
         // 处理电压数据，将线电压转为相电压
-        float Uab = adcValue[2] * 205.0372569f;
-        float Ubc = adcValue[4] * 206.1566031f;
-        float Uca = adcValue[6] * 206.3359242f;
+        float Uab = adcValue[2] * 38.423350f;
+        float Ubc = adcValue[4] * 38.669998f;
+        float Uca = adcValue[6] * 38.560814f;
+
         signal_V->basic->input_a = (Uab - Uca) / 3.f;
         signal_V->basic->input_b = (Ubc - Uab) / 3.f;
         signal_V->basic->input_c = (Uca - Ubc) / 3.f;
@@ -35,8 +36,8 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
         temp_V2 = signal_V->basic->input_b;
         // 模拟三相输入
         volatile static uint16_t cnt = 0;
-        signal_V->basic->input_a = 10.f * arm_sin_f32(cnt * 2 * PI / 400);
-        signal_V->basic->input_b = 10.f * arm_sin_f32(cnt * 2 * PI / 400 - 2 * PI / 3);
+        signal_V->basic->input_a = 11.f * arm_sin_f32(cnt * 2 * PI / 400);
+        signal_V->basic->input_b = 11.f * arm_sin_f32(cnt * 2 * PI / 400 - 2 * PI / 3);
         // 锁相控制
         pll_Control_V(signal_V);
         // 电流内环控制
@@ -71,15 +72,5 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
             arm_rms_f32(I_rms_b, 400, &signal_I->basic->rms_b);
             arm_rms_f32(I_rms_c, 400, &signal_I->basic->rms_c);
         }
-    }
-}
-/**
- * @brief  定时器中断
- */
-void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
-{
-    if (htim->Instance == TIM6)
-    {
-        HAL_IncTick();
     }
 }

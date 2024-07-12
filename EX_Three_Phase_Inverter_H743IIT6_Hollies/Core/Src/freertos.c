@@ -38,6 +38,7 @@
 #include "dac.h"
 #include "usb_device.h"
 #include "usbd_cdc_if.h"
+#include "pid.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -87,16 +88,26 @@ const osThreadAttr_t usartDebug_attributes = {
     .stack_size = 256 * 4,
     .priority = (osPriority_t)osPriorityNormal,
 };
+/* Definitions for acVControl */
+osThreadId_t acVControlHandle;
+const osThreadAttr_t acVControl_attributes = {
+    .name = "acVControl",
+    .stack_size = 256 * 4,
+    .priority = (osPriority_t)osPriorityHigh,
+};
 
 /* Private function prototypes -----------------------------------------------*/
 /* USER CODE BEGIN FunctionPrototypes */
-
+void appOLEDShow();
+void appTaskStackShow();
+void appACVControl();
 /* USER CODE END FunctionPrototypes */
 
 void StartStateLED(void *argument);
 void StartOledShow(void *argument);
 void StartDcSamp(void *argument);
 void StartUsartDebug(void *argument);
+void StartACVContorl(void *argument);
 
 extern void MX_USB_DEVICE_Init(void);
 void MX_FREERTOS_Init(void); /* (MISRA C 2004 rule 8.1) */
@@ -150,6 +161,9 @@ void MX_FREERTOS_Init(void)
   /* creation of usartDebug */
   usartDebugHandle = osThreadNew(StartUsartDebug, NULL, &usartDebug_attributes);
 
+  /* creation of acVControl */
+  acVControlHandle = osThreadNew(StartACVContorl, NULL, &acVControl_attributes);
+
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
   /* USER CODE END RTOS_THREADS */
@@ -198,30 +212,10 @@ void StartStateLED(void *argument)
 void StartOledShow(void *argument)
 {
   /* USER CODE BEGIN StartOledShow */
-  static uint8_t text[32] = {0};
   /* Infinite loop */
   for (;;)
   {
-    sprintf((char *)text, "Ua: %5.2f Ub: %5.2f", signal_V->basic->rms_a, signal_V->basic->rms_b);
-    OLED_ShowString(0, 0, text, 12);
-    sprintf((char *)text, "Uc: %5.2f Ia: %5.2f", signal_V->basic->rms_c, signal_I->basic->rms_a);
-    OLED_ShowString(0, 12, text, 12);
-    sprintf((char *)text, "Ib: %5.2f Ic: %5.2f", signal_I->basic->rms_b, signal_I->basic->rms_c);
-    OLED_ShowString(0, 24, text, 12);
-    sprintf((char *)text, "U: %5.2f I: %5.2f", U, I);
-    OLED_ShowString(0, 36, text, 12);
-    float n = (signal_V->basic->rms_a * signal_I->basic->rms_a + signal_V->basic->rms_b * signal_I->basic->rms_b + signal_V->basic->rms_c * signal_I->basic->rms_c) / (U * I) * 100.f;
-    if (n > 100.f)
-    {
-      n = 100.f;
-    }
-    else if (n < 0.f)
-    {
-      n = 0.f;
-    }
-    sprintf((char *)text, "cnt: %4ld n: %5.2f%%", __HAL_TIM_GET_COMPARE(&htim1, TIM_CHANNEL_1), n);
-    OLED_ShowString(0, 48, text, 12);
-    OLED_Refresh();
+    appOLEDShow();
     osDelay(100);
   }
   /* USER CODE END StartOledShow */
@@ -258,23 +252,9 @@ void StartUsartDebug(void *argument)
 {
   /* USER CODE BEGIN StartUsartDebug */
   static uint8_t text[32] = {0};
-  // osThreadId_t currentTaskId[] = {stateLEDHandle, oledShowHandle, dcSampHandle, usartDebugHandle};
-  // osThreadAttr_t currentTaskAttr[] = {stateLED_attributes, oledShow_attributes, dcSamp_attributes, usartDebug_attributes};
-  // static int i = 0;
   /* Infinite loop */
   for (;;)
   {
-    // 输出各任务堆栈使用情况
-    // sprintf((char *)text, "%d.%-10s: %4ld / %4ld \r\n", i, pcTaskGetTaskName(currentTaskId[i]), uxTaskGetStackHighWaterMark(currentTaskId[i]), currentTaskAttr[i].stack_size);
-    // CDC_Transmit_FS(text, 32);
-    // memset(text, 0, 32);
-    // i++;
-    // if (i >= 4)
-    // {
-    //   i = 0;
-    // }
-    // osDelay(500);
-
     sprintf((char *)text, "%5.2f %5.2f\n", signal_V->basic->rms_a, signal_V->basic->input_a);
     CDC_Transmit_FS(text, 32);
     memset(text, 0, 32);
@@ -283,7 +263,85 @@ void StartUsartDebug(void *argument)
   /* USER CODE END StartUsartDebug */
 }
 
+/* USER CODE BEGIN Header_StartACVContorl */
+/**
+ * @brief Function implementing the acVControl thread.
+ * @param argument: Not used
+ * @retval None
+ */
+/* USER CODE END Header_StartACVContorl */
+void StartACVContorl(void *argument)
+{
+  /* USER CODE BEGIN StartACVContorl */
+  /* Infinite loop */
+  for (;;)
+  {
+    appACVControl();
+    osDelay(25);
+  }
+  /* USER CODE END StartACVContorl */
+}
+
 /* Private application code --------------------------------------------------*/
 /* USER CODE BEGIN Application */
+
+/**
+ * @brief OLED显示
+ */
+void appOLEDShow()
+{
+  static uint8_t text[32] = {0};
+  sprintf((char *)text, "Ua: %5.2f Ub: %5.2f", signal_V->basic->rms_a, signal_V->basic->rms_b);
+  OLED_ShowString(0, 0, text, 12);
+  sprintf((char *)text, "Uc: %5.2f Ia: %5.2f", signal_V->basic->rms_c, signal_I->basic->rms_a);
+  OLED_ShowString(0, 12, text, 12);
+  sprintf((char *)text, "Ib: %5.2f Ic: %5.2f", signal_I->basic->rms_b, signal_I->basic->rms_c);
+  OLED_ShowString(0, 24, text, 12);
+  sprintf((char *)text, "U: %5.2f I: %5.2f", U, I);
+  OLED_ShowString(0, 36, text, 12);
+  float n = (signal_V->basic->rms_a * signal_I->basic->rms_a + signal_V->basic->rms_b * signal_I->basic->rms_b + signal_V->basic->rms_c * signal_I->basic->rms_c) / (U * I) * 100.f;
+  if (n > 100.f)
+  {
+    n = 100.f;
+  }
+  else if (n < 0.f)
+  {
+    n = 0.f;
+  }
+  sprintf((char *)text, "cnt: %4ld n: %5.2f%%", __HAL_TIM_GET_COMPARE(&htim1, TIM_CHANNEL_1), n);
+  OLED_ShowString(0, 48, text, 12);
+  OLED_Refresh();
+}
+
+/**
+ * @brief 任务剩余堆栈输出
+ */
+void appTaskStackShow()
+{
+  osThreadId_t currentTaskId[] = {stateLEDHandle, oledShowHandle, dcSampHandle, usartDebugHandle};
+  osThreadAttr_t currentTaskAttr[] = {stateLED_attributes, oledShow_attributes, dcSamp_attributes, usartDebug_attributes};
+  static int i = 0;
+
+  static uint8_t text[32] = {0};
+  sprintf((char *)text, "%d.%-10s: %4ld / %4ld \r\n", i, pcTaskGetTaskName(currentTaskId[i]), uxTaskGetStackHighWaterMark(currentTaskId[i]), currentTaskAttr[i].stack_size);
+  CDC_Transmit_FS(text, 32);
+  memset(text, 0, 32);
+  i++;
+  if (i >= 4)
+  {
+    i = 0;
+  }
+}
+
+/**
+ * @brief 交流逆变电压控制
+ */
+void appACVControl()
+{
+  static PID pidACV;
+  pid_Init(&pidACV, 0.01f, 0.1f, 0, 1.f, 0.f);
+  pid(&pidACV, 5.f, signal_V->basic->rms_a);
+  M = pidACV.out;
+}
 
 /* USER CODE END Application */

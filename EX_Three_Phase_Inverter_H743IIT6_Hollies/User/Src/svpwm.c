@@ -1,6 +1,7 @@
 #include "svpwm.h"
 #include "tim.h"
 #include "dac.h"
+#include "user_global.h"
 
 /**
  * @brief  SVPWM控制
@@ -11,9 +12,9 @@ void svpwm_Control(pll_Signal_V *signal, float Udc)
 {
     // 电压标幺化
     float Ts = signal->basic->Ts;
-    float Ubase = Udc / 1.7320508f;                     // 基础电压
-    float Ualpha = signal->basic->clarke_alpha / Ubase; // 标幺化Clarke变换后的α轴电压
-    float Ubeta = signal->basic->clarke_beta / Ubase;   // 标幺化Clarke变换后的β轴电压
+    float Ubase = Udc / 1.7320508f;                         // 基础电压
+    float Ualpha = M * signal->basic->clarke_alpha / Ubase; // 标幺化Clarke变换后的α轴电压
+    float Ubeta = M * signal->basic->clarke_beta / Ubase;   // 标幺化Clarke变换后的β轴电压
 
     // 计算中间变量
     float Ualpha_ = 1.7320508f * Ualpha * Ts;
