@@ -31,8 +31,10 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
         // 锁相控制
         pll_Control_V(signal_V);
 
+#if RectifierOrInverter
         // 电流内环控制
         pll_Control_I(signal_I, signal_V, 1.f, 1.f);
+#endif
 
         // svpwm调制
         svpwm_Control(signal_I);

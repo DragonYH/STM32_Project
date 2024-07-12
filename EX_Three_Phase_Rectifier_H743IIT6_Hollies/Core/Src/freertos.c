@@ -298,7 +298,10 @@ void StartACVContorl(void *argument)
   /* Infinite loop */
   for (;;)
   {
-    // appACVControl();
+#if RectifierOrInverter
+    vTaskDelete(NULL);
+#endif
+    appACVControl();
     osDelay(25);
   }
   /* USER CODE END StartACVContorl */

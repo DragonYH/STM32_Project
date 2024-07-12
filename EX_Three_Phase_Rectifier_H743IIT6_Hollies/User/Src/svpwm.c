@@ -7,12 +7,21 @@
  * @brief  SVPWM控制
  * @param  signal PLL信号输入结构体指针
  */
+#if RectifierOrInverter
 void svpwm_Control(pll_Signal_I *signal)
+#else
+void svpwm_Control(pll_Signal_V *signal)
+#endif
 {
     // 计算中间变量
     float Ts = signal->basic->Ts;
+#if RectifierOrInverter
     float Ualpha = signal->park_inv_alpha;
     float Ubeta = signal->park_inv_beta;
+#else
+    float Ualpha = M * signal->basic->clarke_alpha;
+    float Ubeta = M * signal->basic->clarke_beta;
+#endif
 
     float Ualpha_ = 1.7320508f * Ualpha * Ts;
     float Ubeta_ = Ubeta * Ts;
