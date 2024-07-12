@@ -63,37 +63,44 @@
 /* Definitions for stateLED */
 osThreadId_t stateLEDHandle;
 const osThreadAttr_t stateLED_attributes = {
-  .name = "stateLED",
-  .stack_size = 128 * 4,
-  .priority = (osPriority_t) osPriorityNormal,
+    .name = "stateLED",
+    .stack_size = 128 * 4,
+    .priority = (osPriority_t)osPriorityNormal,
 };
 /* Definitions for oledShow */
 osThreadId_t oledShowHandle;
 const osThreadAttr_t oledShow_attributes = {
-  .name = "oledShow",
-  .stack_size = 512 * 4,
-  .priority = (osPriority_t) osPriorityNormal,
+    .name = "oledShow",
+    .stack_size = 512 * 4,
+    .priority = (osPriority_t)osPriorityNormal,
 };
 /* Definitions for dcSamp */
 osThreadId_t dcSampHandle;
 const osThreadAttr_t dcSamp_attributes = {
-  .name = "dcSamp",
-  .stack_size = 256 * 4,
-  .priority = (osPriority_t) osPriorityHigh,
+    .name = "dcSamp",
+    .stack_size = 256 * 4,
+    .priority = (osPriority_t)osPriorityHigh,
 };
 /* Definitions for usartDebug */
 osThreadId_t usartDebugHandle;
 const osThreadAttr_t usartDebug_attributes = {
-  .name = "usartDebug",
-  .stack_size = 256 * 4,
-  .priority = (osPriority_t) osPriorityNormal,
+    .name = "usartDebug",
+    .stack_size = 256 * 4,
+    .priority = (osPriority_t)osPriorityNormal,
 };
 /* Definitions for acVControl */
 osThreadId_t acVControlHandle;
 const osThreadAttr_t acVControl_attributes = {
-  .name = "acVControl",
-  .stack_size = 256 * 4,
-  .priority = (osPriority_t) osPriorityHigh,
+    .name = "acVControl",
+    .stack_size = 256 * 4,
+    .priority = (osPriority_t)osPriorityHigh,
+};
+/* Definitions for circuitProtect */
+osThreadId_t circuitProtectHandle;
+const osThreadAttr_t circuitProtect_attributes = {
+    .name = "circuitProtect",
+    .stack_size = 128 * 4,
+    .priority = (osPriority_t)osPriorityHigh,
 };
 
 /* Private function prototypes -----------------------------------------------*/
@@ -108,21 +115,21 @@ void StartOledShow(void *argument);
 void StartDcSamp(void *argument);
 void StartUsartDebug(void *argument);
 void StartACVContorl(void *argument);
+void StartCircuitProtect(void *argument);
 
 extern void MX_USB_DEVICE_Init(void);
 void MX_FREERTOS_Init(void); /* (MISRA C 2004 rule 8.1) */
 
 /**
-  * @brief  FreeRTOS initialization
-  * @param  None
-  * @retval None
-  */
-void MX_FREERTOS_Init(void) {
+ * @brief  FreeRTOS initialization
+ * @param  None
+ * @retval None
+ */
+void MX_FREERTOS_Init(void)
+{
   /* USER CODE BEGIN Init */
-  OLED_Init();
   ad7606_Init();
-  INA228_config(INA228_0);
-  pll_Init_V(&signal_V, 50, 20000, 10.f);
+  pll_Init_V(&signal_V, 50, 20000);
   pll_Init_I(&signal_I, 50, 20000);
   HAL_TIMEx_PWMN_Start(&htim1, TIM_CHANNEL_1);
   HAL_TIMEx_PWMN_Start(&htim1, TIM_CHANNEL_2);
@@ -163,6 +170,9 @@ void MX_FREERTOS_Init(void) {
   /* creation of acVControl */
   acVControlHandle = osThreadNew(StartACVContorl, NULL, &acVControl_attributes);
 
+  /* creation of circuitProtect */
+  circuitProtectHandle = osThreadNew(StartCircuitProtect, NULL, &circuitProtect_attributes);
+
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
   /* USER CODE END RTOS_THREADS */
@@ -170,7 +180,6 @@ void MX_FREERTOS_Init(void) {
   /* USER CODE BEGIN RTOS_EVENTS */
   /* add events, ... */
   /* USER CODE END RTOS_EVENTS */
-
 }
 
 /* USER CODE BEGIN Header_StartStateLED */
@@ -188,16 +197,27 @@ void StartStateLED(void *argument)
   /* Infinite loop */
   for (;;)
   {
-    HAL_GPIO_TogglePin(GPIOI, GPIO_PIN_0);
-    osDelay(100);
-    HAL_GPIO_TogglePin(GPIOI, GPIO_PIN_0);
-    osDelay(200);
-    HAL_GPIO_TogglePin(GPIOI, GPIO_PIN_0);
-    osDelay(100);
-    HAL_GPIO_TogglePin(GPIOI, GPIO_PIN_0);
-    osDelay(200);
-    HAL_GPIO_WritePin(GPIOI, GPIO_PIN_1, GPIO_PIN_RESET);
-    osDelay(1000);
+    switch (runState)
+    {
+    case 0: // 正常运行
+      HAL_GPIO_TogglePin(GPIOI, GPIO_PIN_0);
+      osDelay(100);
+      HAL_GPIO_TogglePin(GPIOI, GPIO_PIN_0);
+      osDelay(200);
+      HAL_GPIO_TogglePin(GPIOI, GPIO_PIN_0);
+      osDelay(100);
+      HAL_GPIO_TogglePin(GPIOI, GPIO_PIN_0);
+      osDelay(200);
+      HAL_GPIO_WritePin(GPIOI, GPIO_PIN_1, GPIO_PIN_RESET);
+      osDelay(1000);
+      break;
+    case 1: // 保护状态
+      HAL_GPIO_TogglePin(GPIOI, GPIO_PIN_0);
+      osDelay(100);
+      break;
+    default:
+      break;
+    }
   }
   /* USER CODE END StartStateLED */
 }
@@ -212,6 +232,7 @@ void StartStateLED(void *argument)
 void StartOledShow(void *argument)
 {
   /* USER CODE BEGIN StartOledShow */
+  OLED_Init();
   /* Infinite loop */
   for (;;)
   {
@@ -231,6 +252,7 @@ void StartOledShow(void *argument)
 void StartDcSamp(void *argument)
 {
   /* USER CODE BEGIN StartDcSamp */
+  INA228_config(INA228_0);
   /* Infinite loop */
   for (;;)
   {
@@ -276,10 +298,37 @@ void StartACVContorl(void *argument)
   /* Infinite loop */
   for (;;)
   {
-    appACVControl();
+    // appACVControl();
     osDelay(25);
   }
   /* USER CODE END StartACVContorl */
+}
+
+/* USER CODE BEGIN Header_StartCircuitProtect */
+/**
+ * @brief Function implementing the circuitProtect thread.
+ * @param argument: Not used
+ * @retval None
+ */
+/* USER CODE END Header_StartCircuitProtect */
+void StartCircuitProtect(void *argument)
+{
+  /* USER CODE BEGIN StartCircuitProtect */
+  /* Infinite loop */
+  for (;;)
+  {
+    if (U > protection_Udc || I > protection_Idc || signal_V->basic->rms_a > protection_Uac || signal_I->basic->rms_a > protection_Iac || signal_V->basic->rms_b > protection_Uac || signal_I->basic->rms_b > protection_Iac || signal_V->basic->rms_c > protection_Uac || signal_I->basic->rms_c > protection_Iac)
+    {
+      HAL_GPIO_WritePin(IR2104_SD_GPIO_Port, IR2104_SD_Pin, GPIO_PIN_RESET);
+      runState = 1;
+    }
+    else if (fabs(signal_V->basic->park_q) < 0.05f || runState == 0)
+    {
+      HAL_GPIO_WritePin(IR2104_SD_GPIO_Port, IR2104_SD_Pin, GPIO_PIN_SET);
+    }
+    osDelay(10);
+  }
+  /* USER CODE END StartCircuitProtect */
 }
 
 /* Private application code --------------------------------------------------*/
@@ -345,4 +394,3 @@ void appACVControl()
 }
 
 /* USER CODE END Application */
-

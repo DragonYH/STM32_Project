@@ -8,15 +8,13 @@
  * @param  signal PLL信号输入结构体指针
  * @param  Udc 直流母线电压
  */
-void svpwm_Control(pll_Signal_V *signal, float Udc)
+void svpwm_Control(pll_Signal_I *signal)
 {
-    // 电压标幺化
-    float Ts = signal->basic->Ts;
-    float Ubase = Udc / 1.7320508f;                         // 基础电压
-    float Ualpha = M * signal->basic->clarke_alpha / Ubase; // 标幺化Clarke变换后的α轴电压
-    float Ubeta = M * signal->basic->clarke_beta / Ubase;   // 标幺化Clarke变换后的β轴电压
-
     // 计算中间变量
+    float Ts = signal->basic->Ts;
+    float Ualpha = signal->park_inv_alpha;
+    float Ubeta = signal->park_inv_beta;
+
     float Ualpha_ = 1.7320508f * Ualpha * Ts;
     float Ubeta_ = Ubeta * Ts;
 

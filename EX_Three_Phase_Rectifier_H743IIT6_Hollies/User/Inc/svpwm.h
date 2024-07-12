@@ -5,6 +5,6 @@
 
 #define TIM_PERIOD 5999
 
-void svpwm_Control(pll_Signal_V *signal, float Udc);
+void svpwm_Control(pll_Signal_I *signal);
 
 #endif

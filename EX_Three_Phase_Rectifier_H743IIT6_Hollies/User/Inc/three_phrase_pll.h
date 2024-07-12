@@ -57,7 +57,7 @@ typedef struct pll_Signal_I
     PID *pid_q;   // 控制相位pi指针
 } pll_Signal_I;
 
-void pll_Init_V(pll_Signal_V **signal, float f, uint16_t F, float Umax);
+void pll_Init_V(pll_Signal_V **signal, float f, uint16_t F);
 void pll_Control_V(pll_Signal_V *signal_V);
 void pll_Init_I(pll_Signal_I **signal, float f, uint16_t F);
 void pll_Control_I(pll_Signal_I *signal_I, pll_Signal_V *signal_V, float Iset, float PF);

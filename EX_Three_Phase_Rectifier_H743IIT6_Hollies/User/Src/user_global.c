@@ -36,9 +36,11 @@ static INA228_State INA228_0_state = {
     .devAddr = 0x80U,
 };
 const INA228_Handle INA228_0 = &INA228_0_state;
-float U = 0; // 直流电压
-float I = 0; // 直流电流
-float M = 0; // 调制比
+float U = 0;   // 直流电压
+float I = 0;   // 直流电流
+float M = 1.f; // 调制比
 
 pll_Signal_V *signal_V;
 pll_Signal_I *signal_I;
+
+uint8_t runState = 0; // 运行状态

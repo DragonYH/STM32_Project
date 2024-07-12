@@ -72,6 +72,8 @@ void Error_Handler(void);
 #define AD7606_BUSY_EXTI_IRQn EXTI9_5_IRQn
 #define AD7606_CS_Pin GPIO_PIN_7
 #define AD7606_CS_GPIO_Port GPIOG
+#define IR2104_SD_Pin GPIO_PIN_8
+#define IR2104_SD_GPIO_Port GPIOA
 #define OLED_DC_Pin GPIO_PIN_6
 #define OLED_DC_GPIO_Port GPIOI
 
