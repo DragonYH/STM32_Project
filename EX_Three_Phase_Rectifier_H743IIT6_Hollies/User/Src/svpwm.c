@@ -6,7 +6,6 @@
 /**
  * @brief  SVPWM控制
  * @param  signal PLL信号输入结构体指针
- * @param  Udc 直流母线电压
  */
 void svpwm_Control(pll_Signal_I *signal)
 {

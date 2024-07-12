@@ -97,41 +97,26 @@ void pll_Control_I(pll_Signal_I *signal_I, pll_Signal_V *signal_V, float Iset, f
     // 先对信号进行clarke变换
     arm_clarke_f32(signal_I->basic->input_a, signal_I->basic->input_b, &signal_I->basic->clarke_alpha, &signal_I->basic->clarke_beta);
     // 在电压的系上得出电流的dq值
-    arm_park_f32(signal_I->basic->clarke_alpha, signal_I->basic->clarke_beta, &signal_I->basic->park_d, &signal_I->basic->park_q, arm_sin_f32(signal_V->theta), arm_cos_f32(signal_V->theta));
+    float sinTheta = arm_sin_f32(signal_V->theta);
+    float cosTheta = arm_cos_f32(signal_V->theta);
+
+    arm_park_f32(signal_I->basic->clarke_alpha, signal_I->basic->clarke_beta, &signal_I->basic->park_d, &signal_I->basic->park_q, sinTheta, cosTheta);
     // PI控制
     float PFTheta = asinf(PF);
+
     Iset = Iset * 1.414f / Ibase;
     pid(signal_I->pid_d, Iset * arm_cos_f32(PFTheta), signal_I->basic->park_d); // 电流大小
-    if (signal_I->CorL == 1)
-    {
-        pid(signal_I->pid_q, Iset * arm_sin_f32(PFTheta), signal_I->basic->park_q); // 相位
-    }
-    else
-    {
-        pid(signal_I->pid_q, -Iset * arm_sin_f32(PFTheta), signal_I->basic->park_q); // 相位
-    }
+
+    Iset = Iset * arm_sin_f32(PFTheta) * (signal_I->CorL ? 1 : -1);
+    pid(signal_I->pid_q, Iset, signal_I->basic->park_q); // 电流相位
     // 解耦调制
     float Uabd = signal_V->basic->park_d - signal_I->pid_d->out + signal_I->basic->park_q * signal_I->basic->omiga0 * signal_I->L;
     float Uabq = signal_V->basic->park_q - signal_I->pid_q->out - signal_I->basic->park_d * signal_I->basic->omiga0 * signal_I->L;
     // 限幅
-    if (Uabd > 1.f)
-    {
-        Uabd = 1.f;
-    }
-    else if (Uabd < -1.f)
-    {
-        Uabd = -1.f;
-    }
-    if (Uabq > 1.f)
-    {
-        Uabq = 1.f;
-    }
-    else if (Uabq < -1.f)
-    {
-        Uabq = -1.f;
-    }
+    Uabd = fmaxf(-1.f, fminf(1.f, Uabd));
+    Uabq = fmaxf(-1.f, fminf(1.f, Uabq));
     // park逆变换
-    arm_inv_park_f32(Uabd, Uabq, &signal_I->park_inv_alpha, &signal_I->park_inv_beta, arm_sin_f32(signal_V->theta), arm_cos_f32(signal_V->theta));
+    arm_inv_park_f32(Uabd, Uabq, &signal_I->park_inv_alpha, &signal_I->park_inv_beta, sinTheta, cosTheta);
 }
 /**
  * @brief 释放内存
