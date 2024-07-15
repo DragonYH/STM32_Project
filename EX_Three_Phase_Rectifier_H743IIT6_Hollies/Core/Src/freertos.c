@@ -25,20 +25,21 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "oled.h"
-#include "stdio.h"
+// #include "oled.h"
+#include "three_phrase_pll.h"
 #include "user_global.h"
 #include "ad7606.h"
+#include "ina228.h"
+#include "pid.h"
+#include "oled.h"
+#include "stdio.h"
 #include "spi.h"
 #include "tim.h"
 #include "gpio.h"
-#include "ina228.h"
 #include "arm_math.h"
-#include "three_phrase_pll.h"
 #include "dac.h"
 #include "usb_device.h"
 #include "usbd_cdc_if.h"
-#include "pid.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -105,9 +106,11 @@ const osThreadAttr_t circuitProtect_attributes = {
 
 /* Private function prototypes -----------------------------------------------*/
 /* USER CODE BEGIN FunctionPrototypes */
-void appOLEDShow();
-void appTaskStackShow();
-void appACVControl();
+static void appOLEDShow();
+static void appTaskStackShow();
+#if !RectifierOrInverter
+static void appACVControl();
+#endif
 /* USER CODE END FunctionPrototypes */
 
 void StartStateLED(void *argument);
@@ -199,7 +202,10 @@ void StartStateLED(void *argument)
   {
     switch (runState)
     {
-    case 0: // 正常运行
+    case START: // 启动状态
+      HAL_GPIO_WritePin(GPIOI, GPIO_PIN_0, GPIO_PIN_SET);
+      break;
+    case RUN: // 正常运行
       HAL_GPIO_TogglePin(GPIOI, GPIO_PIN_0);
       osDelay(100);
       HAL_GPIO_TogglePin(GPIOI, GPIO_PIN_0);
@@ -211,7 +217,7 @@ void StartStateLED(void *argument)
       HAL_GPIO_WritePin(GPIOI, GPIO_PIN_1, GPIO_PIN_RESET);
       osDelay(1000);
       break;
-    case 1: // 保护状态
+    case FAULT: // 保护状态
       HAL_GPIO_TogglePin(GPIOI, GPIO_PIN_0);
       osDelay(100);
       break;
@@ -273,13 +279,10 @@ void StartDcSamp(void *argument)
 void StartUsartDebug(void *argument)
 {
   /* USER CODE BEGIN StartUsartDebug */
-  static uint8_t text[32] = {0};
   /* Infinite loop */
   for (;;)
   {
-    sprintf((char *)text, "%5.2f %5.2f\n", signal_V->basic->rms_a, signal_V->basic->input_a);
-    CDC_Transmit_FS(text, 32);
-    memset(text, 0, 32);
+    appTaskStackShow();
     osDelay(500);
   }
   /* USER CODE END StartUsartDebug */
@@ -300,8 +303,9 @@ void StartACVContorl(void *argument)
   {
 #if RectifierOrInverter
     vTaskDelete(NULL);
-#endif
+#else
     appACVControl();
+#endif
     osDelay(25);
   }
   /* USER CODE END StartACVContorl */
@@ -320,14 +324,32 @@ void StartCircuitProtect(void *argument)
   /* Infinite loop */
   for (;;)
   {
-    if (U > protection_Udc || I > protection_Idc || signal_V->basic->rms_a > protection_Uac || signal_I->basic->rms_a > protection_Iac || signal_V->basic->rms_b > protection_Uac || signal_I->basic->rms_b > protection_Iac || signal_V->basic->rms_c > protection_Uac || signal_I->basic->rms_c > protection_Iac)
+    if (U > protection_Udc || I > protection_Idc ||
+        signal_V->basic->rms_a > protection_Uac || signal_I->basic->rms_a > protection_Iac ||
+        signal_V->basic->rms_b > protection_Uac || signal_I->basic->rms_b > protection_Iac ||
+        signal_V->basic->rms_c > protection_Uac || signal_I->basic->rms_c > protection_Iac)
     {
+      runState = FAULT;
+      osDelay(1000);
       HAL_GPIO_WritePin(IR2104_SD_GPIO_Port, IR2104_SD_Pin, GPIO_PIN_RESET);
-      runState = 1;
     }
-    else if (fabs(signal_V->basic->park_q) < 0.05f || runState == 0)
+    else if (runState == START &&
+             runState != FAULT &&
+             fabs(signal_V->basic->park_q) < 0.02f &&
+             signal_V->basic->rms_a > 5.f &&
+             signal_I->basic->rms_a > 0.5f)
     {
-      HAL_GPIO_WritePin(IR2104_SD_GPIO_Port, IR2104_SD_Pin, GPIO_PIN_SET);
+      osDelay(1000); // 延迟时间是否合适需根据具体情况调整
+      // 防止上电瞬间误判
+      if (runState == START &&
+          runState != FAULT &&
+          fabs(signal_V->basic->park_q) < 0.02f &&
+          signal_V->basic->rms_a > 5.f &&
+          signal_I->basic->rms_a > 0.5f)
+      {
+        runState = RUN;
+        HAL_GPIO_WritePin(IR2104_SD_GPIO_Port, IR2104_SD_Pin, GPIO_PIN_SET);
+      }
     }
     osDelay(10);
   }
@@ -340,7 +362,7 @@ void StartCircuitProtect(void *argument)
 /**
  * @brief OLED显示
  */
-void appOLEDShow()
+static void appOLEDShow()
 {
   static uint8_t text[32] = {0};
   sprintf((char *)text, "Ua: %5.2f Ub: %5.2f", signal_V->basic->rms_a, signal_V->basic->rms_b);
@@ -360,7 +382,8 @@ void appOLEDShow()
   {
     n = 0.f;
   }
-  sprintf((char *)text, "cnt: %4ld n: %5.2f%%", __HAL_TIM_GET_COMPARE(&htim1, TIM_CHANNEL_1), n);
+  // sprintf((char *)text, "cnt: %4ld n: %5.2f%%", __HAL_TIM_GET_COMPARE(&htim1, TIM_CHANNEL_1), n);
+  sprintf((char *)text, "d: %5.3f q: %5.3f %d", signal_I->basic->park_d, signal_I->basic->park_q, runState);
   OLED_ShowString(0, 48, text, 12);
   OLED_Refresh();
 }
@@ -368,32 +391,33 @@ void appOLEDShow()
 /**
  * @brief 任务剩余堆栈输出
  */
-void appTaskStackShow()
+static void appTaskStackShow()
 {
-  osThreadId_t currentTaskId[] = {stateLEDHandle, oledShowHandle, dcSampHandle, usartDebugHandle};
-  osThreadAttr_t currentTaskAttr[] = {stateLED_attributes, oledShow_attributes, dcSamp_attributes, usartDebug_attributes};
+  osThreadId_t currentTaskId[] = {stateLEDHandle, oledShowHandle, dcSampHandle, usartDebugHandle, acVControlHandle, circuitProtectHandle};
+  osThreadAttr_t currentTaskAttr[] = {stateLED_attributes, oledShow_attributes, dcSamp_attributes, usartDebug_attributes, acVControl_attributes, circuitProtect_attributes};
   static int i = 0;
 
   static uint8_t text[32] = {0};
   sprintf((char *)text, "%d.%-10s: %4ld / %4ld \r\n", i, pcTaskGetTaskName(currentTaskId[i]), uxTaskGetStackHighWaterMark(currentTaskId[i]), currentTaskAttr[i].stack_size);
   CDC_Transmit_FS(text, 32);
   memset(text, 0, 32);
-  i++;
-  if (i >= 4)
+  if (++i >= sizeof(currentTaskId) / sizeof(currentTaskId[0]))
   {
     i = 0;
   }
 }
 
+#if !RectifierOrInverter
 /**
  * @brief 交流逆变电压控制
  */
-void appACVControl()
+static void appACVControl()
 {
   static PID pidACV;
   pid_Init(&pidACV, 0.01f, 0.1f, 0, 1.f, 0.f);
   pid(&pidACV, 5.f, signal_V->basic->rms_a);
   M = pidACV.out;
 }
+#endif
 
 /* USER CODE END Application */

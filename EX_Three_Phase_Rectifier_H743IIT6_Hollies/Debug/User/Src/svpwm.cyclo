@@ -1,1 +1,3 @@
-../User/Src/svpwm.c:11:6:svpwm_Control	14
+../User/Src/svpwm.c:14:6:svpwm_Control	7
+../User/Src/svpwm.c:84:16:Sector_Detection	6
+../User/Src/svpwm.c:107:13:Duty_Calculation	3

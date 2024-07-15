@@ -1,9 +1,12 @@
 #include "three_phrase_pll.h"
+#include "user_global.h"
 #include "pid.h"
 #include "math.h"
 #include "stdlib.h"
 #include "malloc.h"
-#include "user_global.h"
+#include "arm_math.h"
+
+static void pll_Clarke(pll_Signal_Basic *basic);
 
 /**
  * @brief 电压信号参数初始化
@@ -31,6 +34,7 @@ void pll_Init_V(pll_Signal_V **signal, float f, uint16_t F)
     (*signal)->theta = 0.f;
     (*signal)->basic->omiga0 = 2 * PI * f; // f典型值50
     (*signal)->basic->Ts = 1.f / F;        // F典型值20000
+
     // 初始化pid参数
     float ki = (*signal)->basic->omiga0 * (*signal)->basic->omiga0;
     float kp = sqrt(2) * sqrt(ki);
@@ -66,8 +70,8 @@ void pll_Init_I(pll_Signal_I **signal, float f, uint16_t F)
     (*signal)->CorL = 0;   // 0:感性 1:容性
     (*signal)->L = 0.001f; // 1mH
     // 在调整取值范围时看实际输出值逐渐逼近，防止上电瞬间电流过大
-    pid_Init((*signal)->pid_d, 0.1f, 0.01f, 0, 1.f, -1.f);
-    pid_Init((*signal)->pid_q, 0.1f, 0.01f, 0, 1.f, -1.f);
+    pid_Init((*signal)->pid_d, 0.00001f, 0.0001f, 0, -0.2f, -0.8f);
+    pid_Init((*signal)->pid_q, 0.00001f, 0.0001f, 0, 0.1f, -0.1f);
 }
 /**
  * @brief 电压锁相控制
@@ -76,7 +80,7 @@ void pll_Init_I(pll_Signal_I **signal, float f, uint16_t F)
 void pll_Control_V(pll_Signal_V *signal_V)
 {
     // 先对信号进行clarke变换
-    arm_clarke_f32(signal_V->basic->input_a, signal_V->basic->input_b, &signal_V->basic->clarke_alpha, &signal_V->basic->clarke_beta);
+    pll_Clarke(signal_V->basic);
     // 再对信号sogi变换后的信号进行park变换
     arm_park_f32(signal_V->basic->clarke_alpha, signal_V->basic->clarke_beta, &signal_V->basic->park_d, &signal_V->basic->park_q, arm_sin_f32(signal_V->theta), arm_cos_f32(signal_V->theta));
     // 将park变换后的q送入PI控制器  输入值为设定值和采样值的误差
@@ -95,7 +99,7 @@ void pll_Control_V(pll_Signal_V *signal_V)
 void pll_Control_I(pll_Signal_I *signal_I, pll_Signal_V *signal_V, float Iset, float PF)
 {
     // 先对信号进行clarke变换
-    arm_clarke_f32(signal_I->basic->input_a, signal_I->basic->input_b, &signal_I->basic->clarke_alpha, &signal_I->basic->clarke_beta);
+    pll_Clarke(signal_I->basic);
     // 在电压的系上得出电流的dq值
     float sinTheta = arm_sin_f32(signal_V->theta);
     float cosTheta = arm_cos_f32(signal_V->theta);
@@ -104,19 +108,28 @@ void pll_Control_I(pll_Signal_I *signal_I, pll_Signal_V *signal_V, float Iset, f
     // PI控制
     float PFTheta = asinf(PF);
 
-    Iset = Iset * 1.414f / Ibase;
-    pid(signal_I->pid_d, Iset * arm_cos_f32(PFTheta), signal_I->basic->park_d); // 电流大小
+    float Ivalue = Iset * 1.414f / Ibase;
+    pid(signal_I->pid_d, Ivalue * arm_sin_f32(PFTheta), signal_I->basic->park_d); // 电流大小
 
-    Iset = Iset * arm_sin_f32(PFTheta) * (signal_I->CorL ? 1 : -1);
-    pid(signal_I->pid_q, Iset, signal_I->basic->park_q); // 电流相位
+    float Iphase = Ivalue * arm_cos_f32(PFTheta) * (signal_I->CorL ? 1 : -1);
+    pid(signal_I->pid_q, Iphase, signal_I->basic->park_q); // 电流相位
     // 解耦调制
     float Uabd = signal_V->basic->park_d - signal_I->pid_d->out + signal_I->basic->park_q * signal_I->basic->omiga0 * signal_I->L;
     float Uabq = signal_V->basic->park_q - signal_I->pid_q->out - signal_I->basic->park_d * signal_I->basic->omiga0 * signal_I->L;
     // 限幅
-    Uabd = fmaxf(-1.f, fminf(1.f, Uabd));
-    Uabq = fmaxf(-1.f, fminf(1.f, Uabq));
+    Uabd = fmaxf(-0.95f, fminf(0.95f, Uabd));
+    Uabq = fmaxf(-0.95f, fminf(0.95f, Uabq));
     // park逆变换
     arm_inv_park_f32(Uabd, Uabq, &signal_I->park_inv_alpha, &signal_I->park_inv_beta, sinTheta, cosTheta);
+}
+/**
+ * @brief clarke变换
+ * @param basic 信号基本变量指针
+ */
+static void pll_Clarke(pll_Signal_Basic *basic)
+{
+    basic->clarke_alpha = (2.f * basic->input_a - basic->input_b - basic->input_c) / 3.f;
+    basic->clarke_beta = 0.57735026f * (basic->input_b - basic->input_c);
 }
 /**
  * @brief 释放内存

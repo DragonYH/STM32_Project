@@ -47,13 +47,13 @@ Core/Src/freertos.o: ../Core/Src/freertos.c \
  ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_pcd_ex.h \
  ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os.h \
  ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os2.h \
- ../User/Inc/oled.h ../Core/Inc/gpio.h ../Core/Inc/main.h \
- ../User/Inc/user_global.h ../User/Inc/ina228.h ../Core/Inc/i2c.h \
  ../User/Inc/three_phrase_pll.h ../User/Inc/pid.h ../User/Inc/iir.h \
+ ../User/Inc/user_global.h ../User/Inc/ina228.h ../Core/Inc/i2c.h \
+ ../Core/Inc/main.h ../User/Inc/three_phrase_pll.h ../User/Inc/ad7606.h \
+ ../User/Inc/ina228.h ../User/Inc/pid.h ../User/Inc/oled.h \
+ ../Core/Inc/gpio.h ../Core/Inc/spi.h ../Core/Inc/tim.h \
  ../Drivers/CMSIS/DSP/Include/arm_math.h \
- ../Drivers/CMSIS/Include/cmsis_compiler.h ../User/Inc/ad7606.h \
- ../Core/Inc/spi.h ../Core/Inc/tim.h ../User/Inc/ina228.h \
- ../User/Inc/three_phrase_pll.h ../Core/Inc/dac.h \
+ ../Drivers/CMSIS/Include/cmsis_compiler.h ../Core/Inc/dac.h \
  ../USB_DEVICE/App/usb_device.h \
  ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_def.h \
  ../USB_DEVICE/Target/usbd_conf.h ../USB_DEVICE/App/usbd_cdc_if.h \
@@ -62,8 +62,7 @@ Core/Src/freertos.o: ../Core/Src/freertos.c \
  ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_def.h \
  ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_core.h \
  ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_ioreq.h \
- ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_ctlreq.h \
- ../User/Inc/pid.h
+ ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_ctlreq.h
 ../Middlewares/Third_Party/FreeRTOS/Source/include/FreeRTOS.h:
 ../Core/Inc/FreeRTOSConfig.h:
 ../Middlewares/Third_Party/FreeRTOS/Source/include/projdefs.h:
@@ -113,22 +112,23 @@ Core/Src/freertos.o: ../Core/Src/freertos.c \
 ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_pcd_ex.h:
 ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os.h:
 ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os2.h:
-../User/Inc/oled.h:
-../Core/Inc/gpio.h:
-../Core/Inc/main.h:
-../User/Inc/user_global.h:
-../User/Inc/ina228.h:
-../Core/Inc/i2c.h:
 ../User/Inc/three_phrase_pll.h:
 ../User/Inc/pid.h:
 ../User/Inc/iir.h:
-../Drivers/CMSIS/DSP/Include/arm_math.h:
-../Drivers/CMSIS/Include/cmsis_compiler.h:
+../User/Inc/user_global.h:
+../User/Inc/ina228.h:
+../Core/Inc/i2c.h:
+../Core/Inc/main.h:
+../User/Inc/three_phrase_pll.h:
 ../User/Inc/ad7606.h:
+../User/Inc/ina228.h:
+../User/Inc/pid.h:
+../User/Inc/oled.h:
+../Core/Inc/gpio.h:
 ../Core/Inc/spi.h:
 ../Core/Inc/tim.h:
-../User/Inc/ina228.h:
-../User/Inc/three_phrase_pll.h:
+../Drivers/CMSIS/DSP/Include/arm_math.h:
+../Drivers/CMSIS/Include/cmsis_compiler.h:
 ../Core/Inc/dac.h:
 ../USB_DEVICE/App/usb_device.h:
 ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_def.h:
@@ -140,4 +140,3 @@ Core/Src/freertos.o: ../Core/Src/freertos.c \
 ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_core.h:
 ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_ioreq.h:
 ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_ctlreq.h:
-../User/Inc/pid.h:

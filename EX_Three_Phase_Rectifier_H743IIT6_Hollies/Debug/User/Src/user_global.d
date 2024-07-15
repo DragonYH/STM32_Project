@@ -38,8 +38,7 @@ User/Src/user_global.o: ../User/Src/user_global.c \
  ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_ll_usb.h \
  ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_pcd_ex.h \
  ../User/Inc/three_phrase_pll.h ../User/Inc/pid.h ../User/Inc/iir.h \
- ../Core/Inc/main.h ../Drivers/CMSIS/DSP/Include/arm_math.h \
- ../Drivers/CMSIS/Include/cmsis_compiler.h
+ ../Core/Inc/main.h
 ../User/Inc/user_global.h:
 ../User/Inc/ina228.h:
 ../Core/Inc/i2c.h:
@@ -85,5 +84,3 @@ User/Src/user_global.o: ../User/Src/user_global.c \
 ../User/Inc/pid.h:
 ../User/Inc/iir.h:
 ../Core/Inc/main.h:
-../Drivers/CMSIS/DSP/Include/arm_math.h:
-../Drivers/CMSIS/Include/cmsis_compiler.h:

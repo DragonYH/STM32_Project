@@ -1,4 +1,20 @@
 {
   "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools",
-  "cmake.configureOnOpen": true
+  "cmake.configureOnOpen": true,
+  "files.associations": {
+    "*.nsp": "json",
+    "*.yml": "yaml",
+    "*.toml": "yaml",
+    "compare": "c",
+    "user_global.h": "c",
+    "spi.h": "c",
+    "ad7606.h": "c",
+    "math.h": "c",
+    "main.h": "c",
+    "ina228.h": "c",
+    "tim.h": "c",
+    "gpio.h": "c",
+    "usb_device.h": "c",
+    "three_phrase_pll.h": "c"
+  }
 }

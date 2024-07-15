@@ -3,6 +3,9 @@
 #include "dac.h"
 #include "user_global.h"
 
+static uint8_t Sector_Detection(float X, float Y, float Z);
+static void Duty_Calculation(float Ta, float Tb, float Tc, float Ts);
+
 /**
  * @brief  SVPWM控制
  * @param  signal PLL信号输入结构体指针
@@ -18,6 +21,8 @@ void svpwm_Control(pll_Signal_V *signal)
 #if RectifierOrInverter
     float Ualpha = signal->park_inv_alpha;
     float Ubeta = signal->park_inv_beta;
+    // float Ualpha = signal->basic->clarke_alpha;
+    // float Ubeta = signal->basic->clarke_beta;
 #else
     float Ualpha = M * signal->basic->clarke_alpha;
     float Ubeta = M * signal->basic->clarke_beta;
@@ -32,21 +37,7 @@ void svpwm_Control(pll_Signal_V *signal)
     float Z = 0.5f * Ubeta_ - 0.5f * Ualpha_;
 
     // 通过XYZ做扇区判断
-    uint8_t sector = 0;
-    if (Y < 0)
-    {
-        if (Z < 0)
-            sector = 5;
-        else
-            sector = (X < 0) ? 4 : 3;
-    }
-    else
-    {
-        if (Z > 0)
-            sector = 2;
-        else
-            sector = (X < 0) ? 6 : 1;
-    }
+    uint8_t sector = Sector_Detection(X, Y, Z);
 
     // 计算每一周期对应扇区各相的占用时间
     float Ta = 0, Tb = 0, Tc = 0;
@@ -84,6 +75,37 @@ void svpwm_Control(pll_Signal_V *signal)
         break;
     }
 
+    Duty_Calculation(Ta, Tb, Tc, Ts);
+}
+
+/**
+ * @brief  扇区判断
+ */
+static uint8_t Sector_Detection(float X, float Y, float Z)
+{
+    uint8_t sector = 0;
+    if (Y < 0)
+    {
+        if (Z < 0)
+            sector = 5;
+        else
+            sector = (X < 0) ? 4 : 3;
+    }
+    else
+    {
+        if (Z > 0)
+            sector = 2;
+        else
+            sector = (X < 0) ? 6 : 1;
+    }
+    return sector;
+}
+
+/**
+ * @brief  计算并输出占空比
+ */
+static void Duty_Calculation(float Ta, float Tb, float Tc, float Ts)
+{
     // 计算占空比并更新TIM寄存器
     uint32_t ccr[3] = {
         (uint32_t)(Ta / Ts * TIM_PERIOD),

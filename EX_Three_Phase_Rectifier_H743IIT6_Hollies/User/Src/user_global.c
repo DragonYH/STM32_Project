@@ -43,4 +43,4 @@ float M = 1.f; // 调制比
 pll_Signal_V *signal_V;
 pll_Signal_I *signal_I;
 
-uint8_t runState = 0; // 运行状态
+volatile enum state runState = START;

@@ -16,9 +16,10 @@ void pid_Init(PID *pid, float kp, float ki, float kd, float max, float min) // P
 	pid->kd = kd;
 	pid->Max = max;
 	pid->Min = min;
-	pid->err[0] = 0;
-	pid->err[1] = 0;
-	pid->err[2] = 0;
+	pid->err[0] = 0.f;
+	pid->err[1] = 0.f;
+	pid->err[2] = 0.f;
+	pid->out = 0.f;
 }
 /**
  * @brief 增量式PID控制器

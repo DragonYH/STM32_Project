@@ -4,7 +4,6 @@
 #include "pid.h"
 #include "iir.h"
 #include "main.h"
-#include "arm_math.h"
 
 typedef struct pll_Signal_Basic
 {
@@ -61,8 +60,6 @@ void pll_Init_V(pll_Signal_V **signal, float f, uint16_t F);
 void pll_Control_V(pll_Signal_V *signal_V);
 void pll_Init_I(pll_Signal_I **signal, float f, uint16_t F);
 void pll_Control_I(pll_Signal_I *signal_I, pll_Signal_V *signal_V, float Iset, float PF);
-void pll_Clarke(pll_Signal_Basic *basic);
-void pll_Inv_Clarke(pll_Signal_I *signal_I);
 void pll_Free_V(pll_Signal_V *signal);
 void pll_Free_I(pll_Signal_I *signal);
 
