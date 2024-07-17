@@ -26,7 +26,7 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
         normalize();             // 标幺化
         pll_Control_V(signal_V); // 锁相控制
 
-#if RectifierOrInverter
+#if Rectifier_Or_Inverter
         // 电流内环控制
         if (runState == RUN)
             pll_Control_I(signal_I, signal_V, 1.2f, 1.f);
@@ -116,12 +116,4 @@ static void getVoltageCurrent(void)
     signal_I->basic->input_a = samp_Ia;
     signal_I->basic->input_b = samp_Ib;
     signal_I->basic->input_c = samp_Ic;
-
-    // fir滤波
-    // arm_fir_f32(fir_Va, &samp_Va, &signal_V->basic->input_a, 1);
-    // arm_fir_f32(fir_Vb, &samp_Vb, &signal_V->basic->input_b, 1);
-    // arm_fir_f32(fir_Vc, &samp_Vc, &signal_V->basic->input_c, 1);
-    // arm_fir_f32(fir_Ia, &samp_Ia, &signal_I->basic->input_a, 1);
-    // arm_fir_f32(fir_Ib, &samp_Ib, &signal_I->basic->input_b, 1);
-    // arm_fir_f32(fir_Ic, &samp_Ic, &signal_I->basic->input_c, 1);
 }

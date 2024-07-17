@@ -45,8 +45,3 @@ pll_Signal_V *signal_V;
 pll_Signal_I *signal_I;
 
 volatile enum state runState = START;
-
-arm_fir_instance_f32 *fir_Va, *fir_Vb, *fir_Vc;
-arm_fir_instance_f32 *fir_Ia, *fir_Ib, *fir_Ic;
-float firState_Va[21] = {0}, firState_Vb[21] = {0}, firState_Vc[21] = {0};
-float firState_Ia[21] = {0}, firState_Ib[21] = {0}, firState_Ic[21] = {0};

@@ -3,10 +3,10 @@
 
 #include "ina228.h"
 #include "three_phrase_pll.h"
-#include "arm_math.h"
 
 // todo: 根据模式自动切换整流和逆变
-#define RectifierOrInverter 1 // 1:整流器 0:逆变器
+#define Rectifier_Or_Inverter 1 // 1:整流器 0:逆变器
+#define DC_V_Ctrl 1             // 1:开启直流电压控制 0:关闭直流电压控制
 
 #define Ubase (15.f * 1.414f) // 电压基准
 #define Ibase (6.f * 1.414f)  // 电流基准
@@ -33,11 +33,5 @@ enum state
 };
 
 extern volatile enum state runState;
-
-// FIR滤波器
-extern arm_fir_instance_f32 *fir_Va, *fir_Vb, *fir_Vc;
-extern arm_fir_instance_f32 *fir_Ia, *fir_Ib, *fir_Ic;
-extern float firState_Va[21], firState_Vb[21], firState_Vc[21];
-extern float firState_Ia[21], firState_Ib[21], firState_Ic[21];
 
 #endif

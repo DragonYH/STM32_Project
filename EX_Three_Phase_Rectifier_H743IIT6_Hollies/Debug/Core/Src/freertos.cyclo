@@ -1,8 +1,8 @@
-../Core/Src/freertos.c:134:6:MX_FREERTOS_Init	1
-../Core/Src/freertos.c:204:6:StartStateLED	5
-../Core/Src/freertos.c:247:6:StartOledShow	1
-../Core/Src/freertos.c:267:6:StartDcSamp	1
-../Core/Src/freertos.c:288:6:StartUsartDebug	1
-../Core/Src/freertos.c:315:6:StartACVContorl	1
-../Core/Src/freertos.c:338:6:StartCircuitProtect	19
-../Core/Src/freertos.c:382:13:appOLEDShow	3
+../Core/Src/freertos.c:133:6:MX_FREERTOS_Init	1
+../Core/Src/freertos.c:197:6:StartStateLED	5
+../Core/Src/freertos.c:240:6:StartOledShow	1
+../Core/Src/freertos.c:260:6:StartDcSamp	1
+../Core/Src/freertos.c:281:6:StartUsartDebug	1
+../Core/Src/freertos.c:308:6:StartACVContorl	1
+../Core/Src/freertos.c:331:6:StartCircuitProtect	19
+../Core/Src/freertos.c:375:13:appOLEDShow	3

@@ -28,7 +28,6 @@
 // #include "oled.h"
 #include "three_phrase_pll.h"
 #include "user_global.h"
-#include "fir.h"
 #include "ad7606.h"
 #include "ina228.h"
 #include "pid.h"
@@ -111,7 +110,7 @@ static void appOLEDShow();
 #if USER_DEBUG
 static void appTaskStackShow();
 #endif
-#if !RectifierOrInverter
+#if !Rectifier_Or_Inverter
 static void appACVControl();
 #endif
 /* USER CODE END FunctionPrototypes */
@@ -137,12 +136,6 @@ void MX_FREERTOS_Init(void)
   ad7606_Init();
   pll_Init_V(&signal_V, 50, 20000);
   pll_Init_I(&signal_I, 50, 20000);
-  firFilterInit(&fir_Va, firCoeffs_100Hz, firState_Va);
-  firFilterInit(&fir_Vb, firCoeffs_100Hz, firState_Vb);
-  firFilterInit(&fir_Vc, firCoeffs_100Hz, firState_Vc);
-  firFilterInit(&fir_Ia, firCoeffs_100Hz, firState_Ia);
-  firFilterInit(&fir_Ib, firCoeffs_100Hz, firState_Ib);
-  firFilterInit(&fir_Ic, firCoeffs_100Hz, firState_Ic);
   HAL_TIMEx_PWMN_Start(&htim1, TIM_CHANNEL_1);
   HAL_TIMEx_PWMN_Start(&htim1, TIM_CHANNEL_2);
   HAL_TIMEx_PWMN_Start(&htim1, TIM_CHANNEL_3);
@@ -294,13 +287,13 @@ void StartUsartDebug(void *argument)
 #if USER_DEBUG
     appTaskStackShow();
 #else
-    // vTaskDelete(NULL);
-    uint8_t text[32] = {0};
-    sprintf((char *)text, "x=0,a=%.3f,b=%.3f\r\n", signal_V->basic->input_a, signal_V->basic->park_d);
-    CDC_Transmit_FS(text, 32);
-    memset(text, 0, 32);
+    vTaskDelete(NULL);
+    // uint8_t text[32] = {0};
+    // sprintf((char *)text, "x=0,a=%.3f,b=%.3f\r\n", signal_V->basic->input_a, signal_V->basic->park_d);
+    // CDC_Transmit_FS(text, 32);
+    // memset(text, 0, 32);
 #endif
-    osDelay(1);
+    osDelay(100);
   }
   /* USER CODE END StartUsartDebug */
 }
@@ -318,7 +311,7 @@ void StartACVContorl(void *argument)
   /* Infinite loop */
   for (;;)
   {
-#if RectifierOrInverter
+#if Rectifier_Or_Inverter
     vTaskDelete(NULL);
 #else
     appACVControl();
@@ -426,7 +419,7 @@ static void appTaskStackShow()
 }
 #endif
 
-#if !RectifierOrInverter
+#if !Rectifier_Or_Inverter
 /**
  * @brief 交流逆变电压控制
  */
