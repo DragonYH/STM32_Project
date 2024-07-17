@@ -1,4 +1,5 @@
 #include "pid.h"
+#include "math.h"
 
 /**
  * @brief pid参数初始化
@@ -39,8 +40,5 @@ void pid(PID *pid, float target, float sample)
 	pid->err[2] = pid->err[1];
 	pid->err[1] = pid->err[0];
 	// 输出限幅
-	if (pid->out > pid->Max)
-		pid->out = pid->Max;
-	else if (pid->out < pid->Min)
-		pid->out = pid->Min;
+	pid->out = fminf(pid->Max, fmaxf(pid->out, pid->Min));
 }

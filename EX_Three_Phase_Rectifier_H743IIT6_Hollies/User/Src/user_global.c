@@ -39,6 +39,9 @@ const INA228_Handle INA228_0 = &INA228_0_state;
 float U = 0; // 直流电压
 float I = 0; // 直流电流
 
+float Utarget = 40.f; // 直流电压目标值
+float Iref = 1.f;     // 电流参考值
+
 float M = 1.f; // 调制比
 
 pll_Signal_V *signal_V;

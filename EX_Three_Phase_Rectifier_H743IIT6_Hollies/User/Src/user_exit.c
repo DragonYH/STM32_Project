@@ -29,7 +29,7 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 #if Rectifier_Or_Inverter
         // 电流内环控制
         if (runState == RUN)
-            pll_Control_I(signal_I, signal_V, 1.2f, 1.f);
+            pll_Control_I(signal_I, signal_V, Iref, 1.f);
 #endif
 
         svpwm_Control(signal_I); // svpwm调制

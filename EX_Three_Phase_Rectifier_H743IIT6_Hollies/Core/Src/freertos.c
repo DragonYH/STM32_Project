@@ -80,7 +80,7 @@ osThreadId_t dcSampHandle;
 const osThreadAttr_t dcSamp_attributes = {
     .name = "dcSamp",
     .stack_size = 256 * 4,
-    .priority = (osPriority_t)osPriorityHigh,
+    .priority = (osPriority_t)osPriorityHigh1,
 };
 /* Definitions for usartDebug */
 osThreadId_t usartDebugHandle;
@@ -103,6 +103,13 @@ const osThreadAttr_t circuitProtect_attributes = {
     .stack_size = 128 * 4,
     .priority = (osPriority_t)osPriorityHigh,
 };
+/* Definitions for dcVControl */
+osThreadId_t dcVControlHandle;
+const osThreadAttr_t dcVControl_attributes = {
+    .name = "dcVControl",
+    .stack_size = 256 * 4,
+    .priority = (osPriority_t)osPriorityHigh,
+};
 
 /* Private function prototypes -----------------------------------------------*/
 /* USER CODE BEGIN FunctionPrototypes */
@@ -121,6 +128,7 @@ void StartDcSamp(void *argument);
 void StartUsartDebug(void *argument);
 void StartACVContorl(void *argument);
 void StartCircuitProtect(void *argument);
+void StartDCVControl(void *argument);
 
 extern void MX_USB_DEVICE_Init(void);
 void MX_FREERTOS_Init(void); /* (MISRA C 2004 rule 8.1) */
@@ -177,6 +185,9 @@ void MX_FREERTOS_Init(void)
 
   /* creation of circuitProtect */
   circuitProtectHandle = osThreadNew(StartCircuitProtect, NULL, &circuitProtect_attributes);
+
+  /* creation of dcVControl */
+  dcVControlHandle = osThreadNew(StartDCVControl, NULL, &dcVControl_attributes);
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
@@ -364,6 +375,32 @@ void StartCircuitProtect(void *argument)
     osDelay(10);
   }
   /* USER CODE END StartCircuitProtect */
+}
+
+/* USER CODE BEGIN Header_StartDCVControl */
+/**
+ * @brief Function implementing the dcVControl thread.
+ * @param argument: Not used
+ * @retval None
+ */
+/* USER CODE END Header_StartDCVControl */
+void StartDCVControl(void *argument)
+{
+  /* USER CODE BEGIN StartDCVControl */
+  static PID pidDCV;
+  pid_Init(&pidDCV, 0.1f, 0.01f, 0, 2.5f, 0.5f);
+  /* Infinite loop */
+  for (;;)
+  {
+#if !DC_V_Ctrl
+    vTaskDelete(NULL);
+#else
+    pid(&pidDCV, Utarget, U);
+    Iref = pidDCV.out;
+#endif
+    osDelay(20);
+  }
+  /* USER CODE END StartDCVControl */
 }
 
 /* Private application code --------------------------------------------------*/

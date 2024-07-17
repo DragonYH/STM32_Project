@@ -85,8 +85,8 @@ void pll_Init_I(pll_Signal_I **signal, float f, uint16_t F)
     (*signal)->CorL = 0;   // 0:感性 1:容性
     (*signal)->L = 0.001f; // 1mH
     // 在调整取值范围时看实际输出值逐渐逼近，防止上电瞬间电流过大
-    pid_Init((*signal)->pid_d, 1.8f, 0.01f, 0, 0.2f, -0.4f);
-    pid_Init((*signal)->pid_q, 1.8f, 0.01f, 0, 0.2f, -0.2f);
+    pid_Init((*signal)->pid_d, 1.8f, 0.03f, 0, 0.2f, -0.4f);
+    pid_Init((*signal)->pid_q, 1.8f, 0.03f, 0, 0.2f, -0.2f);
 }
 /**
  * @brief 电压锁相控制

@@ -4,7 +4,6 @@
 #include "ina228.h"
 #include "three_phrase_pll.h"
 
-// todo: 根据模式自动切换整流和逆变
 #define Rectifier_Or_Inverter 1 // 1:整流器 0:逆变器
 #define DC_V_Ctrl 1             // 1:开启直流电压控制 0:关闭直流电压控制
 
@@ -19,6 +18,8 @@
 extern const INA228_Handle INA228_0;
 extern float U;
 extern float I;
+extern float Utarget;
+extern float Iref;
 extern float M;
 
 extern pll_Signal_V *signal_V;
