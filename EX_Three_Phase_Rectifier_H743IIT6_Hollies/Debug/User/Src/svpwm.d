@@ -1,6 +1,6 @@
 User/Src/svpwm.o: ../User/Src/svpwm.c ../User/Inc/svpwm.h \
- ../User/Inc/three_phrase_pll.h ../User/Inc/pid.h ../User/Inc/iir.h \
- ../Core/Inc/main.h ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal.h \
+ ../User/Inc/three_phrase_pll.h ../User/Inc/pid.h ../Core/Inc/main.h \
+ ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal.h \
  ../Core/Inc/stm32h7xx_hal_conf.h \
  ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_rcc.h \
  ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_def.h \
@@ -38,11 +38,12 @@ User/Src/svpwm.o: ../User/Src/svpwm.c ../User/Inc/svpwm.h \
  ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_ll_usb.h \
  ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_pcd_ex.h \
  ../Core/Inc/tim.h ../Core/Inc/main.h ../Core/Inc/dac.h \
- ../User/Inc/user_global.h ../User/Inc/ina228.h ../Core/Inc/i2c.h
+ ../User/Inc/user_global.h ../User/Inc/ina228.h ../Core/Inc/i2c.h \
+ ../Drivers/CMSIS/DSP/Include/arm_math.h \
+ ../Drivers/CMSIS/Include/cmsis_compiler.h
 ../User/Inc/svpwm.h:
 ../User/Inc/three_phrase_pll.h:
 ../User/Inc/pid.h:
-../User/Inc/iir.h:
 ../Core/Inc/main.h:
 ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal.h:
 ../Core/Inc/stm32h7xx_hal_conf.h:
@@ -87,3 +88,5 @@ User/Src/svpwm.o: ../User/Src/svpwm.c ../User/Inc/svpwm.h \
 ../User/Inc/user_global.h:
 ../User/Inc/ina228.h:
 ../Core/Inc/i2c.h:
+../Drivers/CMSIS/DSP/Include/arm_math.h:
+../Drivers/CMSIS/Include/cmsis_compiler.h:

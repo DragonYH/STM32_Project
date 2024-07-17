@@ -47,14 +47,14 @@ Core/Src/freertos.o: ../Core/Src/freertos.c \
  ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_pcd_ex.h \
  ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os.h \
  ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os2.h \
- ../User/Inc/three_phrase_pll.h ../User/Inc/pid.h ../User/Inc/iir.h \
+ ../User/Inc/three_phrase_pll.h ../User/Inc/pid.h \
  ../User/Inc/user_global.h ../User/Inc/ina228.h ../Core/Inc/i2c.h \
- ../Core/Inc/main.h ../User/Inc/three_phrase_pll.h ../User/Inc/ad7606.h \
- ../User/Inc/ina228.h ../User/Inc/pid.h ../User/Inc/oled.h \
- ../Core/Inc/gpio.h ../Core/Inc/spi.h ../Core/Inc/tim.h \
+ ../Core/Inc/main.h ../User/Inc/three_phrase_pll.h \
  ../Drivers/CMSIS/DSP/Include/arm_math.h \
- ../Drivers/CMSIS/Include/cmsis_compiler.h ../Core/Inc/dac.h \
- ../USB_DEVICE/App/usb_device.h \
+ ../Drivers/CMSIS/Include/cmsis_compiler.h ../User/Inc/fir.h \
+ ../User/Inc/ad7606.h ../User/Inc/ina228.h ../User/Inc/pid.h \
+ ../User/Inc/oled.h ../Core/Inc/gpio.h ../Core/Inc/spi.h \
+ ../Core/Inc/tim.h ../Core/Inc/dac.h ../USB_DEVICE/App/usb_device.h \
  ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_def.h \
  ../USB_DEVICE/Target/usbd_conf.h ../USB_DEVICE/App/usbd_cdc_if.h \
  ../Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc/usbd_cdc.h \
@@ -114,12 +114,14 @@ Core/Src/freertos.o: ../Core/Src/freertos.c \
 ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os2.h:
 ../User/Inc/three_phrase_pll.h:
 ../User/Inc/pid.h:
-../User/Inc/iir.h:
 ../User/Inc/user_global.h:
 ../User/Inc/ina228.h:
 ../Core/Inc/i2c.h:
 ../Core/Inc/main.h:
 ../User/Inc/three_phrase_pll.h:
+../Drivers/CMSIS/DSP/Include/arm_math.h:
+../Drivers/CMSIS/Include/cmsis_compiler.h:
+../User/Inc/fir.h:
 ../User/Inc/ad7606.h:
 ../User/Inc/ina228.h:
 ../User/Inc/pid.h:
@@ -127,8 +129,6 @@ Core/Src/freertos.o: ../Core/Src/freertos.c \
 ../Core/Inc/gpio.h:
 ../Core/Inc/spi.h:
 ../Core/Inc/tim.h:
-../Drivers/CMSIS/DSP/Include/arm_math.h:
-../Drivers/CMSIS/Include/cmsis_compiler.h:
 ../Core/Inc/dac.h:
 ../USB_DEVICE/App/usb_device.h:
 ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_def.h:

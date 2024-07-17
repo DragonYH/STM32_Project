@@ -6,7 +6,7 @@
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS += \
 ../User/Src/ad7606.c \
-../User/Src/iir.c \
+../User/Src/fir.c \
 ../User/Src/ina228.c \
 ../User/Src/oled.c \
 ../User/Src/pid.c \
@@ -17,7 +17,7 @@ C_SRCS += \
 
 OBJS += \
 ./User/Src/ad7606.o \
-./User/Src/iir.o \
+./User/Src/fir.o \
 ./User/Src/ina228.o \
 ./User/Src/oled.o \
 ./User/Src/pid.o \
@@ -28,7 +28,7 @@ OBJS += \
 
 C_DEPS += \
 ./User/Src/ad7606.d \
-./User/Src/iir.d \
+./User/Src/fir.d \
 ./User/Src/ina228.d \
 ./User/Src/oled.d \
 ./User/Src/pid.d \
@@ -45,7 +45,7 @@ User/Src/%.o User/Src/%.su User/Src/%.cyclo: ../User/Src/%.c User/Src/subdir.mk
 clean: clean-User-2f-Src
 
 clean-User-2f-Src:
-	-$(RM) ./User/Src/ad7606.cyclo ./User/Src/ad7606.d ./User/Src/ad7606.o ./User/Src/ad7606.su ./User/Src/iir.cyclo ./User/Src/iir.d ./User/Src/iir.o ./User/Src/iir.su ./User/Src/ina228.cyclo ./User/Src/ina228.d ./User/Src/ina228.o ./User/Src/ina228.su ./User/Src/oled.cyclo ./User/Src/oled.d ./User/Src/oled.o ./User/Src/oled.su ./User/Src/pid.cyclo ./User/Src/pid.d ./User/Src/pid.o ./User/Src/pid.su ./User/Src/svpwm.cyclo ./User/Src/svpwm.d ./User/Src/svpwm.o ./User/Src/svpwm.su ./User/Src/three_phrase_pll.cyclo ./User/Src/three_phrase_pll.d ./User/Src/three_phrase_pll.o ./User/Src/three_phrase_pll.su ./User/Src/user_exit.cyclo ./User/Src/user_exit.d ./User/Src/user_exit.o ./User/Src/user_exit.su ./User/Src/user_global.cyclo ./User/Src/user_global.d ./User/Src/user_global.o ./User/Src/user_global.su
+	-$(RM) ./User/Src/ad7606.cyclo ./User/Src/ad7606.d ./User/Src/ad7606.o ./User/Src/ad7606.su ./User/Src/fir.cyclo ./User/Src/fir.d ./User/Src/fir.o ./User/Src/fir.su ./User/Src/ina228.cyclo ./User/Src/ina228.d ./User/Src/ina228.o ./User/Src/ina228.su ./User/Src/oled.cyclo ./User/Src/oled.d ./User/Src/oled.o ./User/Src/oled.su ./User/Src/pid.cyclo ./User/Src/pid.d ./User/Src/pid.o ./User/Src/pid.su ./User/Src/svpwm.cyclo ./User/Src/svpwm.d ./User/Src/svpwm.o ./User/Src/svpwm.su ./User/Src/three_phrase_pll.cyclo ./User/Src/three_phrase_pll.d ./User/Src/three_phrase_pll.o ./User/Src/three_phrase_pll.su ./User/Src/user_exit.cyclo ./User/Src/user_exit.d ./User/Src/user_exit.o ./User/Src/user_exit.su ./User/Src/user_global.cyclo ./User/Src/user_global.d ./User/Src/user_global.o ./User/Src/user_global.su
 
 .PHONY: clean-User-2f-Src
 

@@ -2,6 +2,7 @@
 #include "tim.h"
 #include "dac.h"
 #include "user_global.h"
+#include "math.h"
 
 static uint8_t Sector_Detection(float X, float Y, float Z);
 static void Duty_Calculation(float Ta, float Tb, float Tc, float Ts);
@@ -21,8 +22,6 @@ void svpwm_Control(pll_Signal_V *signal)
 #if RectifierOrInverter
     float Ualpha = signal->park_inv_alpha;
     float Ubeta = signal->park_inv_beta;
-    // float Ualpha = signal->basic->clarke_alpha;
-    // float Ubeta = signal->basic->clarke_beta;
 #else
     float Ualpha = M * signal->basic->clarke_alpha;
     float Ubeta = M * signal->basic->clarke_beta;
@@ -115,14 +114,7 @@ static void Duty_Calculation(float Ta, float Tb, float Tc, float Ts)
     // 限制占空比在0到5999之间
     for (int i = 0; i < 3; ++i)
     {
-        if (ccr[i] > TIM_PERIOD)
-        {
-            ccr[i] = TIM_PERIOD;
-        }
-        else if (ccr[i] < 0)
-        {
-            ccr[i] = 0;
-        }
+        ccr[i] = fminf(TIM_PERIOD, fmaxf(0, ccr[i]));
     }
 
     // 更新TIM寄存器

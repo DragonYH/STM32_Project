@@ -1,12 +1,14 @@
 #include "three_phrase_pll.h"
 #include "user_global.h"
 #include "svpwm.h"
+#include "fir.h"
 #include "ad7606.h"
 #include "main.h"
 #include "spi.h"
 #include "tim.h"
 #include "dac.h"
 #include "arm_math.h"
+#include "usbd_cdc_if.h"
 
 static void calcEffectiveValue(void);
 static void normalize(void);
@@ -27,13 +29,14 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 #if RectifierOrInverter
         // 电流内环控制
         if (runState == RUN)
-            pll_Control_I(signal_I, signal_V, 1.f, 1.f);
+            pll_Control_I(signal_I, signal_V, 1.2f, 1.f);
 #endif
 
         svpwm_Control(signal_I); // svpwm调制
 
         // DAC输出
-        uint32_t dacValue = (uint32_t)((__HAL_TIM_GET_COMPARE(&htim1, TIM_CHANNEL_1) - 3000.f) / 3000.f * 2000.f + 2048.f);
+        // uint32_t dacValue = (uint32_t)((__HAL_TIM_GET_COMPARE(&htim1, TIM_CHANNEL_1) - 3000.f) / 3000.f * 2000.f + 2048.f);
+        uint32_t dacValue = (uint32_t)(signal_V->basic->input_a * 2000.f + 2048.f);
         HAL_DAC_SetValue(&hdac1, DAC_CHANNEL_1, DAC_ALIGN_12B_R, dacValue);
     }
 }
@@ -93,20 +96,32 @@ static void getVoltageCurrent(void)
     float adcValue[8] = {0};
     ad7606_GetValue(&hspi2, 7, adcValue);
 
-    // 处理电流数据
-    signal_I->basic->input_a = adcValue[1] * 2.2258065f;
-    signal_I->basic->input_b = adcValue[3] * 2.2258065f;
-    signal_I->basic->input_c = adcValue[5] * 2.2258065f;
-    // signal_V->basic->input_a = -adcValue[2] * 38.160567f;
-    // signal_V->basic->input_b = -adcValue[4] * 38.421915f;
-    // signal_V->basic->input_c = -adcValue[6] * 38.530015f;
-
     // 处理电压数据，将线电压转为相电压
-    float Uab = adcValue[2] * 38.160567f;
-    float Ubc = adcValue[4] * 38.421915f;
-    float Uca = adcValue[6] * 38.530015f;
+    float Uab = adcValue[2];
+    float Ubc = adcValue[4];
+    float Uca = adcValue[6];
 
-    signal_V->basic->input_a = (Uab - Uca) / 3.f;
-    signal_V->basic->input_b = (Ubc - Uab) / 3.f;
-    signal_V->basic->input_c = (Uca - Ubc) / 3.f;
+    float samp_Va = 38.334749f * (Uab - Uca) / 3.f;
+    float samp_Vb = 38.527397f * (Ubc - Uab) / 3.f;
+    float samp_Vc = 38.525180f * (Uca - Ubc) / 3.f;
+
+    // 处理电流数据
+    float samp_Ia = adcValue[1] * 2.178571f;
+    float samp_Ib = adcValue[3] * 2.250774f;
+    float samp_Ic = adcValue[5] * 2.172956f;
+
+    signal_V->basic->input_a = samp_Va;
+    signal_V->basic->input_b = samp_Vb;
+    signal_V->basic->input_c = samp_Vc;
+    signal_I->basic->input_a = samp_Ia;
+    signal_I->basic->input_b = samp_Ib;
+    signal_I->basic->input_c = samp_Ic;
+
+    // fir滤波
+    // arm_fir_f32(fir_Va, &samp_Va, &signal_V->basic->input_a, 1);
+    // arm_fir_f32(fir_Vb, &samp_Vb, &signal_V->basic->input_b, 1);
+    // arm_fir_f32(fir_Vc, &samp_Vc, &signal_V->basic->input_c, 1);
+    // arm_fir_f32(fir_Ia, &samp_Ia, &signal_I->basic->input_a, 1);
+    // arm_fir_f32(fir_Ib, &samp_Ib, &signal_I->basic->input_b, 1);
+    // arm_fir_f32(fir_Ic, &samp_Ic, &signal_I->basic->input_c, 1);
 }

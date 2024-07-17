@@ -1,5 +1,5 @@
-#ifndef ti_sensors_INA228__include
-#define ti_sensors_INA228__include 1
+#ifndef __INA228_H
+#define __INA228_H
 
 #include <stdint.h>
 #include "i2c.h"

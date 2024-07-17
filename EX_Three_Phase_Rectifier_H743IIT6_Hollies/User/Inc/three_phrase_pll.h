@@ -2,7 +2,6 @@
 #define __THREE_PHRASE_PLL_H
 
 #include "pid.h"
-#include "iir.h"
 #include "main.h"
 
 typedef struct pll_Signal_Basic
@@ -23,8 +22,6 @@ typedef struct pll_Signal_Basic
     // 配置参数
     float omiga0; // 无阻尼自然频率，2*pi*频率
     float Ts;     // 采样周期
-    // iir滤波器
-    float iirState[4 * iirNumStages]; // IIR滤波器状态变量
 
 } pll_Signal_Basic;
 
@@ -45,10 +42,6 @@ typedef struct pll_Signal_I
     // park逆变换相关变量
     float park_inv_alpha; // 逆变换后的alpha
     float park_inv_beta;  // 逆变换后的beta
-    // clarke逆变换/输出 相关变量
-    float output_a; // 逆变换后的a相
-    float output_b; // 逆变换后的b相
-    float output_c; // 逆变换后的c相
     // 控制参数
     uint8_t CorL; // 0:感性 1:容性
     float L;      // 电感

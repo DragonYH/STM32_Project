@@ -92,7 +92,7 @@ target_link_options(
 target_sources(
     ${TARGET_NAME} PRIVATE
     "User\\Src\\ad7606.c"
-    "User\\Src\\iir.c"
+    "User\\Src\\fir.c"
     "User\\Src\\ina228.c"
     "User\\Src\\oled.c"
     "User\\Src\\pid.c"

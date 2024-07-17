@@ -31,6 +31,12 @@ void pll_Init_V(pll_Signal_V **signal, float f, uint16_t F)
     (*signal)->basic->rms_b = 0.f;
     (*signal)->basic->rms_c = 0.f;
 
+    (*signal)->basic->clarke_alpha = 0.f;
+    (*signal)->basic->clarke_beta = 0.f;
+
+    (*signal)->basic->park_d = 0.f;
+    (*signal)->basic->park_q = 0.f;
+
     (*signal)->theta = 0.f;
     (*signal)->basic->omiga0 = 2 * PI * f; // f典型值50
     (*signal)->basic->Ts = 1.f / F;        // F典型值20000
@@ -64,14 +70,23 @@ void pll_Init_I(pll_Signal_I **signal, float f, uint16_t F)
     (*signal)->basic->rms_b = 0.f;
     (*signal)->basic->rms_c = 0.f;
 
+    (*signal)->basic->clarke_alpha = 0.f;
+    (*signal)->basic->clarke_beta = 0.f;
+
+    (*signal)->basic->park_d = 0.f;
+    (*signal)->basic->park_q = 0.f;
+
+    (*signal)->park_inv_alpha = 0.f;
+    (*signal)->park_inv_beta = 0.f;
+
     (*signal)->basic->omiga0 = 2.f * PI * f; // f典型值50
     (*signal)->basic->Ts = 1.f / F;          // F典型值20000
 
     (*signal)->CorL = 0;   // 0:感性 1:容性
     (*signal)->L = 0.001f; // 1mH
     // 在调整取值范围时看实际输出值逐渐逼近，防止上电瞬间电流过大
-    pid_Init((*signal)->pid_d, 0.00001f, 0.0001f, 0, -0.2f, -0.8f);
-    pid_Init((*signal)->pid_q, 0.00001f, 0.0001f, 0, 0.1f, -0.1f);
+    pid_Init((*signal)->pid_d, 1.8f, 0.01f, 0, 0.2f, -0.4f);
+    pid_Init((*signal)->pid_q, 1.8f, 0.01f, 0, 0.2f, -0.2f);
 }
 /**
  * @brief 电压锁相控制

@@ -3,6 +3,7 @@
 
 #include "ina228.h"
 #include "three_phrase_pll.h"
+#include "arm_math.h"
 
 // todo: 根据模式自动切换整流和逆变
 #define RectifierOrInverter 1 // 1:整流器 0:逆变器
@@ -23,6 +24,7 @@ extern float M;
 extern pll_Signal_V *signal_V;
 extern pll_Signal_I *signal_I;
 
+// 运行状态
 enum state
 {
     START = 0,
@@ -31,5 +33,11 @@ enum state
 };
 
 extern volatile enum state runState;
+
+// FIR滤波器
+extern arm_fir_instance_f32 *fir_Va, *fir_Vb, *fir_Vc;
+extern arm_fir_instance_f32 *fir_Ia, *fir_Ib, *fir_Ic;
+extern float firState_Va[21], firState_Vb[21], firState_Vc[21];
+extern float firState_Ia[21], firState_Ib[21], firState_Ic[21];
 
 #endif

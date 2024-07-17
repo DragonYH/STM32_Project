@@ -28,6 +28,7 @@
 // #include "oled.h"
 #include "three_phrase_pll.h"
 #include "user_global.h"
+#include "fir.h"
 #include "ad7606.h"
 #include "ina228.h"
 #include "pid.h"
@@ -49,7 +50,7 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-
+#define USER_DEBUG 0
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -107,7 +108,9 @@ const osThreadAttr_t circuitProtect_attributes = {
 /* Private function prototypes -----------------------------------------------*/
 /* USER CODE BEGIN FunctionPrototypes */
 static void appOLEDShow();
+#if USER_DEBUG
 static void appTaskStackShow();
+#endif
 #if !RectifierOrInverter
 static void appACVControl();
 #endif
@@ -134,6 +137,12 @@ void MX_FREERTOS_Init(void)
   ad7606_Init();
   pll_Init_V(&signal_V, 50, 20000);
   pll_Init_I(&signal_I, 50, 20000);
+  firFilterInit(&fir_Va, firCoeffs_100Hz, firState_Va);
+  firFilterInit(&fir_Vb, firCoeffs_100Hz, firState_Vb);
+  firFilterInit(&fir_Vc, firCoeffs_100Hz, firState_Vc);
+  firFilterInit(&fir_Ia, firCoeffs_100Hz, firState_Ia);
+  firFilterInit(&fir_Ib, firCoeffs_100Hz, firState_Ib);
+  firFilterInit(&fir_Ic, firCoeffs_100Hz, firState_Ic);
   HAL_TIMEx_PWMN_Start(&htim1, TIM_CHANNEL_1);
   HAL_TIMEx_PWMN_Start(&htim1, TIM_CHANNEL_2);
   HAL_TIMEx_PWMN_Start(&htim1, TIM_CHANNEL_3);
@@ -282,8 +291,16 @@ void StartUsartDebug(void *argument)
   /* Infinite loop */
   for (;;)
   {
+#if USER_DEBUG
     appTaskStackShow();
-    osDelay(500);
+#else
+    // vTaskDelete(NULL);
+    uint8_t text[32] = {0};
+    sprintf((char *)text, "x=0,a=%.3f,b=%.3f\r\n", signal_V->basic->input_a, signal_V->basic->park_d);
+    CDC_Transmit_FS(text, 32);
+    memset(text, 0, 32);
+#endif
+    osDelay(1);
   }
   /* USER CODE END StartUsartDebug */
 }
@@ -383,11 +400,12 @@ static void appOLEDShow()
     n = 0.f;
   }
   // sprintf((char *)text, "cnt: %4ld n: %5.2f%%", __HAL_TIM_GET_COMPARE(&htim1, TIM_CHANNEL_1), n);
-  sprintf((char *)text, "d: %5.3f q: %5.3f %d", signal_I->basic->park_d, signal_I->basic->park_q, runState);
+  sprintf((char *)text, "d: %5.3f q: %5.3f %d", signal_I->pid_d->out, signal_I->pid_q->out, runState);
   OLED_ShowString(0, 48, text, 12);
   OLED_Refresh();
 }
 
+#if USER_DEBUG
 /**
  * @brief 任务剩余堆栈输出
  */
@@ -406,6 +424,7 @@ static void appTaskStackShow()
     i = 0;
   }
 }
+#endif
 
 #if !RectifierOrInverter
 /**

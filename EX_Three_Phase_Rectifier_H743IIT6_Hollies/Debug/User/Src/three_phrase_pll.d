@@ -1,6 +1,6 @@
 User/Src/three_phrase_pll.o: ../User/Src/three_phrase_pll.c \
- ../User/Inc/three_phrase_pll.h ../User/Inc/pid.h ../User/Inc/iir.h \
- ../Core/Inc/main.h ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal.h \
+ ../User/Inc/three_phrase_pll.h ../User/Inc/pid.h ../Core/Inc/main.h \
+ ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal.h \
  ../Core/Inc/stm32h7xx_hal_conf.h \
  ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_rcc.h \
  ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_def.h \
@@ -38,12 +38,11 @@ User/Src/three_phrase_pll.o: ../User/Src/three_phrase_pll.c \
  ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_ll_usb.h \
  ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_pcd_ex.h \
  ../User/Inc/user_global.h ../User/Inc/ina228.h ../Core/Inc/i2c.h \
- ../Core/Inc/main.h ../User/Inc/three_phrase_pll.h ../User/Inc/pid.h \
+ ../Core/Inc/main.h ../User/Inc/three_phrase_pll.h \
  ../Drivers/CMSIS/DSP/Include/arm_math.h \
- ../Drivers/CMSIS/Include/cmsis_compiler.h
+ ../Drivers/CMSIS/Include/cmsis_compiler.h ../User/Inc/pid.h
 ../User/Inc/three_phrase_pll.h:
 ../User/Inc/pid.h:
-../User/Inc/iir.h:
 ../Core/Inc/main.h:
 ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal.h:
 ../Core/Inc/stm32h7xx_hal_conf.h:
@@ -87,6 +86,6 @@ User/Src/three_phrase_pll.o: ../User/Src/three_phrase_pll.c \
 ../Core/Inc/i2c.h:
 ../Core/Inc/main.h:
 ../User/Inc/three_phrase_pll.h:
-../User/Inc/pid.h:
 ../Drivers/CMSIS/DSP/Include/arm_math.h:
 ../Drivers/CMSIS/Include/cmsis_compiler.h:
+../User/Inc/pid.h:
