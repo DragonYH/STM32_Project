@@ -101,19 +101,12 @@ static void getVoltageCurrent(void)
     float Ubc = adcValue[4];
     float Uca = adcValue[6];
 
-    float samp_Va = 38.334749f * (Uab - Uca) / 3.f;
-    float samp_Vb = 38.527397f * (Ubc - Uab) / 3.f;
-    float samp_Vc = 38.525180f * (Uca - Ubc) / 3.f;
+    signal_V->basic->input_a = 38.334749f * (Uab - Uca) / 3.f;
+    signal_V->basic->input_b = 38.527397f * (Ubc - Uab) / 3.f;
+    signal_V->basic->input_c = 38.525180f * (Uca - Ubc) / 3.f;
 
     // 处理电流数据
-    float samp_Ia = adcValue[1] * 2.178571f;
-    float samp_Ib = adcValue[3] * 2.250774f;
-    float samp_Ic = adcValue[5] * 2.172956f;
-
-    signal_V->basic->input_a = samp_Va;
-    signal_V->basic->input_b = samp_Vb;
-    signal_V->basic->input_c = samp_Vc;
-    signal_I->basic->input_a = samp_Ia;
-    signal_I->basic->input_b = samp_Ib;
-    signal_I->basic->input_c = samp_Ic;
+    signal_I->basic->input_a = adcValue[1] * 2.178571f;
+    signal_I->basic->input_b = adcValue[3] * 2.250774f;
+    signal_I->basic->input_c = adcValue[5] * 2.172956f;
 }

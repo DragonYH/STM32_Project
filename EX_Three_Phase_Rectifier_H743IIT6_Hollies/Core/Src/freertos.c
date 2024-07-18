@@ -40,6 +40,7 @@
 #include "dac.h"
 #include "usb_device.h"
 #include "usbd_cdc_if.h"
+#include "string.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -299,10 +300,6 @@ void StartUsartDebug(void *argument)
     appTaskStackShow();
 #else
     vTaskDelete(NULL);
-    // uint8_t text[32] = {0};
-    // sprintf((char *)text, "x=0,a=%.3f,b=%.3f\r\n", signal_V->basic->input_a, signal_V->basic->park_d);
-    // CDC_Transmit_FS(text, 32);
-    // memset(text, 0, 32);
 #endif
     osDelay(100);
   }
@@ -412,25 +409,37 @@ void StartDCVControl(void *argument)
 static void appOLEDShow()
 {
   static uint8_t text[32] = {0};
+  // 显示交流电压电流有效值
   sprintf((char *)text, "Ua: %5.2f Ub: %5.2f", signal_V->basic->rms_a, signal_V->basic->rms_b);
   OLED_ShowString(0, 0, text, 12);
   sprintf((char *)text, "Uc: %5.2f Ia: %5.2f", signal_V->basic->rms_c, signal_I->basic->rms_a);
   OLED_ShowString(0, 12, text, 12);
   sprintf((char *)text, "Ib: %5.2f Ic: %5.2f", signal_I->basic->rms_b, signal_I->basic->rms_c);
+  // 显示直流电压电流
   OLED_ShowString(0, 24, text, 12);
   sprintf((char *)text, "U: %5.2f I: %5.2f", U, I);
   OLED_ShowString(0, 36, text, 12);
-  float n = (signal_V->basic->rms_a * signal_I->basic->rms_a + signal_V->basic->rms_b * signal_I->basic->rms_b + signal_V->basic->rms_c * signal_I->basic->rms_c) / (U * I) * 100.f;
-  if (n > 100.f)
+  // 计算效率
+  float n = (signal_V->basic->rms_a * signal_I->basic->rms_a + signal_V->basic->rms_b * signal_I->basic->rms_b + signal_V->basic->rms_c * signal_I->basic->rms_c) / fabsf(U * I) * 100.f;
+  n = (n > 100.f) ? 100.f : ((n < 0.f) ? 0.f : n);
+  // 显示当前运行状态
+  const char *stateText;
+  switch (runState)
   {
-    n = 100.f;
+  case START:
+    stateText = "START";
+    break;
+  case RUN:
+    stateText = "RUN";
+    break;
+  case FAULT:
+    stateText = "FAULT";
+    break;
+  default:
+    stateText = "UNKNOWN";
+    break;
   }
-  else if (n < 0.f)
-  {
-    n = 0.f;
-  }
-  // sprintf((char *)text, "cnt: %4ld n: %5.2f%%", __HAL_TIM_GET_COMPARE(&htim1, TIM_CHANNEL_1), n);
-  sprintf((char *)text, "d: %5.3f q: %5.3f %d", signal_I->pid_d->out, signal_I->pid_q->out, runState);
+  sprintf((char *)text, "n: %5.2f%% %s", n, stateText);
   OLED_ShowString(0, 48, text, 12);
   OLED_Refresh();
 }
