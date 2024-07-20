@@ -84,7 +84,7 @@ uint64_t INA228_readReg(INA228_Handle sensor, uint8_t regAddr)
 
 	uint8_t rxBuf[5] = {0}; // max buffer size
 	// 读取寄存器值
-	HAL_I2C_Mem_Read(&hi2c1, sensor->devAddr, regAddr, I2C_MEMADD_SIZE_8BIT, rxBuf, INA228_regSize[regAddr], 100);
+	HAL_I2C_Mem_Read(sensor->hi2c, sensor->devAddr, regAddr, I2C_MEMADD_SIZE_8BIT, rxBuf, INA228_regSize[regAddr], 100);
 
 	// 合并字节
 	value = rxBuf[0];
