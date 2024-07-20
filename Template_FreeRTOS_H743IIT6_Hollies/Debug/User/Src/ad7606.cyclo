@@ -1,6 +1,0 @@
-../User/Src/ad7606.c:6:6:ad7606_Init	1
-../User/Src/ad7606.c:20:6:ad7606_Read	1
-../User/Src/ad7606.c:31:6:ad7606_Start	1
-../User/Src/ad7606.c:40:6:ad7606_Stop	1
-../User/Src/ad7606.c:51:6:ad7606_Convert	3
-../User/Src/ad7606.c:66:6:ad7606_GetValue	1
