@@ -2,7 +2,7 @@
  * @Author       : DragonYH 1016633827@qq.com
  * @Date         : 2024-07-20 18:37:44
  * @LastEditors  : DragonYH 1016633827@qq.com
- * @LastEditTime : 2024-07-21 11:09:48
+ * @LastEditTime : 2024-07-21 11:29:59
  * @FilePath     : \EX_Single_Phase_Rectifier_H743IIT6_Hollies\User\Src\user_task.c
  * @Description  : 用于FreeRTOS任务的实现
  *
@@ -22,6 +22,7 @@
 #include "adc.h"
 #include "tim.h"
 #include "dac.h"
+#include <stdio.h>
 
 enum state deviceState = START;     /* 设备状态 */
 static float mcuTemperature = 0.0f; /* MCU温度 */
@@ -114,6 +115,40 @@ void StartOledDisplay(void *argument)
     /* Infinite loop */
     for (;;)
     {
+        char oledBuffer[22] = {0};
+        float Uac = signal_V->basic->rms;
+        float Iac = signal_I->basic->rms;
+
+        /* 显示直流电压电流 */
+        snprintf(oledBuffer, sizeof(oledBuffer), "Udc:%5.2fV Idc:%4.2fA", Udc, Idc);
+        OLED_ShowString(0, 0, (uint8_t *)oledBuffer, 12);
+
+        /* 显示交流电压电流 */
+        snprintf(oledBuffer, sizeof(oledBuffer), "Uac:%5.2fV Iac:%4.2fA", Uac, Iac);
+        OLED_ShowString(0, 12, (uint8_t *)oledBuffer, 12);
+
+        /* 显示设备状态和温度 */
+        const char *stateText;
+        switch (deviceState)
+        {
+        case START:
+            stateText = "START";
+            break;
+        case RUN:
+            stateText = "RUN";
+            break;
+        case FAULT:
+            stateText = "FAULT";
+            break;
+        default:
+            stateText = "UNKNOWN";
+            break;
+        }
+        snprintf(oledBuffer, sizeof(oledBuffer), "%s T:%4.2fC", stateText, mcuTemperature);
+        OLED_ShowString(0, 48, (uint8_t *)oledBuffer, 12);
+
+        /* 刷新显示 */
+        OLED_Refresh();
         osDelay(100);
     }
     /* USER CODE END oledDisplay */
