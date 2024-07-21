@@ -228,7 +228,7 @@ void StartStateLED(void *argument)
       osDelay(100);
       HAL_GPIO_TogglePin(GPIOI, GPIO_PIN_0);
       osDelay(200);
-      HAL_GPIO_WritePin(GPIOI, GPIO_PIN_1, GPIO_PIN_RESET);
+      HAL_GPIO_WritePin(GPIOI, GPIO_PIN_0, GPIO_PIN_RESET);
       osDelay(1000);
       break;
     case FAULT: // 保护状态

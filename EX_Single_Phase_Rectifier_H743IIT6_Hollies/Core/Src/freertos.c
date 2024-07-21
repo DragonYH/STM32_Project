@@ -25,7 +25,13 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include "user_exit.h"
 #include "user_task.h"
+#include "single_phrase_pll.h"
+#include "oled.h"
+#include "ad7606.h"
+#include "tim.h"
+#include "dac.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -51,43 +57,43 @@
 osThreadId_t stateLEDHandle;
 const osThreadAttr_t stateLED_attributes = {
   .name = "stateLED",
-  .stack_size = 128 * 4,
+  .stack_size = 256 * 4,
   .priority = (osPriority_t) osPriorityNormal,
 };
 /* Definitions for mcuTemperature */
 osThreadId_t mcuTemperatureHandle;
 const osThreadAttr_t mcuTemperature_attributes = {
   .name = "mcuTemperature",
-  .stack_size = 128 * 4,
-  .priority = (osPriority_t) osPriorityLow,
+  .stack_size = 512 * 4,
+  .priority = (osPriority_t) osPriorityNormal,
 };
 /* Definitions for oledDisplay */
 osThreadId_t oledDisplayHandle;
 const osThreadAttr_t oledDisplay_attributes = {
   .name = "oledDisplay",
-  .stack_size = 256 * 4,
+  .stack_size = 512 * 4,
   .priority = (osPriority_t) osPriorityHigh,
 };
 /* Definitions for dcSampling */
 osThreadId_t dcSamplingHandle;
 const osThreadAttr_t dcSampling_attributes = {
   .name = "dcSampling",
-  .stack_size = 128 * 4,
-  .priority = (osPriority_t) osPriorityLow,
+  .stack_size = 512 * 4,
+  .priority = (osPriority_t) osPriorityHigh,
 };
 /* Definitions for circuitProtecti */
 osThreadId_t circuitProtectiHandle;
 const osThreadAttr_t circuitProtecti_attributes = {
   .name = "circuitProtecti",
-  .stack_size = 128 * 4,
+  .stack_size = 512 * 4,
   .priority = (osPriority_t) osPriorityHigh,
 };
 /* Definitions for dcControl */
 osThreadId_t dcControlHandle;
 const osThreadAttr_t dcControl_attributes = {
   .name = "dcControl",
-  .stack_size = 128 * 4,
-  .priority = (osPriority_t) osPriorityLow,
+  .stack_size = 256 * 4,
+  .priority = (osPriority_t) osPriorityHigh,
 };
 
 /* Private function prototypes -----------------------------------------------*/
@@ -251,16 +257,16 @@ __weak void StartCircuitProtection(void *argument)
 
 /* USER CODE BEGIN Header_StartDCControl */
 /**
-* @brief Function implementing the dcControl thread.
-* @param argument: Not used
-* @retval None
-*/
+ * @brief Function implementing the dcControl thread.
+ * @param argument: Not used
+ * @retval None
+ */
 /* USER CODE END Header_StartDCControl */
 __weak void StartDCControl(void *argument)
 {
   /* USER CODE BEGIN StartDCControl */
   /* Infinite loop */
-  for(;;)
+  for (;;)
   {
     osDelay(1);
   }

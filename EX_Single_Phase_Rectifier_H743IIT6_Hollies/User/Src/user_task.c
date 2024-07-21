@@ -2,7 +2,7 @@
  * @Author       : DragonYH 1016633827@qq.com
  * @Date         : 2024-07-20 18:37:44
  * @LastEditors  : DragonYH 1016633827@qq.com
- * @LastEditTime : 2024-07-21 11:29:59
+ * @LastEditTime : 2024-07-21 19:35:48
  * @FilePath     : \EX_Single_Phase_Rectifier_H743IIT6_Hollies\User\Src\user_task.c
  * @Description  : 用于FreeRTOS任务的实现
  *
@@ -34,6 +34,7 @@ float Itarget = 0.0f;               /* 电流参考值 */
 void UserInit(void)
 {
     ad7606_Init();
+    OLED_Init();
     pll_Init_V(&signal_V, 50, 20000);
     pll_Init_I(&signal_I, 50, 20000);
     HAL_TIM_PWM_Start(&htim8, TIM_CHANNEL_1);
@@ -66,7 +67,7 @@ void StartStateLED(void *argument)
             osDelay(100);
             HAL_GPIO_TogglePin(GPIOI, GPIO_PIN_0);
             osDelay(200);
-            HAL_GPIO_WritePin(GPIOI, GPIO_PIN_1, GPIO_PIN_RESET);
+            HAL_GPIO_WritePin(GPIOI, GPIO_PIN_0, GPIO_PIN_SET);
             osDelay(1000);
             break;
         case FAULT: /* 保护状态 */
@@ -90,16 +91,16 @@ void StartMcuTemperature(void *argument)
     /* USER CODE BEGIN mcuTemperature */
     HAL_ADCEx_Calibration_Start(&hadc3, ADC_SINGLE_ENDED, ADC_CALIB_OFFSET);
     HAL_ADCEx_Calibration_Start(&hadc3, ADC_SINGLE_ENDED, ADC_CALIB_OFFSET_LINEARITY);
-    /* Infinite loop */
+    // /* Infinite loop */
     for (;;)
     {
         HAL_ADC_Start(&hadc3);
-        if (HAL_ADC_PollForConversion(&hadc3, 10) == HAL_OK) /* 判断是否转换完成 */
+        if (HAL_ADC_PollForConversion(&hadc3, 1000) == HAL_OK) /* 判断是否转换完成 */
         {
             uint16_t temprature = HAL_ADC_GetValue(&hadc3); /* 读出转换结果 */
             mcuTemperature = ((110.0 - 30.0) / (*(unsigned short *)(0x1FF1E840) - *(unsigned short *)(0x1FF1E820))) * (temprature - *(unsigned short *)(0x1FF1E820)) + 30;
         }
-        osDelay(1000);
+        osDelay(500);
     }
     /* USER CODE END mcuTemperature */
 }
@@ -144,7 +145,7 @@ void StartOledDisplay(void *argument)
             stateText = "UNKNOWN";
             break;
         }
-        snprintf(oledBuffer, sizeof(oledBuffer), "%s T:%4.2fC", stateText, mcuTemperature);
+        snprintf(oledBuffer, sizeof(oledBuffer), "%s     T:%5.2fC", stateText, mcuTemperature);
         OLED_ShowString(0, 48, (uint8_t *)oledBuffer, 12);
 
         /* 刷新显示 */

@@ -1,7 +1,7 @@
 ../User/Src/user_task.c:34:6:UserInit	8	static
-../User/Src/user_task.c:49:6:StartStateLED	16	static
-../User/Src/user_task.c:88:6:StartMcuTemperature	24	static
-../User/Src/user_task.c:112:6:StartOledDisplay	72	static
-../User/Src/user_task.c:162:6:StartDCSampling	16	static
-../User/Src/user_task.c:216:6:StartCircuitProtection	24	static
-../User/Src/user_task.c:250:6:StartDCControl	16	static
+../User/Src/user_task.c:50:6:StartStateLED	16	static
+../User/Src/user_task.c:89:6:StartMcuTemperature	24	static
+../User/Src/user_task.c:113:6:StartOledDisplay	72	static
+../User/Src/user_task.c:163:6:StartDCSampling	16	static
+../User/Src/user_task.c:217:6:StartCircuitProtection	24	static
+../User/Src/user_task.c:251:6:StartDCControl	16	static

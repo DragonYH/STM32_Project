@@ -2,7 +2,7 @@
  * @Author       : DragonYH 1016633827@qq.com
  * @Date         : 2024-07-20 20:10:11
  * @LastEditors  : DragonYH 1016633827@qq.com
- * @LastEditTime : 2024-07-21 11:15:47
+ * @LastEditTime : 2024-07-21 19:08:19
  * @FilePath     : \EX_Single_Phase_Rectifier_H743IIT6_Hollies\User\Src\single_phrase_pll.c
  * @Description  : 单相锁相环控制
  *
@@ -31,6 +31,7 @@ void pll_Init_V(pll_Signal_V **signal, float f, uint16_t F)
     (*signal) = (pll_Signal_V *)malloc(sizeof(pll_Signal_V));
     (*signal)->basic = (pll_Signal_Basic *)malloc(sizeof(pll_Signal_Basic));
     (*signal)->pid = (PID *)malloc(sizeof(PID));
+    (*signal)->basic->sogi = (SOGI *)malloc(sizeof(SOGI));
 
     /* 初始化赋值 */
     (*signal)->basic->input[0] = 0.f;
@@ -73,6 +74,7 @@ void pll_Init_I(pll_Signal_I **signal, float f, uint16_t F)
 {
     (*signal) = (pll_Signal_I *)malloc(sizeof(pll_Signal_I));
     (*signal)->basic = (pll_Signal_Basic *)malloc(sizeof(pll_Signal_Basic));
+    (*signal)->basic->sogi = (SOGI *)malloc(sizeof(SOGI));
 
     (*signal)->pid_d = (PID *)malloc(sizeof(PID));
     (*signal)->pid_q = (PID *)malloc(sizeof(PID));
