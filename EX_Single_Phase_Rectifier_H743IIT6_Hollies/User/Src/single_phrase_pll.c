@@ -2,8 +2,8 @@
  * @Author       : DragonYH 1016633827@qq.com
  * @Date         : 2024-07-20 20:10:11
  * @LastEditors  : DragonYH 1016633827@qq.com
- * @LastEditTime : 2024-07-21 09:52:43
- * @FilePath     : \EX_Single_Phase_Rectifier_H743IIT6_Hollies\User\Src\three_phrase_pll.c
+ * @LastEditTime : 2024-07-21 11:15:47
+ * @FilePath     : \EX_Single_Phase_Rectifier_H743IIT6_Hollies\User\Src\single_phrase_pll.c
  * @Description  : 单相锁相环控制
  *
  * Copyright (c) 2024 by DragonYH, All Rights Reserved.
@@ -11,9 +11,9 @@
 
 #include "single_phrase_pll.h"
 #include "pid.h"
-#include "math.h"
-#include "stdlib.h"
-#include "malloc.h"
+#include <math.h>
+#include <stdlib.h>
+#include <malloc.h>
 #include "arm_math.h"
 
 static void pll_Sogi(SOGI *sogi, float *input);
