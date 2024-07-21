@@ -1,0 +1,14 @@
+{
+  "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools",
+  "cmake.configureOnOpen": true,
+  "files.associations": {
+    "*.nsp": "json",
+    "*.yml": "yaml",
+    "*.toml": "yaml",
+    "task.h": "c",
+    "freertos.h": "c",
+    "ad7606.h": "c",
+    "user_global.h": "c",
+    "user_exit.h": "c"
+  }
+}

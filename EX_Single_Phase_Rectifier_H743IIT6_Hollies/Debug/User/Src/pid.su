@@ -1,0 +1,2 @@
+../User/Src/pid.c:24:6:pid_Init	32	static
+../User/Src/pid.c:47:6:pid	32	static

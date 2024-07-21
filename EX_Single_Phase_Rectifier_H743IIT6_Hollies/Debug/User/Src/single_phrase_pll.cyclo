@@ -1,0 +1,7 @@
+../User/Src/single_phrase_pll.c:28:6:pll_Init_V	1
+../User/Src/single_phrase_pll.c:72:6:pll_Init_I	1
+../User/Src/single_phrase_pll.c:116:6:pll_Control_V	1
+../User/Src/single_phrase_pll.c:141:6:pll_Control_I	2
+../User/Src/single_phrase_pll.c:178:13:pll_Sogi	1
+../User/Src/single_phrase_pll.c:195:6:pll_Free_V	1
+../User/Src/single_phrase_pll.c:207:6:pll_Free_I	1

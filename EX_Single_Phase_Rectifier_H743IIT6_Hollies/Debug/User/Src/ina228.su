@@ -1,0 +1,16 @@
+../User/Src/ina228.c:28:6:INA228_writeReg	40	static
+../User/Src/ina228.c:48:6:INA228_config	16	static
+../User/Src/ina228.c:69:6:INA228_setCURRENT_LSB	16	static
+../User/Src/ina228.c:80:10:INA228_readReg	88	static
+../User/Src/ina228.c:104:7:INA228_getVSHUNT_mV	32	static
+../User/Src/ina228.c:140:7:INA228_getVBUS_V	32	static
+../User/Src/ina228.c:169:7:INA228_getDIETEMP_C	32	static
+../User/Src/ina228.c:195:7:INA228_getDIETEMP_F	24	static
+../User/Src/ina228.c:210:7:INA228_getCURRENT_signedLSB	32	static
+../User/Src/ina228.c:236:7:INA228_getCURRENT_A	24	static
+../User/Src/ina228.c:250:7:INA228_getPOWER_signedLSB	32	static
+../User/Src/ina228.c:265:7:INA228_getPOWER_W	24	static
+../User/Src/ina228.c:279:8:INA228_getENERGY_signedLSB	32	static
+../User/Src/ina228.c:294:8:INA228_getENERGY_J	24	static
+../User/Src/ina228.c:308:8:INA228_getCHARGE_signedLSB	32	static
+../User/Src/ina228.c:331:8:INA228_getCHARGE_C	24	static

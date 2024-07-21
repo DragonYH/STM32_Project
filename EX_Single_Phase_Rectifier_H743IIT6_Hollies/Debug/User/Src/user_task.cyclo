@@ -1,0 +1,7 @@
+../User/Src/user_task.c:33:6:UserInit	1
+../User/Src/user_task.c:48:6:StartStateLED	5
+../User/Src/user_task.c:87:6:StartMcuTemperature	2
+../User/Src/user_task.c:111:6:StartOledDisplay	1
+../User/Src/user_task.c:127:6:StartDCSampling	1
+../User/Src/user_task.c:181:6:StartCircuitProtection	13
+../User/Src/user_task.c:216:6:StartDCControl	1

@@ -1,0 +1,7 @@
+../User/Src/user_task.c:33:6:UserInit	8	static
+../User/Src/user_task.c:48:6:StartStateLED	16	static
+../User/Src/user_task.c:87:6:StartMcuTemperature	24	static
+../User/Src/user_task.c:111:6:StartOledDisplay	16	static
+../User/Src/user_task.c:127:6:StartDCSampling	16	static
+../User/Src/user_task.c:181:6:StartCircuitProtection	24	static
+../User/Src/user_task.c:216:6:StartDCControl	16	static

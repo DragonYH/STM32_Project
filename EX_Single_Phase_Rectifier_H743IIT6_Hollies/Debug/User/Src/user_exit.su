@@ -1,0 +1,5 @@
+../User/Src/user_exit.c:33:6:HAL_GPIO_EXTI_Callback	24	static
+../User/Src/user_exit.c:59:13:getVoltageCurrent	40	static
+../User/Src/user_exit.c:73:13:calcEffectiveValue	8	static
+../User/Src/user_exit.c:94:13:normalize	4	static
+../User/Src/user_exit.c:104:13:spwmContral	4	static

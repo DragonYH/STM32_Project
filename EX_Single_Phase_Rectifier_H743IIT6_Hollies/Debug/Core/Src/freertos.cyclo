@@ -1,0 +1,7 @@
+../Core/Src/freertos.c:112:6:MX_FREERTOS_Init	1
+../Core/Src/freertos.c:169:13:StartStateLED	1
+../Core/Src/freertos.c:187:13:StartMcuTemperature	1
+../Core/Src/freertos.c:205:13:StartOledDisplay	1
+../Core/Src/freertos.c:223:13:StartDCSampling	1
+../Core/Src/freertos.c:241:13:StartCircuitProtection	1
+../Core/Src/freertos.c:259:13:StartDCControl	1
