@@ -47,11 +47,7 @@ Core/Src/freertos.o: ../Core/Src/freertos.c \
  ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_tim_ex.h \
  ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os.h \
  ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os2.h \
- ../User/Inc/user_exit.h ../User/Inc/single_phrase_pll.h \
- ../User/Inc/pid.h ../User/Inc/user_task.h \
- ../User/Inc/single_phrase_pll.h ../User/Inc/oled.h ../Core/Inc/gpio.h \
- ../Core/Inc/main.h ../User/Inc/ad7606.h ../Core/Inc/tim.h \
- ../Core/Inc/dac.h
+ ../User/Inc/user_task.h
 ../Middlewares/Third_Party/FreeRTOS/Source/include/FreeRTOS.h:
 ../Core/Inc/FreeRTOSConfig.h:
 ../Middlewares/Third_Party/FreeRTOS/Source/include/projdefs.h:
@@ -101,14 +97,4 @@ Core/Src/freertos.o: ../Core/Src/freertos.c \
 ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_tim_ex.h:
 ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os.h:
 ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os2.h:
-../User/Inc/user_exit.h:
-../User/Inc/single_phrase_pll.h:
-../User/Inc/pid.h:
 ../User/Inc/user_task.h:
-../User/Inc/single_phrase_pll.h:
-../User/Inc/oled.h:
-../Core/Inc/gpio.h:
-../Core/Inc/main.h:
-../User/Inc/ad7606.h:
-../Core/Inc/tim.h:
-../Core/Inc/dac.h:

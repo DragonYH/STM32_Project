@@ -2,7 +2,7 @@
  * @Author       : DragonYH 1016633827@qq.com
  * @Date         : 2024-07-20 20:11:13
  * @LastEditors  : DragonYH 1016633827@qq.com
- * @LastEditTime : 2024-07-21 19:34:31
+ * @LastEditTime : 2024-07-24 09:46:42
  * @FilePath     : \EX_Single_Phase_Rectifier_H743IIT6_Hollies\User\Src\user_exit.c
  * @Description  : 用户中断
  *
@@ -47,8 +47,8 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
         spwmContral();
 
         /* DAC输出 */
-        /* uint32_t dacValue = (uint32_t)((__HAL_TIM_GET_COMPARE(&htim1, TIM_CHANNEL_1) - 3000.f) / 3000.f * 2000.f + 2048.f); */
-        uint32_t dacValue = (uint32_t)(signal_V->basic->input[0] * 2000.f + 2048.f);
+        // uint32_t dacValue = (uint32_t)(signal_I->basic->input[0] * 2000.f + 2048.f);
+        uint32_t dacValue = (uint32_t)(arm_cos_f32(signal_V->theta) * 2000.f + 2048.f);
         HAL_DAC_SetValue(&hdac1, DAC_CHANNEL_1, DAC_ALIGN_12B_R, dacValue);
     }
 }
@@ -63,8 +63,8 @@ static void getVoltageCurrent(void)
     ad7606_GetValue(&hspi2, 3, adcValue);
 
     /* 处理电流电压数据 */
-    signal_V->basic->input[0] = adcValue[1];
-    signal_I->basic->input[0] = adcValue[2];
+    signal_V->basic->input[0] = adcValue[1] * 41.795775f;
+    signal_I->basic->input[0] = adcValue[2] * 2.5223214f;
 }
 
 /**
@@ -103,15 +103,18 @@ static void normalize(void)
  */
 static void spwmContral(void)
 {
-    // 调节SPWM占空比
+    /* 计算比较值 */
+    float COMPARE = signal_I->park_inv_alpha * (TIM_PERIOD - 1);
+
+    /* 调节SPWM占空比 */
     if (signal_I->park_inv_alpha > 0)
     {
-        __HAL_TIM_SET_COMPARE(&htim8, TIM_CHANNEL_1, signal_I->park_inv_alpha * (TIM_PERIOD - 1.f));
+        __HAL_TIM_SET_COMPARE(&htim8, TIM_CHANNEL_1, COMPARE);
         __HAL_TIM_SET_COMPARE(&htim8, TIM_CHANNEL_2, 0);
     }
     else
     {
         __HAL_TIM_SET_COMPARE(&htim8, TIM_CHANNEL_1, 0);
-        __HAL_TIM_SET_COMPARE(&htim8, TIM_CHANNEL_2, -signal_I->park_inv_alpha * (TIM_PERIOD - 1.f));
+        __HAL_TIM_SET_COMPARE(&htim8, TIM_CHANNEL_2, -COMPARE);
     }
 }

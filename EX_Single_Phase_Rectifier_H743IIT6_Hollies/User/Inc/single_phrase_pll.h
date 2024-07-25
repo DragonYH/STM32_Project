@@ -5,7 +5,7 @@
 #include "main.h"
 
 /* 基准值 */
-#define Ubase (15.f * 1.414f) /* 电压基准 */
+#define Ubase (30.f * 1.414f) /* 电压基准 */
 #define Ibase (6.f * 1.414f)  /* 电流基准 */
 
 /* sogi结构体 */

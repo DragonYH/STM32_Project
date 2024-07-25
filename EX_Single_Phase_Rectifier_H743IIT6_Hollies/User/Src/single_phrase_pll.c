@@ -2,7 +2,7 @@
  * @Author       : DragonYH 1016633827@qq.com
  * @Date         : 2024-07-20 20:10:11
  * @LastEditors  : DragonYH 1016633827@qq.com
- * @LastEditTime : 2024-07-21 19:08:19
+ * @LastEditTime : 2024-07-24 11:37:22
  * @FilePath     : \EX_Single_Phase_Rectifier_H743IIT6_Hollies\User\Src\single_phrase_pll.c
  * @Description  : 单相锁相环控制
  *
@@ -23,34 +23,39 @@ static void pll_Sogi(SOGI *sogi, float *input);
  * @param signal 信号指针
  * @param f 信号频率(典型值:50)
  * @param F 采样频率(典型值:20000)
- * @param Umax 交流电压峰值
  */
 void pll_Init_V(pll_Signal_V **signal, float f, uint16_t F)
 {
     /* 分配内存空间 */
     (*signal) = (pll_Signal_V *)malloc(sizeof(pll_Signal_V));
     (*signal)->basic = (pll_Signal_Basic *)malloc(sizeof(pll_Signal_Basic));
-    (*signal)->pid = (PID *)malloc(sizeof(PID));
     (*signal)->basic->sogi = (SOGI *)malloc(sizeof(SOGI));
+    (*signal)->pid = (PID *)malloc(sizeof(PID));
 
-    /* 初始化赋值 */
+    /* 输入初始化赋值 */
     (*signal)->basic->input[0] = 0.f;
     (*signal)->basic->input[1] = 0.f;
     (*signal)->basic->input[2] = 0.f;
 
+    /* 有效值初始化赋值 */
     (*signal)->basic->rms = 0.f;
 
+    /* sogi变换相关变量初始化赋值 */
+    (*signal)->basic->sogi->alpha[0] = 0.f;
+    (*signal)->basic->sogi->alpha[1] = 0.f;
+    (*signal)->basic->sogi->alpha[2] = 0.f;
+    (*signal)->basic->sogi->beta[0] = 0.f;
+    (*signal)->basic->sogi->beta[1] = 0.f;
+    (*signal)->basic->sogi->beta[2] = 0.f;
+
+    /* park变换相关变量初始化赋值 */
     (*signal)->basic->park_d = 0.f;
     (*signal)->basic->park_q = 0.f;
 
-    (*signal)->theta = 0.f;
     (*signal)->basic->omiga0 = 2 * PI * f; /* f典型值50 */
     (*signal)->basic->Ts = 1.f / F;        /* F典型值20000 */
 
-    /* 初始化pid参数 */
-    float ki = (*signal)->basic->omiga0 * (*signal)->basic->omiga0;
-    float kp = sqrt(2) * sqrt(ki);
-    pid_Init((*signal)->pid, kp, ki, 0, 50 * PI, -20 * PI);
+    (*signal)->theta = 0.f;
 
     /* 计算sogi中间量 */
     (*signal)->basic->sogi->k = 1.414f;
@@ -60,6 +65,11 @@ void pll_Init_V(pll_Signal_V **signal, float f, uint16_t F)
     (*signal)->basic->sogi->b0 = (*signal)->basic->sogi->x / ((*signal)->basic->sogi->x + (*signal)->basic->sogi->y + 4);
     (*signal)->basic->sogi->a1 = (8 - 2.f * (*signal)->basic->sogi->y) / ((*signal)->basic->sogi->x + (*signal)->basic->sogi->y + 4);
     (*signal)->basic->sogi->a2 = ((*signal)->basic->sogi->x - (*signal)->basic->sogi->y - 4) / ((*signal)->basic->sogi->x + (*signal)->basic->sogi->y + 4);
+
+    /* 初始化pid参数 */
+    float ki = (*signal)->basic->omiga0 * (*signal)->basic->omiga0;
+    float kp = sqrt(2) * sqrt(ki);
+    pid_Init((*signal)->pid, kp, ki, 0, 50 * PI, -20 * PI);
 }
 
 /**
@@ -67,39 +77,45 @@ void pll_Init_V(pll_Signal_V **signal, float f, uint16_t F)
  * @param signal 信号指针
  * @param f 信号频率(典型值:50)
  * @param F 采样频率(典型值:20000)
- * @param pi_kp PI控制器kp参数
- * @param pi_ki PI控制器ki参数
  */
 void pll_Init_I(pll_Signal_I **signal, float f, uint16_t F)
 {
+    /* 分配内存空间 */
     (*signal) = (pll_Signal_I *)malloc(sizeof(pll_Signal_I));
     (*signal)->basic = (pll_Signal_Basic *)malloc(sizeof(pll_Signal_Basic));
     (*signal)->basic->sogi = (SOGI *)malloc(sizeof(SOGI));
-
     (*signal)->pid_d = (PID *)malloc(sizeof(PID));
     (*signal)->pid_q = (PID *)malloc(sizeof(PID));
+
     /* 初始化赋值 */
     (*signal)->basic->input[0] = 0.f;
     (*signal)->basic->input[1] = 0.f;
     (*signal)->basic->input[2] = 0.f;
 
+    /* 有效值初始化赋值 */
     (*signal)->basic->rms = 0.f;
 
+    /* sogi变换相关变量初始化赋值 */
+    (*signal)->basic->sogi->alpha[0] = 0.f;
+    (*signal)->basic->sogi->alpha[1] = 0.f;
+    (*signal)->basic->sogi->alpha[2] = 0.f;
+    (*signal)->basic->sogi->beta[0] = 0.f;
+    (*signal)->basic->sogi->beta[1] = 0.f;
+    (*signal)->basic->sogi->beta[2] = 0.f;
+
+    /* park变换相关变量初始化赋值 */
     (*signal)->basic->park_d = 0.f;
     (*signal)->basic->park_q = 0.f;
-
-    (*signal)->park_inv_alpha = 0.f;
-    (*signal)->park_inv_beta = 0.f;
 
     (*signal)->basic->omiga0 = 2.f * PI * f; /* f典型值50 */
     (*signal)->basic->Ts = 1.f / F;          /* F典型值20000 */
 
-    (*signal)->CorL = 0;   /* 0:感性 1:容性 */
-    (*signal)->L = 0.001f; /* 1mH */
+    /* park逆变换相关变量初始化赋值 */
+    (*signal)->park_inv_alpha = 0.f;
+    (*signal)->park_inv_beta = 0.f;
 
-    /* 在调整取值范围时看实际输出值逐渐逼近，防止上电瞬间电流过大 */
-    pid_Init((*signal)->pid_d, 1.8f, 0.03f, 0, 0.2f, -0.4f);
-    pid_Init((*signal)->pid_q, 1.8f, 0.03f, 0, 0.2f, -0.2f);
+    (*signal)->CorL = 0;    /* 0:感性 1:容性 */
+    (*signal)->L = 0.0043f; /* 1mH */
 
     /* 计算sogi中间量 */
     (*signal)->basic->sogi->k = 1.414f;
@@ -109,6 +125,10 @@ void pll_Init_I(pll_Signal_I **signal, float f, uint16_t F)
     (*signal)->basic->sogi->b0 = (*signal)->basic->sogi->x / ((*signal)->basic->sogi->x + (*signal)->basic->sogi->y + 4);
     (*signal)->basic->sogi->a1 = (8 - 2.f * (*signal)->basic->sogi->y) / ((*signal)->basic->sogi->x + (*signal)->basic->sogi->y + 4);
     (*signal)->basic->sogi->a2 = ((*signal)->basic->sogi->x - (*signal)->basic->sogi->y - 4) / ((*signal)->basic->sogi->x + (*signal)->basic->sogi->y + 4);
+
+    /* 在调整取值范围时看实际输出值逐渐逼近，防止上电瞬间电流过大 */
+    pid_Init((*signal)->pid_d, 2.f, 0.004f, 0, 0.5f, 0.f);
+    pid_Init((*signal)->pid_q, 0.2f, 0.0003f, 0, 0.0f, -0.5f);
 }
 
 /**
@@ -154,11 +174,13 @@ void pll_Control_I(pll_Signal_I *signal_I, pll_Signal_V *signal_V, float Iset, f
     /* PI控制 */
     float PFTheta = asinf(PF);
 
-    float Ivalue = Iset * 1.414f / Ibase;
-    pid(signal_I->pid_d, Ivalue * arm_sin_f32(PFTheta), signal_I->basic->park_d); /* 电流大小 */
+    float Ipeak = Iset * 1.414f / Ibase;
 
-    float Iphase = Ivalue * arm_cos_f32(PFTheta) * (signal_I->CorL ? 1 : -1);
-    pid(signal_I->pid_q, Iphase, signal_I->basic->park_q); /* 电流相位 */
+    float Ivalue = Ipeak * arm_sin_f32(PFTheta); /* 电流大小 */
+    pid(signal_I->pid_d, Ivalue, signal_I->basic->park_d);
+
+    float Iphase = Ipeak * arm_cos_f32(PFTheta) * (signal_I->CorL ? 1 : -1); /* 电流相位 */
+    pid(signal_I->pid_q, Iphase, signal_I->basic->park_q);
 
     /* 解耦调制 */
     float Uabd = signal_V->basic->park_d - signal_I->pid_d->out + signal_I->basic->park_q * signal_I->basic->omiga0 * signal_I->L;
@@ -168,14 +190,14 @@ void pll_Control_I(pll_Signal_I *signal_I, pll_Signal_V *signal_V, float Iset, f
     arm_inv_park_f32(Uabd, Uabq, &signal_I->park_inv_alpha, &signal_I->park_inv_beta, sinTheta, cosTheta);
 
     /* 限幅 */
-    signal_I->park_inv_alpha = fmaxf(-0.95f, fminf(0.95f, signal_I->park_inv_alpha));
-    signal_I->park_inv_beta = fmaxf(-0.95f, fminf(0.95f, signal_I->park_inv_beta));
+    signal_I->park_inv_alpha = fmaxf(-1.0f, fminf(1.0f, signal_I->park_inv_alpha));
+    signal_I->park_inv_beta = fmaxf(-1.0f, fminf(1.0f, signal_I->park_inv_beta));
 }
 
 /**
  * @brief Sogi变换
- * @param input 输入信号
  * @param sogi sogi指针
+ * @param input 输入信号
  */
 static void pll_Sogi(SOGI *sogi, float *input)
 {

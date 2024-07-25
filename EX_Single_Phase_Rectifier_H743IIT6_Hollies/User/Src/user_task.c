@@ -2,7 +2,7 @@
  * @Author       : DragonYH 1016633827@qq.com
  * @Date         : 2024-07-20 18:37:44
  * @LastEditors  : DragonYH 1016633827@qq.com
- * @LastEditTime : 2024-07-21 19:35:48
+ * @LastEditTime : 2024-07-24 11:32:21
  * @FilePath     : \EX_Single_Phase_Rectifier_H743IIT6_Hollies\User\Src\user_task.c
  * @Description  : 用于FreeRTOS任务的实现
  *
@@ -28,8 +28,8 @@ enum state deviceState = START;     /* 设备状态 */
 static float mcuTemperature = 0.0f; /* MCU温度 */
 static float Udc = 0.0f;            /* 直流电压 */
 static float Idc = 0.0f;            /* 直流电流 */
-static float Utarget = 40.0f;       /* 目标直流电压 */
-float Itarget = 0.0f;               /* 电流参考值 */
+static float Utarget = 50.0f;       /* 目标直流电压 */
+float Itarget = 1.0f;               /* 电流参考值 */
 
 void UserInit(void)
 {
@@ -38,6 +38,7 @@ void UserInit(void)
     pll_Init_V(&signal_V, 50, 20000);
     pll_Init_I(&signal_I, 50, 20000);
     HAL_TIM_PWM_Start(&htim8, TIM_CHANNEL_1);
+    HAL_TIM_PWM_Start(&htim8, TIM_CHANNEL_2);
     HAL_DAC_Start(&hdac1, DAC_CHANNEL_1);
     ad7606_Start(&htim2, TIM_CHANNEL_1);
 }
@@ -72,7 +73,7 @@ void StartStateLED(void *argument)
             break;
         case FAULT: /* 保护状态 */
             HAL_GPIO_TogglePin(GPIOI, GPIO_PIN_0);
-            osDelay(100);
+            osDelay(50);
             break;
         default:
             break;
@@ -100,6 +101,7 @@ void StartMcuTemperature(void *argument)
             uint16_t temprature = HAL_ADC_GetValue(&hadc3); /* 读出转换结果 */
             mcuTemperature = ((110.0 - 30.0) / (*(unsigned short *)(0x1FF1E840) - *(unsigned short *)(0x1FF1E820))) * (temprature - *(unsigned short *)(0x1FF1E820)) + 30;
         }
+
         osDelay(500);
     }
     /* USER CODE END mcuTemperature */
@@ -128,6 +130,14 @@ void StartOledDisplay(void *argument)
         snprintf(oledBuffer, sizeof(oledBuffer), "Uac:%5.2fV Iac:%4.2fA", Uac, Iac);
         OLED_ShowString(0, 12, (uint8_t *)oledBuffer, 12);
 
+        /* 锁相信息 */
+        snprintf(oledBuffer, sizeof(oledBuffer), "a:%5.2fV b:%5.2fA", signal_I->pid_d->out, signal_I->pid_q->out);
+        OLED_ShowString(0, 24, (uint8_t *)oledBuffer, 12);
+
+        /* pid */
+        snprintf(oledBuffer, sizeof(oledBuffer), "%5.2f %5.2f %4.2f", signal_I->basic->park_d, signal_I->basic->park_q, Itarget);
+        OLED_ShowString(0, 36, (uint8_t *)oledBuffer, 12);
+
         /* 显示设备状态和温度 */
         const char *stateText;
         switch (deviceState)
@@ -145,11 +155,16 @@ void StartOledDisplay(void *argument)
             stateText = "UNKNOWN";
             break;
         }
-        snprintf(oledBuffer, sizeof(oledBuffer), "%s     T:%5.2fC", stateText, mcuTemperature);
+
+        float efficiency = fabsf(Udc * Idc) / (Uac * Iac) * 100.f;
+        efficiency = fmaxf(0.f, fminf(100.f, efficiency));
+
+        snprintf(oledBuffer, sizeof(oledBuffer), "%-6s%5.1f%%%7.2fC", stateText, efficiency, mcuTemperature);
         OLED_ShowString(0, 48, (uint8_t *)oledBuffer, 12);
 
         /* 刷新显示 */
         OLED_Refresh();
+
         osDelay(100);
     }
     /* USER CODE END oledDisplay */
@@ -177,7 +192,7 @@ void StartDCSampling(void *argument)
                               INA228_adc_config_register_vtct_150us |
                               INA228_adc_config_register_avg_64),
         /* shuntCalRegister = 13107.2 * 1e6 * 预计最大电流 / 524288 * 采样电阻 */
-        .shuntCalRegister = (uint16_t)(13107.2f * 1e6 * 5.f / 524288.f * 0.02f),
+        .shuntCalRegister = (uint16_t)(13107.2f * 5.f / 524288.f * 1e6f * 0.02f),
         .shuntTempcoRegister = 0x0000U, /* TEMPCO is 0 ppm/°C */
         .diagAlrtRegister = (INA228_diag_alrt_register_alatch_Transparent |
                              INA228_diag_alrt_register_cnvr_DisableconversionreadyflagonALERTpin |
@@ -199,11 +214,13 @@ void StartDCSampling(void *argument)
 
     static const INA228_Handle INA228_0 = &INA228_0_state;
 
+    INA228_config(INA228_0); /* 初始化 */
     /* Infinite loop */
     for (;;)
     {
         Udc = INA228_getVBUS_V(INA228_0);
         Idc = INA228_getCURRENT_A(INA228_0);
+
         osDelay(10);
     }
     /* USER CODE END dcSampling */
@@ -222,11 +239,16 @@ void StartCircuitProtection(void *argument)
     {
         float Uac = signal_V->basic->rms;
         float Iac = signal_I->basic->rms;
+
         if (Udc > protection_Udc || fabsf(Idc) > protection_Idc || Uac > protection_Uac || Iac > protection_Iac)
         {
-            deviceState = FAULT;
+            osDelay(100);
+            if (Udc > protection_Udc || fabsf(Idc) > protection_Idc || Uac > protection_Uac || Iac > protection_Iac)
+            {
+                deviceState = FAULT;
 
-            HAL_GPIO_WritePin(IR2104_SD_GPIO_Port, IR2104_SD_Pin, GPIO_PIN_RESET); /* 关闭输出 */
+                HAL_GPIO_WritePin(IR2104_SD_GPIO_Port, IR2104_SD_Pin, GPIO_PIN_RESET); /* 关闭输出 */
+            }
         }
         else if (deviceState == START && Uac > 10.f && Iac > 0.5f && fabsf(signal_V->basic->park_q) < 0.02f)
         {
@@ -238,6 +260,7 @@ void StartCircuitProtection(void *argument)
                 HAL_GPIO_WritePin(IR2104_SD_GPIO_Port, IR2104_SD_Pin, GPIO_PIN_SET); /* 打开输出 */
             }
         }
+
         osDelay(10);
     }
     /* USER CODE END circuitProtection */
@@ -252,12 +275,16 @@ void StartDCControl(void *argument)
 {
     /* USER CODE BEGIN dcControl */
     static PID pidDCV;
-    pid_Init(&pidDCV, 0.1f, 0.01f, 0, 2.5f, 0.5f);
+    pid_Init(&pidDCV, 0.1f, 0.01f, 0, 2.2f, 0.0f);
     /* Infinite loop */
     for (;;)
     {
-        pid(&pidDCV, Utarget, Udc);
-        Itarget = pidDCV.out;
+        if (deviceState == RUN)
+        {
+            pid(&pidDCV, Utarget, Udc);
+            Itarget = pidDCV.out;
+        }
+
         osDelay(20);
     }
     /* USER CODE END dcControl */

@@ -2,7 +2,7 @@
 #define __USER_TASK_H
 
 /* 保护阈值  */
-#define protection_Udc (90.f) /* 直流电压保护阈值 */
+#define protection_Udc (80.f) /* 直流电压保护阈值 */
 #define protection_Idc (10.f) /* 直流电流保护阈值 */
 #define protection_Uac (30.f) /* 交流电压保护阈值 */
 #define protection_Iac (10.f) /* 交流电流保护阈值 */

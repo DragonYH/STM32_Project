@@ -25,13 +25,7 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "user_exit.h"
 #include "user_task.h"
-#include "single_phrase_pll.h"
-#include "oled.h"
-#include "ad7606.h"
-#include "tim.h"
-#include "dac.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -56,44 +50,44 @@
 /* Definitions for stateLED */
 osThreadId_t stateLEDHandle;
 const osThreadAttr_t stateLED_attributes = {
-  .name = "stateLED",
-  .stack_size = 256 * 4,
-  .priority = (osPriority_t) osPriorityNormal,
+    .name = "stateLED",
+    .stack_size = 256 * 4,
+    .priority = (osPriority_t)osPriorityNormal,
 };
 /* Definitions for mcuTemperature */
 osThreadId_t mcuTemperatureHandle;
 const osThreadAttr_t mcuTemperature_attributes = {
-  .name = "mcuTemperature",
-  .stack_size = 512 * 4,
-  .priority = (osPriority_t) osPriorityNormal,
+    .name = "mcuTemperature",
+    .stack_size = 512 * 4,
+    .priority = (osPriority_t)osPriorityNormal,
 };
 /* Definitions for oledDisplay */
 osThreadId_t oledDisplayHandle;
 const osThreadAttr_t oledDisplay_attributes = {
-  .name = "oledDisplay",
-  .stack_size = 512 * 4,
-  .priority = (osPriority_t) osPriorityHigh,
+    .name = "oledDisplay",
+    .stack_size = 512 * 4,
+    .priority = (osPriority_t)osPriorityHigh,
 };
 /* Definitions for dcSampling */
 osThreadId_t dcSamplingHandle;
 const osThreadAttr_t dcSampling_attributes = {
-  .name = "dcSampling",
-  .stack_size = 512 * 4,
-  .priority = (osPriority_t) osPriorityHigh,
+    .name = "dcSampling",
+    .stack_size = 512 * 4,
+    .priority = (osPriority_t)osPriorityHigh,
 };
 /* Definitions for circuitProtecti */
 osThreadId_t circuitProtectiHandle;
 const osThreadAttr_t circuitProtecti_attributes = {
-  .name = "circuitProtecti",
-  .stack_size = 512 * 4,
-  .priority = (osPriority_t) osPriorityHigh,
+    .name = "circuitProtecti",
+    .stack_size = 512 * 4,
+    .priority = (osPriority_t)osPriorityHigh,
 };
 /* Definitions for dcControl */
 osThreadId_t dcControlHandle;
 const osThreadAttr_t dcControl_attributes = {
-  .name = "dcControl",
-  .stack_size = 256 * 4,
-  .priority = (osPriority_t) osPriorityHigh,
+    .name = "dcControl",
+    .stack_size = 256 * 4,
+    .priority = (osPriority_t)osPriorityHigh,
 };
 
 /* Private function prototypes -----------------------------------------------*/
@@ -111,11 +105,12 @@ void StartDCControl(void *argument);
 void MX_FREERTOS_Init(void); /* (MISRA C 2004 rule 8.1) */
 
 /**
-  * @brief  FreeRTOS initialization
-  * @param  None
-  * @retval None
-  */
-void MX_FREERTOS_Init(void) {
+ * @brief  FreeRTOS initialization
+ * @param  None
+ * @retval None
+ */
+void MX_FREERTOS_Init(void)
+{
   /* USER CODE BEGIN Init */
   UserInit();
   /* USER CODE END Init */
@@ -162,7 +157,6 @@ void MX_FREERTOS_Init(void) {
   /* USER CODE BEGIN RTOS_EVENTS */
   /* add events, ... */
   /* USER CODE END RTOS_EVENTS */
-
 }
 
 /* USER CODE BEGIN Header_StartStateLED */
@@ -277,4 +271,3 @@ __weak void StartDCControl(void *argument)
 /* USER CODE BEGIN Application */
 
 /* USER CODE END Application */
-

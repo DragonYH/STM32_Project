@@ -3,7 +3,7 @@
 
 #include "single_phrase_pll.h"
 
-#define TIM_PERIOD 6000
+#define TIM_PERIOD 12000
 
 extern pll_Signal_V *signal_V;
 extern pll_Signal_I *signal_I;
